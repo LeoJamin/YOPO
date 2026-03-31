@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(sensor_simulator)
 
+# 【修改1】降级为 C++14，兼容性更好
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -30,11 +31,11 @@ if("${ARCH_FLAGS}" STREQUAL "")
     "  set(ARCH_FLAGS \"-gencode arch=compute_86,code=sm_86\")"
   )
 endif()
-# If automatic detection fails, you can delete above (cuda_select_nvcc_arch_flags(ARCH_FLAGS) ... endif()) and manually set the architecture flags here
-# Examples (NVIDIA 5060 GPU):
-# set(ARCH_FLAGS "-gencode arch=compute_120,code=sm_120")
+
 message(WARNING "CUDA Architecture: ${ARCH_FLAGS}")
-set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} ${ARCH_FLAGS}")
+
+# 【修改2】NVCC 标志改为 -std=c++14
+set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} ${ARCH_FLAGS} -std=c++14 -D_FORCE_INLINES")
 
 set(CMAKE_BUILD_TYPE Release)
 set(CMAKE_CXX_FLAGS "-O3")
@@ -51,7 +52,7 @@ catkin_package(
 include_directories(
         include
         ${catkin_INCLUDE_DIRS}
-        ${EIGEN3_INCLUDE_DIR}  # Eigen库路径
+        ${EIGEN3_INCLUDE_DIR}
         ${PCL_INCLUDE_DIRS}
         ${OpenCV_INCLUDE_DIRS}
 )
@@ -69,5 +70,5 @@ target_link_libraries(sensor_simulator_cuda ${catkin_LIBRARIES} ${PCL_LIBRARIES}
 target_compile_definitions(sensor_simulator_cuda PRIVATE CONFIG_FILE_PATH="${CMAKE_SOURCE_DIR}/config/config.yaml")
 
 add_executable(dataset_generator src/dataset_generator.cpp src/maps.cpp src/perlinnoise.cpp)
-target_link_libraries(dataset_generator ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${OpenCV_LIBRARIES} raycast_cuda yaml-cpp)
+target_link_libraries(dataset_generator ${catkin_LIBRARIES} stdc++fs ${PCL_LIBRARIES} ${OpenCV_LIBRARIES} raycast_cuda yaml-cpp)
 target_compile_definitions(dataset_generator PRIVATE CONFIG_FILE_PATH="${CMAKE_SOURCE_DIR}/config/config.yaml")

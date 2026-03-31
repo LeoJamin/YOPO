@@ -1,13 +1,18 @@
 .idea/
+__pycache__/
+*.pyc
 
 Controller/devel/
 Controller/build/
 Controller/.catkin_workspace
+Controller/.catkin_tools/
+Controller/logs/
 
 Simulator/devel/
 Simulator/build/
 Simulator/logs/
 Simulator/.catkin_tools/
+Simulator/.catkin_workspace
 
 YOPO/saved/*
 dataset/

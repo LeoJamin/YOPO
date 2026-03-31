@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include <ros/ros.h>
+
 namespace odeint = boost::numeric::odeint;
 
 namespace QuadrotorSimulator
@@ -12,6 +13,8 @@ namespace QuadrotorSimulator
 
 Quadrotor::Quadrotor(void)
 {
+  for(int i=22; i<26; i++)
+    internal_state_[i] = 0.0;
   alpha0     = 48; // degree
   g_         = 9.81;
   mass_      = 0.98; // 0.5;
@@ -26,6 +29,10 @@ Quadrotor::Quadrotor(void)
   km_ = 0.07 * (3 * prop_radius_) * kf_;
 
   arm_length_          = 0.26;
+  payload_mass_ = 0.20;// 0.15kg payload, from Nate
+  cable_length_ = 0.50; // 0.5m cable, from Nate
+  state_.swing_angle = Eigen::Vector2d::Zero();// [theta, phi]
+  state_.swing_velocity = Eigen::Vector2d::Zero();//[dot_theta, dot_phi]
   motor_time_constant_ = 1.0 / 30;
   min_rpm_             = 1200;
   max_rpm_             = 35000;
@@ -51,7 +58,7 @@ Quadrotor::step(double dt)
 
   odeint::integrate(boost::ref(*this), internal_state_, 0.0, dt, dt);
 
-  for (int i = 0; i < 22; ++i)
+  for (int i = 0; i < 26; ++i)
   {
     if (std::isnan(internal_state_[i]))
     {
@@ -79,6 +86,10 @@ Quadrotor::step(double dt)
   state_.motor_rpm(1) = internal_state_[19];
   state_.motor_rpm(2) = internal_state_[20];
   state_.motor_rpm(3) = internal_state_[21];
+  state_.swing_angle(0) = internal_state_[22];
+  state_.swing_velocity(0) = internal_state_[23];
+  state_.swing_angle(1) = internal_state_[24];
+  state_.swing_velocity(1) = internal_state_[25];
 
   // Re-orthonormalize R (polar decomposition)
   Eigen::LLT<Eigen::Matrix3d> llt(state_.R.transpose() * state_.R);
@@ -97,9 +108,16 @@ Quadrotor::step(double dt)
 
 void
 Quadrotor::operator()(const Quadrotor::InternalState& x,
-                      Quadrotor::InternalState& dxdt, const double /* t */)
+                      Quadrotor::InternalState& dxdt, const double t/* t */)
 {
   State cur_state;
+
+  cur_state.swing_angle(0) = x[22];       // theta
+  cur_state.swing_velocity(0) = x[23];    // dot_theta
+  cur_state.swing_angle(1) = x[24];       // phi
+  cur_state.swing_velocity(1) = x[25];    // dot_phi
+
+
   for (int i = 0; i < 3; i++)
   {
     cur_state.x(i) = x[0 + i];
@@ -138,44 +156,27 @@ Quadrotor::operator()(const Quadrotor::InternalState& x,
 
   motor_rpm_sq = cur_state.motor_rpm.array().square();
 
-  // //! @todo implement
-  // Eigen::Array4d blade_linear_velocity;
-  // Eigen::Array4d motor_linear_velocity;
-  // Eigen::Array4d AOA;
-  // blade_linear_velocity = 0.104719755 // rpm to rad/s
-  //                         * cur_state.motor_rpm.array() * prop_radius_;
-  // for (int i = 0; i < 4; ++i)
-  //   AOA[i]   = alpha0 - atan2(motor_linear_velocity[i], blade_linear_velocity[i]) * 180 / 3.14159265;
-  // //! @todo end
 
-  // double totalF = kf_ * motor_rpm_sq.sum();
   double thrust = kf_ * motor_rpm_sq.sum();
 
+  // 1. 无人机空气阻力
+  double resistance = 0.1 * 3.14159265 * (arm_length_) * (arm_length_) * cur_state.v.norm() * cur_state.v.norm();
+  vnorm = cur_state.v;
+  if (vnorm.norm() != 0) {
+    vnorm.normalize();
+  }
+
+  // 2. UAV acceleration (payload cable force is applied via external_force_
+  //    by the outer explicit-Euler integrator in quadrotor_simulator_so3.cpp.
+  //    Do NOT add internal tension here — that would double-count.)
+  v_dot = -Eigen::Vector3d(0, 0, g_) + thrust * cur_state.R.col(2) / mass_ + external_force_ / mass_ - resistance * vnorm / mass_;
+  acc_ = v_dot;
+  x_dot = cur_state.v;
+  // 7. 无人机转矩和角加速度
   Eigen::Vector3d moments;
   moments(0) = kf_ * (motor_rpm_sq(2) - motor_rpm_sq(3)) * arm_length_;
   moments(1) = kf_ * (motor_rpm_sq(1) - motor_rpm_sq(0)) * arm_length_;
-  moments(2) = km_ * (motor_rpm_sq(0) + motor_rpm_sq(1) - motor_rpm_sq(2) -
-                      motor_rpm_sq(3));
-
-  double resistance = 0.1 *                                        // C
-                      3.14159265 * (arm_length_) * (arm_length_) * // S
-                      cur_state.v.norm() * cur_state.v.norm();
-
-  //  ROS_INFO("resistance: %lf, Thrust: %lf%% ", resistance,
-  //           motor_rpm_sq.sum() / (4 * max_rpm_ * max_rpm_) * 100.0);
-
-  vnorm = cur_state.v;
-  if (vnorm.norm() != 0)
-  {
-    vnorm.normalize();
-  }
-  x_dot = cur_state.v;
-  v_dot = -Eigen::Vector3d(0, 0, g_) + thrust * R.col(2) / mass_ +
-          external_force_ / mass_ /*; //*/ - resistance * vnorm / mass_;
-
-  acc_ = v_dot;
-  //  acc_[2] = -acc_[2]; // to NED
-
+  moments(2) = km_ * (motor_rpm_sq(0) + motor_rpm_sq(1) - motor_rpm_sq(2) - motor_rpm_sq(3));
   R_dot = R * omega_vee;
   omega_dot =
     J_.inverse() *
@@ -195,14 +196,21 @@ Quadrotor::operator()(const Quadrotor::InternalState& x,
   {
     dxdt[18 + i] = motor_rpm_dot(i);
   }
-  for (int i = 0; i < 22; ++i)
+  for (int i = 0; i < 26; ++i)
   {
     if (std::isnan(dxdt[i]))
     {
+      ROS_WARN_THROTTLE(1.0, "NaN detected in dxdt[%d], clamping to 0", i);
       dxdt[i] = 0;
-      //      std::cout << "nan apply to 0 for " << i << std::endl;
     }
   }
+  // Swing angle states [22-25] are unused — payload dynamics handled by
+  // the outer explicit-Euler integrator in quadrotor_simulator_so3.cpp.
+  dxdt[22] = 0.0;
+  dxdt[23] = 0.0;
+  dxdt[24] = 0.0;
+  dxdt[25] = 0.0;
+
 }
 
 void
@@ -443,6 +451,10 @@ Quadrotor::updateInternalState(void)
   internal_state_[19] = state_.motor_rpm(1);
   internal_state_[20] = state_.motor_rpm(2);
   internal_state_[21] = state_.motor_rpm(3);
+  internal_state_[22] = state_.swing_angle(0);
+  internal_state_[23] = state_.swing_velocity(0);
+  internal_state_[24] = state_.swing_angle(1);
+  internal_state_[25] = state_.swing_velocity(1);
 }
 
 Eigen::Vector3d

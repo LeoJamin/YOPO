@@ -76,45 +76,64 @@ class StateTransform:
 
         return np.concatenate((endstate_p, endstate_vb, endstate_ab), axis=1)
 
-
     def prepare_input(self, obs):
         """
             Transform the observation to the primitive frame (Body frame → Primitive frame → Body frame).
-            obs: [batch; vx, vy, yz, ax, ay, az, gx, gy, gz] in body frame
-            :return [batch; vx, vy, yz, ax, ay, az, gx, gy, gz; primitive_v; primitive_h] in primitive frame
+            obs: [batch; vx, vy, yz, ax, ay, az, gx, gy, gz, ...] in body frame
+            Supports variable obs_dim: 9 (no payload), 10-15 (with payload dims).
+            :return [batch; obs_dim; primitive_v; primitive_h] in primitive frame
         """
         B, N = obs.shape[0], self.lattice_primitive.traj_num
+        obs_dim = obs.shape[1]
+        payload_dim = obs_dim - 9  # 0 for 9D, up to 6 for 15D
+
+        # Split spatial (9D) and payload (0-6D) components
+        spatial_obs = obs[:, :9]  # [B, 9]
 
         # 获取所有 Rbp 并倒序排列 (由于lattice和grid的顺序相反)
         Rbp_all = self.lattice_primitive.getRotation().flip(0)  # shape: [N, 3, 3]
 
-        obs = obs.view(B, 3, 3)  # [B, 3, 3]
+        # 仅对 9 维空间观测进行 view 转换
+        spatial_obs = spatial_obs.reshape(B, 3, 3)  # [B, 3, 3]
 
         # 扩展 obs 和 Rbp 到 [B, N, 3, 3]
-        obs_exp = obs[:, None, :, :].expand(B, N, 3, 3)
+        obs_exp = spatial_obs[:, None, :, :].expand(B, N, 3, 3)
         Rbp_exp = Rbp_all[None, :, :, :].expand(B, N, 3, 3)
 
-        # 执行批量坐标变换
+        # 执行批量坐标变换 (仅作用于空间向量)
         transformed = torch.matmul(obs_exp, Rbp_exp)  # [B, N, 3, 3]
+        transformed_flat = transformed.reshape(B, N, 9)  # [B, N, 9]
 
-        transformed_flat = transformed.view(B, N, 9)  # [B, N, 9]
-        out = transformed_flat.permute(0, 2, 1).contiguous()  # [B, 9, N]
-        out = out.view(B, 9, self.lattice_primitive.vertical_num, self.lattice_primitive.horizon_num)  # [B, 9, V, H]
+        if payload_dim > 0:
+            # 负载状态在各 primitive 下保持一致(它是机体相关的标量或角度)
+            payload_obs = obs[:, 9:]  # [B, payload_dim]
+            payload_exp = payload_obs[:, None, :].expand(B, N, payload_dim)  # [B, N, payload_dim]
+            combined = torch.cat([transformed_flat, payload_exp], dim=-1)  # [B, N, obs_dim]
+        else:
+            combined = transformed_flat  # [B, N, 9]
+
+        out = combined.permute(0, 2, 1).contiguous()  # [B, obs_dim, N]
+        out = out.view(B, obs_dim, self.lattice_primitive.vertical_num, self.lattice_primitive.horizon_num)
         return out
 
     def unnormalize_obs(self, vel_acc):
-        vel_acc[:, 0:3] = vel_acc[:, 0:3] * self.lattice_primitive.vel_max
-        vel_acc[:, 3:6] = vel_acc[:, 3:6] * self.lattice_primitive.acc_max
-        return vel_acc
+        out = vel_acc.clone()
+        out[:, 0:3] = out[:, 0:3] * self.lattice_primitive.vel_max
+        out[:, 3:6] = out[:, 3:6] * self.lattice_primitive.acc_max
+        return out
 
-    def normalize_obs(self, vel_acc_goal):
-        vel_acc_goal[:, 0:3] = vel_acc_goal[:, 0:3] / self.lattice_primitive.vel_max
-        vel_acc_goal[:, 3:6] = vel_acc_goal[:, 3:6] / self.lattice_primitive.acc_max
+    def normalize_obs(self, obs):
+        out = obs.clone()
+        out[:, 0:3] = out[:, 0:3] / self.lattice_primitive.vel_max
+        out[:, 3:6] = out[:, 3:6] / self.lattice_primitive.acc_max
 
         # Clamp the goal direction to unit length
-        goal_norm = vel_acc_goal[:, 6:9].norm(dim=1, keepdim=True)
-        vel_acc_goal[:, 6:9] = vel_acc_goal[:, 6:9] / goal_norm.clamp(min=self.goal_length)
-        return vel_acc_goal
+        goal_norm = out[:, 6:9].norm(dim=1, keepdim=True)
+        out[:, 6:9] = out[:, 6:9] / goal_norm.clamp(min=self.goal_length)
+
+        # NOTE: Payload dims 9-14 are kept in their natural units (radians / m / kg).
+        # Do NOT add normalization here unless retraining from scratch with new weights.
+        return out
 
 
 def rotate_body2world(rot_wb, pos_b):

@@ -10,253 +10,245 @@ from config.config import cfg
 
 
 class SafetyLoss(nn.Module):
-    def __init__(self, L):
+    def __init__(self, L, detach_qvec: bool = True):
+        """
+        Args:
+            L: polynomial mapping matrix
+            detach_qvec: If True (default), cut gradient through q_vec to prevent
+                         the network from learning to use extreme accelerations to
+                         move the bubble chain away from obstacles (adversarial shortcut).
+                         Set False for ablation study (requires gradient clipping to stabilize).
+        """
         super(SafetyLoss, self).__init__()
         self.traj_num = cfg['traj_num']
         self.map_expand_min = np.array(cfg['map_expand_min'])
         self.map_expand_max = np.array(cfg['map_expand_max'])
-        self.d0 = cfg["d0"]
-        self.r = cfg["r"]
+        self.detach_qvec = detach_qvec
+
+        # 气泡包络物理参数
+        self.r_uav = cfg["bubble"]["r_uav"]
+        self.r_load = cfg["bubble"]["r_load"]
+        self.r_safe = cfg["bubble"]["r_safe"]
 
         self._L = L
         self.sgm_time = cfg["sgm_time"]
-        self.eval_points = 30
+        self.eval_points = 30  # 轨迹时间采样点
         self.device = self._L.device
         self.time_integral = True
 
-        # SDF
+        # SDF 地图初始化
         self.voxel_size = 0.2
-        self.min_bounds = None  # shape: (N, 3)
-        self.max_bounds = None  # shape: (N, 3)
-        self.sdf_shapes = None  # shape: (N, 3)
-        print("Building ESDF map...")
+        self.min_bounds = None
+        self.max_bounds = None
+        self.sdf_shapes = None
+        print("Building ESDF map for Slung-load Bubble Chain...")
         base_dir = os.path.dirname(os.path.abspath(__file__))
         data_dir = os.path.join(base_dir, "../", cfg["dataset_path"])
         self.sdf_maps = self.get_sdf_from_ply(data_dir)
-        print("Map built!")
+        print("ESDF Maps Built Successfully!")
 
-    def forward(self, Df, Dp, map_id):
-        """
-        Args:
-            Dp: decision parameters: (batch_size, 3, 3) → [px, vx, ax; py, vy, ay; pz, vz, az]
-            Df: fixed parameters: (batch_size, 3, 3) → [px, vx, ax; py, vy, ay; pz, vz, az]
-            map_id: (batch_size) which esdf map to query
-        Returns:
-            cost_colli: (batch_size) → safety loss
-        """
+    def forward(self, Df, Dp, map_id, p_state, p_params):
         batch_size = Dp.shape[0]
-        L = self._L.unsqueeze(0).expand(batch_size, -1, -1)
-        coe = self.get_coefficient_from_derivative(Dp, Df, L)
+        mapping_matrix = self._L.unsqueeze(0).expand(batch_size, -1, -1)
+        coe = self.get_coefficient_from_derivative(Dp, Df, mapping_matrix)
 
         dt = self.sgm_time / self.eval_points
         t_list = th.linspace(dt, self.sgm_time, self.eval_points, device=self.device)
         t_list = t_list.view(1, -1, 1).expand(batch_size, -1, -1)
 
-        # get pos from coeff [B*H*V, N, 3] -> [B, H*V*N, 3]
-        pos_coe = self.get_position_from_coeff(coe, t_list)
-        pos_batch = pos_coe.reshape(-1, self.traj_num * pos_coe.shape[1], 3)
+        # 1. 轨迹与真实加速度计算
+        pos_uav = self.get_position_from_coeff(coe, t_list)
+        acc_uav = self.get_acceleration_from_coeff(coe, t_list)  # [batch, eval_points, 3]
 
-        # get info from sdf_map
-        cost, dist = self.get_distance_cost(pos_batch, map_id)
+        length = p_params[:, 0]
 
-        if self.time_integral:
-            # Compute average time integral of trajectory cost
-            # Issue: uneven eval points may undercut cost by quickly crossing obstacles
-            cost_colli = cost.reshape(-1, pos_coe.shape[1]).mean(dim=-1)  # [B*H*V, N]
-        else:
-            # Compute average line integral of trajectory cost
-            vel_coe = self.get_velocity_from_coeff(coe, t_list)
-            vel_coe = vel_coe.norm(dim=-1)
-            line_integral_cost = (cost.reshape(-1, pos_coe.shape[1]) * vel_coe * dt).sum(dim=1)  # [B*H*V, N] -> [B*H*V]
-            line_length = (vel_coe * dt).sum(dim=1)  # [B*H*V]
-            cost_colli = line_integral_cost / line_length  # [B*H*V]
+        # 【核心修复1】：根据表观重力，动态实时计算绳索的物理朝向 q_vec
+        g_vec = th.tensor([0.0, 0.0, -9.81], device=self.device).view(1, 1, 3)
+        apparent_g = acc_uav - g_vec
+        q_vec = -apparent_g / (th.norm(apparent_g, dim=-1, keepdim=True) + 1e-5)  # [B, eval_points, 3]
 
-        return cost_colli
+        # Gradient detachment for q_vec (ablatable):
+        # When True: prevents the network from learning adversarial accelerations that
+        # deliberately tilt the bubble chain away from obstacles to reduce safety cost.
+        # When False (ablation): allows gradient flow but requires stronger clipping.
+        if self.detach_qvec:
+            q_vec = q_vec.detach()
 
-    def get_distance_cost(self, pos, map_id):
-        """
-        pos:     (B, N, 3) - 点在世界坐标系下的位置
-        map_id:  (B) - 每个 batch 使用哪张 sdf_map
-        NOTE: Direct self.sdf_maps.expand(B, -1, -1, -1, -1) is the most memory-efficient and fastest, but only supports a single map.
-              Using self.sdf_maps[map_id] results in significant memory usage and latency due to data copying.
-              As a compromise, we adopt a map-cropping (get_batch_sdf) to support multiple maps.
-        """
-        B, N, _ = pos.shape
+        # 2. 动态气泡链生成
+        r_min = min(self.r_uav, self.r_load)
+        d_max = 2.0 * np.sqrt(max(r_min ** 2 - self.r_safe ** 2, 1e-4))
 
-        # get local sdf maps
+        max_L = length.max().item()
+        curr_N = int(np.ceil(max_L / d_max) + 1)
+        curr_N = max(curr_N, 2)
+
+        r_ratios = th.linspace(0, 1, curr_N, device=self.device)
+
+        # 将动态的 q_vec (携带 eval_points 维度) 融入计算
+        pos_bubbles = pos_uav.unsqueeze(2) + \
+                      r_ratios.view(1, 1, -1, 1) * \
+                      (length.view(-1, 1, 1, 1) * q_vec.unsqueeze(2))
+
+        r_bubbles = self.r_uav + r_ratios * (self.r_load - self.r_uav)
+
+        # 3. ESDF 采样
+        actual_batch = map_id.shape[0]
+        pos_for_sdf = pos_bubbles.reshape(actual_batch, -1, 3)
+        cost, dist = self.get_distance_cost(pos_for_sdf, map_id, r_bubbles, batch_size, curr_N)
+
+        # 4. 损失聚合 (Max-Pooling)
+        max_cost_per_time = cost.max(dim=-1).values
+        return max_cost_per_time.mean(dim=-1)
+
+    def get_distance_cost(self, pos, map_id, r_bubbles, orig_batch_size, curr_N):
+        B, N_total, _ = pos.shape
         sdf_maps, local_origin, local_shape = self.get_batch_sdf(pos, map_id)
 
-        # 将 pos 转为 voxel 坐标：grid = (pos - min_bound) / voxel_size
-        grid = (pos - local_origin.unsqueeze(1)) / self.voxel_size  # (B, N, 3)
+        if sdf_maps.shape[0] == 1 and B > 1:
+            sdf_maps = sdf_maps.expand(B, -1, -1, -1, -1)
 
-        # 归一化 grid 到 [-1, 1]
-        grid_point = 2.0 * grid / (local_shape - 1).unsqueeze(1) - 1.0  # (B, N, 3)
+        # 坐标归一化到 [-1, 1] 供 grid_sample 使用
+        grid = (pos - local_origin.unsqueeze(1)) / self.voxel_size
+        grid_point = 2.0 * grid / (local_shape - 1).unsqueeze(1) - 1.0
+        grid_point = grid_point.view(B, 1, 1, N_total, 3)
+        grid_point = th.clamp(grid_point, min=-0.99, max=0.99)
 
-        grid_point = grid_point.view(B, 1, 1, N, 3)
-        grid_point = th.clamp(grid_point, min=-0.99, max=0.99)  # (B, N)
+        dist_query = F.grid_sample(sdf_maps, grid_point, mode='bilinear', padding_mode='zeros', align_corners=True)
+        dist_query = dist_query.view(B, N_total)
 
-        dist_query = F.grid_sample(sdf_maps, grid_point, mode='bilinear', padding_mode='zeros', align_corners=True)  # (B, 1, 1, 1, N)
-        dist_query = dist_query.view(B, N)
+        dist_reshaped = dist_query.view(orig_batch_size, self.eval_points, curr_N)
 
-        # Cost function
-        cost = self.cost_function(dist_query)  # (B, N)
-        return cost, dist_query
+        # 🚨【核心修复3】：分段线性-指数惩罚，彻底消灭指数爆炸，保证 Lipschitz 连续！
+        penetration = th.clamp(r_bubbles - dist_reshaped, min=0.0)
+        threshold = 0.2  # 临界穿透深度设置为 0.2m
 
-    def cost_function(self, d):
-        return th.exp(-(d - self.d0) / self.r)
+        # 指数部分 (浅穿透)
+        exp_part = th.exp(penetration / 0.1) - 1.0
+
+        # 线性部分 (深穿透)
+        linear_k = 10.0 * th.exp(th.tensor(threshold / 0.1, device=self.device))
+        linear_y0 = th.exp(th.tensor(threshold / 0.1, device=self.device)) - 1.0
+        linear_part = linear_k * (penetration - threshold) + linear_y0
+
+        # 掩码合并
+        mask = (penetration <= threshold).float()
+        cost = mask * exp_part + (1.0 - mask) * linear_part
+
+        return cost, dist_reshaped
+
+    def get_batch_sdf(self, pos, map_id):
+        min_bounds = self.min_bounds[map_id]
+        sdf_shapes = self.sdf_shapes[map_id]
+
+        min_pos = pos.amin(dim=1)
+        max_pos = pos.amax(dim=1)
+        min_indices = ((min_pos - min_bounds) / self.voxel_size).int()
+        max_indices = ((max_pos - min_bounds) / self.voxel_size).int()
+
+        spans = max_indices - min_indices
+        max_spans = spans.amax(dim=0)
+
+        centers = (min_indices + max_indices) // 2
+        target_shape = max_spans + 10
+        ts_list = target_shape.tolist()
+
+        min_indices = centers - target_shape // 2
+        max_indices = min_indices + target_shape
+
+        cropped_maps = []
+        for i, map_idx in enumerate(map_id.tolist()):
+            sdf = self.sdf_maps[map_idx]
+            shape_x, shape_y, shape_z = sdf.shape[2], sdf.shape[3], sdf.shape[4]
+
+            mx, my, mz = min_indices[i].tolist()
+            Mx, My, Mz = max_indices[i].tolist()
+
+            # 生成绝对统一尺寸的安全画布
+            canvas = th.full((1, ts_list[0], ts_list[1], ts_list[2]),
+                             10.0, device=self.device, dtype=sdf.dtype)
+
+            cmx, cMx = max(0, mx), min(shape_x, Mx)
+            cmy, cMy = max(0, my), min(shape_y, My)
+            cmz, cMz = max(0, mz), min(shape_z, Mz)
+
+            if cmx < cMx and cmy < cMy and cmz < cMz:
+                valid_sdf = sdf[0, :, cmx:cMx, cmy:cMy, cmz:cMz]
+                pmx, pMx = cmx - mx, cMx - mx
+                pmy, pMy = cmy - my, cMy - my
+                pmz, pMz = cmz - mz, cMz - mz
+                canvas[:, pmx:pMx, pmy:pMy, pmz:pMz] = valid_sdf
+
+            cropped_maps.append(canvas)
+
+        # 🚨【核心修复4】：将以下代码撤出 for 循环！否则 batch 处理会彻底失效！
+        # 裁剪出来的地图拼接
+        sdf_maps = th.cat(cropped_maps, dim=0).unsqueeze(1)  # 此时形状是 [Batch, 1, X, Y, Z]
+
+        # 专为 grid_sample 定制的维度反转 (x->W, y->H, z->D)
+        sdf_maps = sdf_maps.permute(0, 1, 4, 3, 2)  # 形状变成 [Batch, 1, Z, Y, X]
+
+        local_origin = min_indices * self.voxel_size + min_bounds
+        local_shape = target_shape.unsqueeze(0).expand(map_id.shape[0], 3)
+
+        return sdf_maps, local_origin, local_shape
+
+    def get_acceleration_from_coeff(self, coe, t):
+        t_power = th.stack([th.ones_like(t), t, t ** 2, t ** 3], dim=-1).squeeze(-2)
+        coe_x, coe_y, coe_z = coe[:, 2:6], coe[:, 8:12], coe[:, 14:18]
+        acc_mult = th.tensor([2.0, 6.0, 12.0, 20.0], device=self.device).view(1, 1, 4)
+        ax = th.sum(t_power * coe_x.unsqueeze(1) * acc_mult, dim=-1)
+        ay = th.sum(t_power * coe_y.unsqueeze(1) * acc_mult, dim=-1)
+        az = th.sum(t_power * coe_z.unsqueeze(1) * acc_mult, dim=-1)
+        return th.stack([ax, ay, az], dim=-1)
 
     def get_coefficient_from_derivative(self, Dp, Df, L):
         coefficient = th.zeros(Dp.shape[0], 18, device=self.device)
-
         for i in range(3):
-            d = th.cat([Df[:, i, :], Dp[:, i, :]], dim=1).unsqueeze(-1)  # [batch_size, num_dp + num_df, 1]
-            coe = (L @ d).squeeze()   # [batch_size, 6]
+            d = th.cat([Df[:, i, :], Dp[:, i, :]], dim=1).unsqueeze(-1)
+            coe = (L @ d).squeeze(-1)
             coefficient[:, 6 * i: 6 * (i + 1)] = coe
-
         return coefficient
 
     def get_position_from_coeff(self, coe, t):
         t_power = th.stack([th.ones_like(t), t, t ** 2, t ** 3, t ** 4, t ** 5], dim=-1).squeeze(-2)
-
-        coe_x = coe[:, 0: 6]
-        coe_y = coe[:, 6:12]
-        coe_z = coe[:, 12:18]
-
+        coe_x, coe_y, coe_z = coe[:, 0:6], coe[:, 6:12], coe[:, 12:18]
         x = th.sum(t_power * coe_x.unsqueeze(1), dim=-1)
         y = th.sum(t_power * coe_y.unsqueeze(1), dim=-1)
         z = th.sum(t_power * coe_z.unsqueeze(1), dim=-1)
-
-        pos = th.stack([x, y, z], dim=-1)
-        return pos
-
-    def get_velocity_from_coeff(self, coe, t):
-        t_power = th.stack([th.ones_like(t), 2 * t, 3 * t ** 2, 4 * t ** 3, 5 * t ** 4], dim=-1).squeeze(-2)
-
-        coe_x = coe[:, 1:6]
-        coe_y = coe[:, 7:12]
-        coe_z = coe[:, 13:18]
-
-        vx = th.sum(t_power * coe_x.unsqueeze(1), dim=-1)
-        vy = th.sum(t_power * coe_y.unsqueeze(1), dim=-1)
-        vz = th.sum(t_power * coe_z.unsqueeze(1), dim=-1)
-
-        vel = th.stack([vx, vy, vz], dim=-1)
-        return vel
-
-    def get_batch_sdf(self, pos, map_id):
-        """
-            Crop all maps with the corresponding map_id in the batch to the same size and cover the pos.
-        """
-        min_bounds = self.min_bounds[map_id]  # [B, 3]
-        sdf_shapes = self.sdf_shapes[map_id]  # [B, 3]
-
-        min_pos = pos.amin(dim=1)  # [batch, 3]
-        max_pos = pos.amax(dim=1)  # [batch, 3]
-        min_indices = ((min_pos - min_bounds) / self.voxel_size).int()
-        max_indices = ((max_pos - min_bounds) / self.voxel_size).int()
-        spans = max_indices - min_indices  # [batch, 3]
-        max_spans = spans.amax(dim=0)
-        centers = (min_indices + max_indices) // 2  # [batch, 3]
-        min_indices = centers - max_spans // 2 - 5  # [batch, 3]
-        max_indices = centers + max_spans // 2 + 5  # [batch, 3]
-        # Crop minimum value
-        new_min_indices = min_indices.clamp(min=0)
-        underflow_amount = new_min_indices - min_indices
-        min_indices = new_min_indices
-        max_indices = max_indices + underflow_amount
-
-        # Crop maximum value
-        new_max_indices = th.minimum(max_indices, sdf_shapes.int())
-        overflow_amount = max_indices - new_max_indices
-        max_indices = new_max_indices
-        min_indices = min_indices - overflow_amount
-
-        # Check for out-of-bounds indices. Although padding out-of-bound areas with zeros by F.pad() can prevent errors,
-        # this situation rarely occurs, so for simplicity, we adjust min_indices directly.
-        if (min_indices < 0).any():
-            min_underflow = th.minimum(min_indices, th.zeros_like(min_indices))
-            shift = (-min_underflow).max(dim=0).values
-            min_indices = min_indices + shift
-
-        sdf_maps = th.stack([self.sdf_maps[map_idx][0, :,
-                             min_idx[2]:max_idx[2],
-                             min_idx[1]:max_idx[1],
-                             min_idx[0]:max_idx[0]]
-                             for map_idx, min_idx, max_idx in zip(map_id.tolist(), min_indices.tolist(), max_indices.tolist())
-                             ])
-        local_origin = min_indices * self.voxel_size + min_bounds
-        local_shape = max_indices - min_indices
-        return sdf_maps, local_origin, local_shape
+        return th.stack([x, y, z], dim=-1)
 
     def get_sdf_from_ply(self, path):
         sorted_files = self.read_sorted_ply_files(path)
-        sdf_maps = []
-        min_bounds, max_bounds, sdf_shapes = [], [], []
-
-        # First pass to get all sdf_maps and record shape
+        sdf_maps, min_bounds, max_bounds, sdf_shapes = [], [], [], []
         for file in sorted_files:
             pcd = o3d.io.read_point_cloud(file)
             min_bound = np.array(pcd.get_min_bound()) - self.map_expand_min
             max_bound = np.array(pcd.get_max_bound()) + self.map_expand_max
             points = np.asarray(pcd.points)
-            print(f"    {os.path.basename(file)}: x=({min_bound[0] + self.map_expand_min[0]:.2f}, {max_bound[0] - self.map_expand_max[0]:.2f}), "
-                  f"y=({min_bound[1] + self.map_expand_min[1]:.2f}, {max_bound[1] - self.map_expand_max[1]:.2f}), "
-                  f"z=({min_bound[2] + self.map_expand_min[2]:.2f}, {max_bound[2] - self.map_expand_max[2]:.2f})")
-
             sdf_shape = np.ceil((max_bound - min_bound) / self.voxel_size).astype(int)
             voxel_indices = ((points - min_bound) / self.voxel_size).astype(int)
-
             valid_mask = np.all((voxel_indices >= 0) & (voxel_indices < sdf_shape), axis=1)
             voxel_indices = voxel_indices[valid_mask]
-
             occupancy = np.zeros(sdf_shape, dtype=np.uint8)
             occupancy[tuple(voxel_indices.T)] = 1
+            dist_to_obstacle = distance_transform_edt(occupancy == 0) * self.voxel_size
+            dist_inside_obstacle = distance_transform_edt(occupancy == 1) * self.voxel_size
+            dist_to_obstacle[occupancy == 1] = -dist_inside_obstacle[occupancy == 1]
 
-            obstacle_mask = occupancy == 1
-            free_mask = occupancy == 0
-
-            dist_to_obstacle = distance_transform_edt(free_mask) * self.voxel_size
-            dist_inside_obstacle = distance_transform_edt(obstacle_mask) * self.voxel_size
-
-            dist_to_obstacle[obstacle_mask] = -dist_inside_obstacle[obstacle_mask]
-
-            sdf_tensor = th.from_numpy(dist_to_obstacle).float().unsqueeze(0).unsqueeze(0).permute(0, 1, 4, 3, 2).to(self.device)  # (1, 1, D, H, W)
-
+            sdf_tensor = th.from_numpy(dist_to_obstacle).float().unsqueeze(0).unsqueeze(0).to(self.device)
             sdf_maps.append(sdf_tensor)
-            sdf_shapes.append(sdf_tensor.shape[-3:][::-1])  # D, H, W -> X, Y, Z
+            sdf_shapes.append(sdf_tensor.shape[-3:][::-1])
             min_bounds.append(min_bound)
             max_bounds.append(max_bound)
-
-        # Padding 所有 sdf_map 到最大尺寸, 以便堆积到batch并行处理
-        # max_shape = np.max(np.stack(sdf_shapes), axis=0)
-        # sdf_maps_padded = [self.pad_sdf_to_shape(sdf, max_shape) for sdf in sdf_maps]
-        # sdf_maps_tensor = th.cat(sdf_maps, dim=0)  # shape: (N, 1, D, H, W)
-
-        # maps shapes
-        self.min_bounds = th.tensor(np.array(min_bounds), device=self.device).float()  # shape: (N, 3)
-        self.max_bounds = th.tensor(np.array(max_bounds), device=self.device).float()  # shape: (N, 3)
-        self.sdf_shapes = th.tensor(np.array(sdf_shapes), device=self.device).float()  # shape: (N, 3) order: (X, Y, Z)
-        return sdf_maps  # shape: (N, 1, D, H, W)
+        self.min_bounds = th.tensor(np.array(min_bounds), device=self.device).float()
+        self.max_bounds = th.tensor(np.array(max_bounds), device=self.device).float()
+        self.sdf_shapes = th.tensor(np.array(sdf_shapes), device=self.device).float()
+        return sdf_maps
 
     def read_sorted_ply_files(self, path):
-        # 匹配所有以 pointcloud- 开头并以 .ply 结尾的文件, 并排序
         ply_files = glob.glob(os.path.join(path, 'pointcloud-*.ply'))
 
         def extract_index(filename):
-            base = os.path.basename(filename)
-            number_part = base.replace('pointcloud-', '').replace('.ply', '')
-            return int(number_part)
+            return int(os.path.basename(filename).replace('pointcloud-', '').replace('.ply', ''))
 
-        sorted_ply_files = sorted(ply_files, key=extract_index)
-
-        return sorted_ply_files
-
-    def pad_sdf_to_shape(self, sdf_map, target_shape):
-        """
-        Pads a 5D tensor (1, 1, D, H, W) to the target shape (D, H, W)
-        """
-        current_shape = sdf_map.shape[-3:]
-        pad_sizes = [target - current for target, current in zip(target_shape[::-1], current_shape[::-1])]
-        # Pad in (W, H, D) order, so reverse
-        padding = [0, pad_sizes[0], 0, pad_sizes[1], 0, pad_sizes[2]]
-        return F.pad(sdf_map, padding, mode='constant', value=0)
+        return sorted(ply_files, key=extract_index)

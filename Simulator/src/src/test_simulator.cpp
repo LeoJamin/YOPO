@@ -5,6 +5,7 @@ int main(int argc, char** argv) {
     ros::NodeHandle nh;
 
     SensorSimulator sensor_simulator(nh);
+    sensor_simulator.run();
 
     return 0;
 }

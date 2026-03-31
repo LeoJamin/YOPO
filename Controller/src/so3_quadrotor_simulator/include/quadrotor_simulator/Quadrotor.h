@@ -17,6 +17,8 @@ public:
     Eigen::Matrix3d R;
     Eigen::Vector3d omega;
     Eigen::Array4d  motor_rpm;
+    Eigen::Vector2d swing_angle; // [theta, phi], only used when cable_length_ > 0
+    Eigen::Vector2d swing_velocity; // [dot_theta, dot_phi], only used when cable_length_ > 0
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
   };
 
@@ -76,15 +78,17 @@ public:
   void step(double dt);
 
   // For internal use, but needs to be public for odeint
-  typedef boost::array<double, 22> InternalState;
+  typedef boost::array<double, 26> InternalState;
   void operator()(const Quadrotor::InternalState& x,
                   Quadrotor::InternalState&       dxdt, const double /* t */);
 
   Eigen::Vector3d getAcc() const;
+  const InternalState& getInternalState() const { return internal_state_; }
 
 private:
   void updateInternalState(void);
-
+  double          payload_mass_; // mass of payload, not included in mass_
+  double          cable_length_; // length of cable, 0 for no cable
   double          alpha0; // AOA
   double          g_;     // gravity
   double          mass_;
@@ -99,11 +103,11 @@ private:
 
   Quadrotor::State state_;
 
-  Eigen::Vector3d acc_;
+  Eigen::Vector3d acc_ = Eigen::Vector3d::Zero();
 
   Eigen::Array4d  input_;
-  Eigen::Vector3d external_force_;
-  Eigen::Vector3d external_moment_;
+  Eigen::Vector3d external_force_ = Eigen::Vector3d::Zero();
+  Eigen::Vector3d external_moment_ = Eigen::Vector3d::Zero();
 
   InternalState internal_state_;
 };

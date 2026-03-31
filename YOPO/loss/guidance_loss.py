@@ -59,7 +59,7 @@ class GuidanceLoss(nn.Module):
 
         Adjust perp_weight to penalize deviation perpendicular to the goal; equals the distance_loss() when perp_weight = 1.
         """
-        goal_dir_norm = goal_dir / (goal_dir.norm(dim=1, keepdim=True) + 1e-8)  # [B, 3]
+        goal_dir_norm = goal_dir / (goal_dir.norm(dim=1, keepdim=True) + 1e-8)  # [B, 3]# normalize goal direction for cosine similarity
 
         # projection length of trajectory on goal direction
         traj_along = (traj_dir * goal_dir_norm).sum(dim=1)  # [B]

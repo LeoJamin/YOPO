@@ -1,50 +1,8 @@
-#-cmake_minimum_required(VERSION 2.4.6)
-#-include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
-
-# Set the build type.  Options are:
-#  Coverage       : w/ debug symbols, w/o optimization, w/ code-coverage
-#  Debug          : w/ debug symbols, w/o optimization
-#  Release        : w/o debug symbols, w/ optimization
-#  RelWithDebInfo : w/ debug symbols, w/ optimization
-#  MinSizeRel     : w/o debug symbols, w/ optimization, stripped binaries
-#set(ROS_BUILD_TYPE RelWithDebInfo)
-
-#-rosbuild_init()
-
-#set the default path for built executables to the "bin" directory
-#-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
-#set the default path for built libraries to the "lib" directory
-#-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
-
-#uncomment if you have defined messages
-#rosbuild_genmsg()
-#uncomment if you have defined services
-#rosbuild_gensrv()
-
-#common commands for building c++ executables and libraries
-#-\rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
-#target_link_libraries(${PROJECT_NAME} another_library)
-#rosbuild_add_boost_directories()
-#rosbuild_link_boost(${PROJECT_NAME} thread)
-#rosbuild_add_executable(example examples/example.cpp)
-#target_link_libraries(example ${PROJECT_NAME})
-
-#-rosbuild_add_library(encode_msgs src/encode_msgs.cpp)
-#-rosbuild_add_link_flags(encode_msgs -Wl,--as-needed)
-
-#list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-#find_package(Eigen3 REQUIRED)
-
-#include_directories(${EIGEN3_INCLUDE_DIR})
-#-rosbuild_add_library(decode_msgs src/decode_msgs.cpp)
-#-rosbuild_add_link_flags(decode_msgs -Wl,--as-needed)
-
-#------------------------------------------------------------------
 cmake_minimum_required(VERSION 2.8.3)
-project(quadrotor_msgs)
+project(yopo_quadrotor_msgs)
 
+# 1. 查找依赖包
 find_package(catkin REQUIRED COMPONENTS
-  #armadillo
   roscpp
   nav_msgs
   geometry_msgs
@@ -52,14 +10,16 @@ find_package(catkin REQUIRED COMPONENTS
   message_runtime
 )
 
-set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+find_package(Eigen3 REQUIRED)
 
+# 2. 设置头文件路径 (包含 Eigen 和 Catkin 依赖)
 include_directories(
-    ${catkin_INCLUDE_DIRS}
-    include
-    )
+  include
+  ${catkin_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIR}
+)
 
-
+# 3. 添加消息文件 (.msg)
 add_message_files(
   FILES
   AuxCommand.msg
@@ -77,40 +37,37 @@ add_message_files(
   LQRTrajectory.msg
 )
 
+# 4. 添加服务文件 (.srv)
 add_service_files(
   DIRECTORY srv
   FILES
   SetTakeoffLand.srv
 )
 
+# 5. 生成消息头文件
 generate_messages(
-    DEPENDENCIES
-    geometry_msgs
-    nav_msgs
+  DEPENDENCIES
+  geometry_msgs
+  nav_msgs
 )
 
+# 6. 导出包信息
 catkin_package(
-  #INCLUDE_DIRS include
+  INCLUDE_DIRS include
   LIBRARIES encode_msgs decode_msgs
-  #CATKIN_DEPENDS geometry_msgs nav_msgs
-  #DEPENDS system_lib
-  CATKIN_DEPENDS 
+  CATKIN_DEPENDS roscpp nav_msgs geometry_msgs message_runtime
 )
 
-# add_executable(test_exe src/test_exe.cpp)
+# 7. 编译库文件
 add_library(decode_msgs src/decode_msgs.cpp)
 add_library(encode_msgs src/encode_msgs.cpp)
 
-# add_dependencies(test_exe quadrotor_msgs_generate_messages_cpp)
-add_dependencies(encode_msgs quadrotor_msgs_generate_messages_cpp)
-add_dependencies(decode_msgs quadrotor_msgs_generate_messages_cpp)
+# 8. 【关键】添加对消息生成的依赖
+# 必须使用 ${PROJECT_NAME}，这会解析为 yopo_quadrotor_msgs_generate_messages_cpp
+# 确保在编译 cpp 之前，消息头文件已经生成完毕
+add_dependencies(encode_msgs ${PROJECT_NAME}_generate_messages_cpp)
+add_dependencies(decode_msgs ${PROJECT_NAME}_generate_messages_cpp)
 
-find_package(Eigen3 REQUIRED)
-include_directories(${EIGEN3_INCLUDE_DIR})
-
-
-# target_link_libraries(test_exe 
-#     decode_msgs 
-#     encode_msgs
-# )
-
+# 9. 链接库 (通常需要链接 catkin 库)
+target_link_libraries(encode_msgs ${catkin_LIBRARIES})
+target_link_libraries(decode_msgs ${catkin_LIBRARIES})

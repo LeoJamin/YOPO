@@ -1,10 +1,10 @@
-#include "quadrotor_msgs/encode_msgs.h"
-#include <quadrotor_msgs/comm_types.h>
+#include "yopo_quadrotor_msgs/encode_msgs.h"
+#include <yopo_quadrotor_msgs/comm_types.h>
 
-namespace quadrotor_msgs
+namespace yopo_quadrotor_msgs
 {
 
-void encodeSO3Command(const quadrotor_msgs::SO3Command &so3_command,
+void encodeSO3Command(const yopo_quadrotor_msgs::SO3Command &so3_command,
                       std::vector<uint8_t> &output)
 {
   struct SO3_CMD_INPUT so3_cmd_input;
@@ -41,7 +41,7 @@ void encodeSO3Command(const quadrotor_msgs::SO3Command &so3_command,
   memcpy(&output[0], &so3_cmd_input, sizeof(so3_cmd_input));
 }
 
-void encodeTRPYCommand(const quadrotor_msgs::TRPYCommand &trpy_command,
+void encodeTRPYCommand(const yopo_quadrotor_msgs::TRPYCommand &trpy_command,
                         std::vector<uint8_t> &output)
 {
   struct TRPY_CMD trpy_cmd_input;
@@ -57,7 +57,7 @@ void encodeTRPYCommand(const quadrotor_msgs::TRPYCommand &trpy_command,
   memcpy(&output[0], &trpy_cmd_input, sizeof(trpy_cmd_input));
 }
 
-void encodePPRGains(const quadrotor_msgs::Gains &gains,
+void encodePPRGains(const yopo_quadrotor_msgs::Gains &gains,
                     std::vector<uint8_t> &output)
 {
   struct PPR_GAINS ppr_gains;

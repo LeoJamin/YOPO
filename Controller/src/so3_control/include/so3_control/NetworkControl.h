@@ -5,14 +5,14 @@
 #include <math.h>
 #include <nav_msgs/Odometry.h>
 #include <sensor_msgs/Imu.h>
-#include <quadrotor_msgs/PositionCommand.h>
-#include <quadrotor_msgs/SO3Command.h>
+#include <yopo_quadrotor_msgs/PositionCommand.h>
+#include <yopo_quadrotor_msgs/SO3Command.h>
 #include <tf/transform_datatypes.h>
 #include <ros/ros.h>
 #include <so3_control/SO3Control.h>
 #include <so3_control/HGDO.h>
 #include <so3_control/mavros_interface.h>
-#include <quadrotor_msgs/SetTakeoffLand.h>
+#include <yopo_quadrotor_msgs/SetTakeoffLand.h>
 #include <string>
 #include <iostream>
 #include <boost/filesystem.hpp>
@@ -22,7 +22,7 @@
 #include <mutex>
 #include <algorithm> 
 
-#define ONE_G 9.81
+static constexpr double ONE_G = 9.81;
 
 class NetworkControl
 {
@@ -44,7 +44,7 @@ public:
         nh_.param("logger_file_name", logger_file_name, std::string("/home/lu/"));
         printf("kx: (%f, %f, %f), kv: (%f, %f, %f) \n", kx_xy, kx_xy, kx_z, kv_xy, kv_xy, kv_z);
 
-        so3_command_pub_ = nh_.advertise<quadrotor_msgs::SO3Command>("so3_cmd", 10);
+        so3_command_pub_ = nh_.advertise<yopo_quadrotor_msgs::SO3Command>("so3_cmd", 10);
         position_cmd_sub_ = nh_.subscribe("position_cmd", 1, &NetworkControl::network_cmd_callback, this, ros::TransportHints().tcpNoDelay());
         odom_sub_ = nh_.subscribe("odom", 1, &NetworkControl::odom_callback, this, ros::TransportHints().tcpNoDelay());
         imu_sub_ = nh_.subscribe("imu", 1, &NetworkControl::imu_callback, this, ros::TransportHints().tcpNoDelay());
@@ -54,8 +54,11 @@ public:
         takeoff_land_srv = nh_.advertiseService("takeoff_land", &NetworkControl::takeoff_land_srv_handle, this);
 
         if (is_simulation_) {
-            ros::Duration(2.0).sleep();
-            std::thread(&NetworkControl::simulateTakeoff, this).detach();
+            // Use a one-shot timer instead of detaching a thread in the constructor
+            sim_takeoff_timer_ = nh_.createTimer(ros::Duration(2.0), [this](const ros::TimerEvent&) {
+                this->simulateTakeoff();
+                this->sim_takeoff_timer_.stop();
+            }, true);
         }
         
     };
@@ -68,6 +71,7 @@ private:
     ros::Subscriber position_cmd_sub_, odom_sub_, imu_sub_;
     ros::ServiceServer takeoff_land_srv;
     ros::Timer takeoff_land_control_timer;
+    ros::Timer sim_takeoff_timer_;
     std::mutex mutex_;
 
     double mass_ = 0.98;
@@ -118,7 +122,7 @@ private:
 
     void limite_acc(Eigen::Vector3d &acc);
 
-    void network_cmd_callback(const quadrotor_msgs::PositionCommand::ConstPtr &cmd);
+    void network_cmd_callback(const yopo_quadrotor_msgs::PositionCommand::ConstPtr &cmd);
 
     void odom_callback(const nav_msgs::Odometry::ConstPtr &odom);
 
@@ -127,9 +131,11 @@ private:
     void timerCallback(const ros::TimerEvent&);
 
     // mavros interface
-    bool takeoff_land_srv_handle(quadrotor_msgs::SetTakeoffLand::Request &req,
-                                 quadrotor_msgs::SetTakeoffLand::Response &res){
-        std::thread t(&NetworkControl::takeoff_land_thread, this, std::ref(req));
+    bool takeoff_land_srv_handle(yopo_quadrotor_msgs::SetTakeoffLand::Request &req,
+                                 yopo_quadrotor_msgs::SetTakeoffLand::Response &res){
+        // Copy request data to avoid dangling reference after service handler returns
+        auto req_copy = std::make_shared<yopo_quadrotor_msgs::SetTakeoffLand::Request>(req);
+        std::thread t([this, req_copy]() { this->takeoff_land_thread(*req_copy); });
         t.detach();
         res.res = true;
         return true;
@@ -137,11 +143,11 @@ private:
 
     bool arm_disarm_vehicle(bool arm);
 
-    void takeoff_land_thread(quadrotor_msgs::SetTakeoffLand::Request &req);
+    void takeoff_land_thread(yopo_quadrotor_msgs::SetTakeoffLand::Request &req);
 
     void simulateTakeoff() {
-        ros::ServiceClient client = nh_.serviceClient<quadrotor_msgs::SetTakeoffLand>("takeoff_land");
-        quadrotor_msgs::SetTakeoffLand srv;
+        ros::ServiceClient client = nh_.serviceClient<yopo_quadrotor_msgs::SetTakeoffLand>("takeoff_land");
+        yopo_quadrotor_msgs::SetTakeoffLand srv;
         srv.request.takeoff = true;
         srv.request.takeoff_altitude = 2.0;
     

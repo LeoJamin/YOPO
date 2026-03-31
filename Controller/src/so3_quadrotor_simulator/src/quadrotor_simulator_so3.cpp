@@ -1,6 +1,6 @@
 #include <Eigen/Geometry>
 #include <nav_msgs/Odometry.h>
-#include <quadrotor_msgs/SO3Command.h>
+#include <yopo_quadrotor_msgs/SO3Command.h>
 #include <quadrotor_simulator/Quadrotor.h>
 #include <ros/ros.h>
 #include <ros/package.h>
@@ -8,6 +8,8 @@
 #include <geometry_msgs/TransformStamped.h>
 #include <tf2_ros/transform_broadcaster.h>
 #include <uav_utils/geometry_utils.h>
+#include <fstream>
+#include <iomanip>
 #include "visualization_msgs/Marker.h"
 
 typedef struct _Control
@@ -166,7 +168,7 @@ getControl(const QuadrotorSimulator::Quadrotor& quad, const Command& cmd)
 }
 
 static void
-cmd_callback(const quadrotor_msgs::SO3Command::ConstPtr& cmd)
+cmd_callback(const yopo_quadrotor_msgs::SO3Command::ConstPtr& cmd)
 {
   command.force[0]         = cmd->force.x;
   command.force[1]         = cmd->force.y;
@@ -211,9 +213,13 @@ main(int argc, char** argv)
 
   ros::NodeHandle n("~");
 
-  ros::Publisher  odom_pub = n.advertise<nav_msgs::Odometry>("odom", 100);
+  ros::Publisher  odom_pub = n.advertise<nav_msgs::Odometry>("odom", 100);// 100Hz 发布里程计信息，满足大多数控制器的需求，同时也为 RViz 提供足够流畅的视觉反馈
   ros::Publisher  imu_pub  = n.advertise<sensor_msgs::Imu>("imu", 10);
-  ros::Publisher  mesh_pub = n.advertise<visualization_msgs::Marker>("uav", 1);
+  ros::Publisher  mesh_pub = n.advertise<visualization_msgs::Marker>("uav", 1);// 可视化 UAV 网格模型的 Marker 话题
+
+
+  ros::Publisher payload_pub = n.advertise<visualization_msgs::Marker>("payload", 10);// 新增一个专门发布负载状态的 Marker 话题
+  ros::Publisher payload_odom_pub = n.advertise<nav_msgs::Odometry>("payload_odom", 100);// 发布负载的位置和速度
 
   tf2_ros::TransformBroadcaster tf_broadcaster;
 
@@ -236,7 +242,7 @@ main(int argc, char** argv)
   quad.setStatePos(position);
 
   double simulation_rate;
-  n.param("rate/simulation", simulation_rate, 1000.0);
+  n.param("rate/simulation", simulation_rate, 1000.0);// 默认 1000Hz，确保物理引擎的数值稳定性
   ROS_ASSERT(simulation_rate > 0);
 
   double odom_rate;
@@ -280,6 +286,22 @@ main(int argc, char** argv)
   */
 
   ros::Time next_odom_pub_time = ros::Time::now();
+
+  // ==========================================
+  // [新增] 真实的 AutoTrans 吊载物理引擎参数
+  // ==========================================
+  double m_Q = quad.getMass();   // 自动获取无人机真实质量
+  double m_L;
+  double rope_l;
+  n.param("simulator/payload_mass", m_L, 0.3);
+  n.param("simulator/cable_length", rope_l, 0.8);
+  double g = quad.getGravity();  // 自动获取重力加速度
+
+  // 初始状态：小球静止悬挂在无人机正下方
+  Eigen::Vector3d pos_L = position - Eigen::Vector3d(0, 0, rope_l);
+  Eigen::Vector3d vel_L = Eigen::Vector3d::Zero();
+  // ==========================================
+
   while (n.ok())
   {
     ros::Time t_loop_start = ros::Time::now();
@@ -295,9 +317,62 @@ main(int argc, char** argv)
     }
     quad.setInput(control.rpm[0], control.rpm[1], control.rpm[2],
                   control.rpm[3]);
-    quad.setExternalForce(disturbance.f);
+    // 1. Get current UAV state
+    Eigen::Vector3d pos_Q = quad.getState().x;
+    Eigen::Vector3d vel_Q = quad.getState().v;
+
+    // 2. 根据分配的转速计算无人机的真实推力 (世界坐标系)
+    double kf = quad.getPropellerThrustCoefficient();
+    double total_thrust = kf * (control.rpm[0]*control.rpm[0] + control.rpm[1]*control.rpm[1] +
+                                control.rpm[2]*control.rpm[2] + control.rpm[3]*control.rpm[3]);
+    Eigen::Vector3d F_thrust_world = quad.getState().R * Eigen::Vector3d(0, 0, total_thrust);
+
+    // 3. 计算绳索张力 fc (AutoTrans 公式)
+    Eigen::Vector3d rho = (pos_L - pos_Q) / rope_l;
+    Eigen::Vector3d rho_dot = (vel_L - vel_Q) / rope_l;
+    double rho_dot_sq = rho_dot.squaredNorm();
+
+    double fc = (m_L * rope_l * rho_dot_sq) / (m_Q + m_L) - (m_L * rho.dot(F_thrust_world)) / (m_Q + m_L);
+    if (fc < 0.0) fc = 0.0; // 绳索只能拉不能推 (Taut 假设)
+
+    // 4. 施加外力并推进无人机动力学
+    // 注意：将绳索拉力 (fc * rho) 和外部扰动 (disturbance.f) 叠加
+    quad.setExternalForce(disturbance.f + fc * rho);
     quad.setExternalMoment(disturbance.m);
-    quad.step(dt);
+    quad.step(dt); // 推进无人机自身状态
+
+    // 5. 对负载进行数值积分 (with aerodynamic damping)
+    Eigen::Vector3d a_L = (-fc * rho) / m_L - Eigen::Vector3d(0, 0, g);
+
+    // Aerodynamic drag on payload: F_drag = -c_d * v_tangential
+    // Only damp the tangential component (perpendicular to cable),
+    // so drag does not interfere with cable constraint.
+    Eigen::Vector3d rel_v = vel_L - quad.getState().v;
+    Eigen::Vector3d rho_unit = (pos_L - quad.getState().x).normalized();
+    Eigen::Vector3d v_tangential = rel_v - rel_v.dot(rho_unit) * rho_unit;
+    double c_drag = 0.3;  // damping coefficient (N·s/m), realistic for small payload
+    a_L -= (c_drag / m_L) * v_tangential;
+
+    vel_L += a_L * dt;
+    pos_L += vel_L * dt;
+
+    // 6. Baumgarte stabilisation (prevent rope stretching from float drift)
+    Eigen::Vector3d new_pos_Q = quad.getState().x;
+    Eigen::Vector3d current_rope = pos_L - new_pos_Q;
+    double rope_norm = current_rope.norm();
+    if (rope_norm > 1e-6) {
+        pos_L = new_pos_Q + (current_rope / rope_norm) * rope_l;
+    } else {
+        // Degenerate: payload at UAV position — recover to hanging straight down
+        pos_L = new_pos_Q - Eigen::Vector3d(0, 0, rope_l);
+        vel_L = Eigen::Vector3d::Zero();
+    }
+
+    // 消除沿绳索方向的相对速度分量
+    Eigen::Vector3d new_rho = (pos_L - new_pos_Q) / rope_l;
+    Eigen::Vector3d rel_vel = vel_L - quad.getState().v;
+    vel_L -= rel_vel.dot(new_rho) * new_rho;
+
 
     ros::Time tnow = ros::Time::now();
 
@@ -312,6 +387,126 @@ main(int argc, char** argv)
       odom_pub.publish(odom_msg);
       imu_pub.publish(imu);
       tf_broadcaster.sendTransform(transformStamped);
+
+      //const auto& internal_state_ = quad.getInternalState();
+      //Eigen::Vector3d uav_p(state.x(0), state.x(1), state.x(2));
+      // Payload position
+      Eigen::Vector3d uav_p(state.x(0), state.x(1), state.x(2));
+      // 【核心】：直接使用物理引擎积分出的真实负载位置
+      Eigen::Vector3d payload_p = pos_L;
+
+      // 反向计算出真实摆角，用于存入日志
+      Eigen::Vector3d current_rho = (payload_p - uav_p) / rope_l;
+      // 保证 z 不会越界导致 acos 产生 NaN
+      double clamped_z = std::max(-1.0, std::min(1.0, -current_rho.z()));
+      double th = acos(clamped_z);
+      double ph = atan2(current_rho.y(), current_rho.x());
+
+      //double th = internal_state_[22];
+      //double ph = internal_state_[24];
+      //double L = 0.6;
+
+      // 1. 严格统一球面坐标系（与 Quadrotor.cpp 物理引擎完全一致）
+      //Eigen::Vector3d payload_p = uav_p + L * Eigen::Vector3d(sin(th)*cos(ph), sin(th)*sin(ph), -cos(th));
+
+      // 2. 绘制绳索
+      visualization_msgs::Marker cable_msg;
+      cable_msg.header.stamp = tnow;
+      cable_msg.header.frame_id = "world";
+      cable_msg.ns     = "cable";
+      cable_msg.id     = 0;  // 明确分配 ID 0
+      cable_msg.type   = visualization_msgs::Marker::LINE_STRIP;
+      cable_msg.action = visualization_msgs::Marker::ADD;
+      cable_msg.scale.x = 0.02; // 调整线宽
+      cable_msg.color.r = 0.2; cable_msg.color.g = 0.2; cable_msg.color.b = 0.2; cable_msg.color.a = 1.0; // 黑灰色更像一根绳索
+      cable_msg.pose.orientation.w = 1.0; // 顺手加一句，消除 RViz 针对线段潜在的四元数警告
+
+      geometry_msgs::Point p_uav, p_payload;
+      p_uav.x = uav_p.x(); p_uav.y = uav_p.y(); p_uav.z = uav_p.z();
+      p_payload.x = payload_p.x(); p_payload.y = payload_p.y(); p_payload.z = payload_p.z();
+      cable_msg.points.push_back(p_uav);
+      cable_msg.points.push_back(p_payload);
+
+      payload_pub.publish(cable_msg);
+
+      // 3. 绘制负载球体
+      visualization_msgs::Marker payload_msg;
+      payload_msg.header.stamp = tnow;
+      payload_msg.header.frame_id = "world";
+      payload_msg.ns     = "payload";
+      payload_msg.id     = 1; // 必须与线段的 ID (0) 区分开！
+      payload_msg.type   = visualization_msgs::Marker::SPHERE;
+      payload_msg.action = visualization_msgs::Marker::ADD;
+      payload_msg.scale.x = 0.15; payload_msg.scale.y = 0.15; payload_msg.scale.z = 0.15; // 稍微放大点方便观察
+      payload_msg.color.r = 1.0; payload_msg.color.g = 0.5; payload_msg.color.b = 0.0; payload_msg.color.a = 1.0; // 换成醒目的橙色
+
+      payload_msg.pose.position.x = payload_p.x();
+      payload_msg.pose.position.y = payload_p.y();
+      payload_msg.pose.position.z = payload_p.z();
+
+      payload_msg.pose.orientation.w = 1.0;
+      payload_msg.pose.orientation.x = 0.0;
+      payload_msg.pose.orientation.y = 0.0;
+      payload_msg.pose.orientation.z = 0.0;
+
+
+      // ========================================
+      // 绝密数据记录仪：将时间戳、位置和摆角存入 CSV，完整提取无人机与吊载状态
+      // ==========================================
+      static std::string log_path;
+      if (log_path.empty()) {
+          n.param<std::string>("simulator/payload_log_path", log_path,
+                               std::string(getenv("HOME") ? getenv("HOME") : "/tmp") + "/yopo_payload_log.csv");
+      }
+      static std::ofstream log_file(log_path, std::ios::app);
+      static bool is_header_written = false;
+      if (!log_file.is_open()) {
+          ROS_WARN_ONCE("Cannot open payload log file: %s", log_path.c_str());
+      }
+      if (!is_header_written && log_file.is_open()) {
+          // 扩展表头：包含 UAV 状态、Payload 状态、摆角及张力
+          log_file << "time,"
+                   << "uav_x,uav_y,uav_z,uav_vx,uav_vy,uav_vz,"
+                   << "pay_x,pay_y,pay_z,pay_vx,pay_vy,pay_vz,"
+                   << "theta_deg,phi_deg,tension_fc\n";
+          is_header_written = true;
+      }
+
+      // 获取无人机速度真值
+      Eigen::Vector3d uav_v = state.v;
+
+      // 弧度转角度
+      double theta_deg = th * 180.0 / 3.14159265;
+      double phi_deg   = ph * 180.0 / 3.14159265;
+
+      // 按顺序写入所有核心物理量
+      if (log_file.is_open())
+      log_file << std::fixed << std::setprecision(6) << tnow.toSec() << ","
+               << uav_p.x() << "," << uav_p.y() << "," << uav_p.z() << ","
+               << uav_v.x() << "," << uav_v.y() << "," << uav_v.z() << ","
+               << pos_L.x() << "," << pos_L.y() << "," << pos_L.z() << ","
+               << vel_L.x() << "," << vel_L.y() << "," << vel_L.z() << ","
+               << theta_deg << "," << phi_deg << ","
+               << fc << "\n";
+      log_file.flush();
+
+
+      // 一切组装完毕，最后再发布！
+      payload_pub.publish(payload_msg);
+
+      // 发布负载 Odometry (位置和速度，世界坐标系)
+      nav_msgs::Odometry payload_odom_msg;
+      payload_odom_msg.header.stamp = tnow;
+      payload_odom_msg.header.frame_id = "world";
+      payload_odom_msg.pose.pose.position.x = pos_L.x();
+      payload_odom_msg.pose.pose.position.y = pos_L.y();
+      payload_odom_msg.pose.pose.position.z = pos_L.z();
+      payload_odom_msg.pose.pose.orientation.w = 1.0;
+      payload_odom_msg.twist.twist.linear.x = vel_L.x();
+      payload_odom_msg.twist.twist.linear.y = vel_L.y();
+      payload_odom_msg.twist.twist.linear.z = vel_L.z();
+      payload_odom_pub.publish(payload_odom_msg);
+
       if (mesh_pub.getNumSubscribers() > 0) {
         odomToMesh(odom_msg, meshROS);
         mesh_pub.publish(meshROS);

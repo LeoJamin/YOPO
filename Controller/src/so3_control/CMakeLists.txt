@@ -8,7 +8,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wall -g")
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   nav_msgs
-  quadrotor_msgs
+  yopo_quadrotor_msgs
   tf
   nodelet
   cmake_utils

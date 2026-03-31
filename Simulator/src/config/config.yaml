@@ -39,7 +39,7 @@ road_width: 3
 add_wall_x: 1
 add_wall_y: 1
 # 森林
-tree_file: "src/pointcloud/tree.ply"
+tree_file: "/home/jamine/yopo_ws/src/YOPO/Simulator/src/pointcloud/tree.ply"
 tree_dist: 4
 # 房间
 room_number: 4         # 每个方向上的房间数 (房间大小 = x_length / room_number)
@@ -73,6 +73,13 @@ lidar:
   horizontal_num: 360            # 水平360点
   horizontal_resolution: 1.0     # 水平分辨率为1度，horizontal_resolution * horizontal_num = 360
   max_lidar_dist: 20.0
+
+
+# 气泡包络参数 (用于 Payload-YOPO 动态安全检测)
+bubble:
+  r_uav: 0.35    # 无人机端的包络半径 (包含机臂和桨叶)
+  r_load: 0.15   # 负载端的包络半径 (负载球体半径)
+  r_safe: 0.08   # 气泡重叠部的最小保护半径 (确保绳索不从气泡间隙漏出)
 
 # 4. 数据收集参数 =============================================================
 save_path: "../dataset/"

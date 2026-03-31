@@ -46,6 +46,10 @@ class YopoNet:
         # variables
         self.odom = Odometry()
         self.odom_init = False
+        self.payload_odom = Odometry()
+        self.payload_init = False
+
+
         self.last_yaw = 0.0
         self.ctrl_dt = 0.02
         self.ctrl_time = None
@@ -59,6 +63,7 @@ class YopoNet:
         self.optimal_poly_z = None
         self.lock = Lock()
         self.last_control_msg = None
+        self.obs_dim = config.get('obs_dim', 15)
         self.state_transform = StateTransform()
         self.lattice_primitive = LatticePrimitive.get_instance()
         self.traj_time = self.lattice_primitive.segment_time
@@ -75,10 +80,13 @@ class YopoNet:
         # Load Network
         if self.use_trt:
             self.policy = TRTModule()
-            self.policy.load_state_dict(torch.load(weight))
+            self.policy.load_state_dict(torch.load(weight, weights_only=True))
         else:
             state_dict = torch.load(weight, weights_only=True)
-            self.policy = YopoNetwork()
+            self.policy = YopoNetwork(
+                observation_dim=config.get('obs_dim', 13),
+                pendulum_latent_dim=cfg._data.get("pendulum_encoder", {}).get("latent_dim", 8),
+            )
             self.policy.load_state_dict(state_dict)
             self.policy = self.policy.to(self.device)
             self.policy.eval()
@@ -93,6 +101,14 @@ class YopoNet:
         self.odom_sub = rospy.Subscriber(self.config['odom_topic'], Odometry, self.callback_odometry, queue_size=1, tcp_nodelay=True)
         self.depth_sub = rospy.Subscriber(self.config['depth_topic'], Image, self.callback_depth, queue_size=1, tcp_nodelay=True)
         self.goal_sub = rospy.Subscriber("/move_base_simple/goal", PoseStamped, self.callback_set_goal, queue_size=1)
+        self.payload_sub = rospy.Subscriber(
+            self.config.get('payload_topic', '/sim/payload_odom'),
+            Odometry,
+            self.callback_payload_odometry,
+            queue_size=1,
+            tcp_nodelay=True
+        )
+
         # ros timer
         rospy.sleep(1.0)  # wait connection...
         self.timer_ctrl = rospy.Timer(rospy.Duration(self.ctrl_dt), self.control_pub)
@@ -103,6 +119,14 @@ class YopoNet:
         self.goal = np.asarray([data.pose.position.x, data.pose.position.y, 2])
         self.arrive = False
         print(f"New Goal: ({data.pose.position.x:.1f}, {data.pose.position.y:.1f})")
+
+    def callback_payload_odometry(self, data):
+        """
+        假设该话题提供的是负载在世界坐标系下的位姿和速度
+        或者直接是相对于无人机的相对状态
+        """
+        self.payload_odom = data
+        self.payload_init = True
 
     # the first frame
     def callback_odometry(self, data):
@@ -117,28 +141,108 @@ class YopoNet:
         self.odom_init = True
 
         pos = np.array((self.odom.pose.pose.position.x, self.odom.pose.pose.position.y, self.odom.pose.pose.position.z))
-        if np.linalg.norm(pos - self.goal) < 5 and not self.arrive:
-            print("Arrive!")
+        dist_to_goal = np.linalg.norm(pos - self.goal)
+        # Log distance to goal periodically
+        if not hasattr(self, '_log_counter'):
+            self._log_counter = 0
+        self._log_counter += 1
+        if self._log_counter % 50 == 0:  # every ~1s at 50Hz odom
+            vel = np.array([self.odom.twist.twist.linear.x, self.odom.twist.twist.linear.y, self.odom.twist.twist.linear.z])
+            speed = np.linalg.norm(vel)
+            p_info = ""
+            if self.payload_init:
+                p_load = np.array([self.payload_odom.pose.pose.position.x,
+                                   self.payload_odom.pose.pose.position.y,
+                                   self.payload_odom.pose.pose.position.z])
+                rel = p_load - pos
+                L_actual = np.linalg.norm(rel)
+                rho = rel / max(L_actual, 1e-4)
+                theta_deg = np.degrees(np.arccos(np.clip(-rho[2], -1.0, 1.0)))
+                p_info = f" | swing={theta_deg:.1f}° L={L_actual:.3f}m"
+            print(f"[NAV] dist={dist_to_goal:.1f}m speed={speed:.2f}m/s pos=({pos[0]:.1f},{pos[1]:.1f},{pos[2]:.1f}){p_info}")
+        if dist_to_goal < 3.0 and not self.arrive:
+            print(f"=== ARRIVE! dist={dist_to_goal:.2f}m ===")
             self.arrive = True
 
     def process_odom(self):
-        # Rwb -> Rwc -> Rcw
+        # 1. 原有的无人机状态处理 (Rwc, Rotation_cw 等)
         Rotation_wb = R.from_quat([self.odom.pose.pose.orientation.x, self.odom.pose.pose.orientation.y,
                                    self.odom.pose.pose.orientation.z, self.odom.pose.pose.orientation.w]).as_matrix()
         self.Rotation_wc = np.dot(Rotation_wb, self.Rotation_bc)
         Rotation_cw = self.Rotation_wc.T
 
-        # vel and acc
-        vel_w = self.desire_vel if self.plan_from_reference else np.array([self.odom.twist.twist.linear.x, self.odom.twist.twist.linear.y, self.odom.twist.twist.linear.z])
+        vel_w = self.desire_vel if self.plan_from_reference else np.array(
+            [self.odom.twist.twist.linear.x, self.odom.twist.twist.linear.y, self.odom.twist.twist.linear.z])
         vel_c = np.dot(Rotation_cw, vel_w)
-        acc_w = self.desire_acc
-        acc_c = np.dot(Rotation_cw, acc_w)
+        acc_c = np.dot(Rotation_cw, self.desire_acc)
+        goal_c = np.dot(Rotation_cw, self.goal - self.desire_pos)
 
-        # goal_dir
-        goal_w = self.goal - self.desire_pos
-        goal_c = np.dot(Rotation_cw, goal_w)
+        # 2. 处理负载状态 → 球面摆角 [theta, phi, dtheta, dphi]
+        if self.payload_init:
+            p_load_w = np.array([self.payload_odom.pose.pose.position.x,
+                                 self.payload_odom.pose.pose.position.y,
+                                 self.payload_odom.pose.pose.position.z])
+            p_drone_w = np.array([self.odom.pose.pose.position.x,
+                                  self.odom.pose.pose.position.y,
+                                  self.odom.pose.pose.position.z])
+            v_load_w = np.array([self.payload_odom.twist.twist.linear.x,
+                                 self.payload_odom.twist.twist.linear.y,
+                                 self.payload_odom.twist.twist.linear.z])
+            v_drone_w = np.array([self.odom.twist.twist.linear.x,
+                                  self.odom.twist.twist.linear.y,
+                                  self.odom.twist.twist.linear.z])
 
-        obs = np.concatenate((vel_c, acc_c, goal_c), axis=0).astype(np.float32)
+            # Relative position and velocity in world frame
+            rel_p_w = p_load_w - p_drone_w  # cable vector (UAV → payload)
+            rel_v_w = v_load_w - v_drone_w
+
+            # Cable length (from actual geometry)
+            L = np.linalg.norm(rel_p_w)
+            if L < 1e-4:
+                L = 0.5  # fallback
+
+            # Spherical coordinates: rho = rel_p / L
+            # Convention: theta = polar angle from -z axis (0 = hanging straight down)
+            #             phi = azimuthal angle in x-y plane
+            rho = rel_p_w / L
+            cos_theta = np.clip(-rho[2], -1.0, 1.0)  # -z component
+            theta = np.arccos(cos_theta)
+            phi = np.arctan2(rho[1], rho[0])
+
+            # Angular velocities from Cartesian relative velocity
+            # d(rho)/dt = (rel_v - (rel_v . rho) * rho) / L
+            # In spherical: dtheta = ..., dphi = ...
+            sin_theta = np.sin(theta) + 1e-8
+            # dtheta/dt from velocity projected onto theta direction
+            # theta_hat = [cos(theta)cos(phi), cos(theta)sin(phi), sin(theta)]
+            # but our theta is from -z, so:
+            theta_hat = np.array([np.cos(theta)*np.cos(phi),
+                                  np.cos(theta)*np.sin(phi),
+                                  np.sin(theta)])
+            phi_hat = np.array([-np.sin(phi), np.cos(phi), 0.0])
+
+            rho_dot = rel_v_w / L
+            dtheta = np.dot(rho_dot, theta_hat)
+            dphi = np.dot(rho_dot, phi_hat) / sin_theta if sin_theta > 1e-4 else 0.0
+
+            p_state = np.array([theta, phi, dtheta, dphi], dtype=np.float32)
+        else:
+            p_state = np.zeros(4, dtype=np.float32)
+
+        # 3. 拼接观测向量
+        if self.obs_dim == 13:
+            # 13D: [vel(3), acc(3), goal(3), theta, phi, dtheta, dphi]
+            obs = np.concatenate((vel_c, acc_c, goal_c, p_state), axis=0).astype(np.float32)
+        elif self.obs_dim == 9:
+            # 9D: spatial only
+            obs = np.concatenate((vel_c, acc_c, goal_c), axis=0).astype(np.float32)
+        elif self.obs_dim == 15:
+            # 15D legacy: [vel, acc, goal, theta, phi, dtheta, dphi, L, m]
+            p_params = np.array([L if self.payload_init else 0.8, 0.3], dtype=np.float32)
+            obs = np.concatenate((vel_c, acc_c, goal_c, p_state, p_params), axis=0).astype(np.float32)
+        else:
+            obs = np.concatenate((vel_c, acc_c, goal_c, p_state), axis=0).astype(np.float32)
+            obs = obs[:self.obs_dim]
         obs_norm = self.state_transform.normalize_obs(torch.from_numpy(obs[None, :]))
         return obs_norm
 
@@ -170,13 +274,21 @@ class YopoNet:
         # 2. YOPO Network Inference
         # input prepare
         time1 = time.time()
-        depth_input = torch.from_numpy(depth).to(self.device, non_blocking=True)  # (non_blocking: copying speed 3x)
+        depth_input = torch.from_numpy(depth).to(self.device, non_blocking=True)
         obs_norm = self.process_odom().to(self.device, non_blocking=True)
-        obs_input = self.state_transform.prepare_input(obs_norm)
-        # torch.cuda.synchronize()
+
+        # Encode pendulum state through PendulumEncoder, then prepare grid
+        if hasattr(self.policy, 'pendulum_encoder') and self.policy.pendulum_encoder is not None:
+            spatial = obs_norm[:, :9]
+            pendulum_raw = obs_norm[:, 9:]
+            pendulum_latent = self.policy.pendulum_encoder(pendulum_raw)
+            obs_encoded = torch.cat([spatial, pendulum_latent], dim=1)
+            obs_input = self.policy._prepare_input_with_encoder(obs_encoded)
+        else:
+            obs_input = self.state_transform.prepare_input(obs_norm)
 
         time2 = time.time()
-        # Forward (TensorRT: inference speed increased by 5x)
+        # Forward (raw prediction space — process_output handles body-frame conversion)
         endstate_pred, score_pred = self.policy(depth_input, obs_input)
         endstate_pred, score_pred = endstate_pred.cpu().numpy(), score_pred.cpu().numpy()
         time3 = time.time()
@@ -353,10 +465,9 @@ class YopoNet:
 
     def warm_up(self):
         depth = torch.zeros((1, 1, self.height, self.width), dtype=torch.float32, device=self.device)
-        obs = torch.zeros((1, 9), dtype=torch.float32, device=self.device)
-        obs = self.state_transform.prepare_input(obs)
-        endstate_pred, score_pred = self.policy(depth, obs)
-        _ = self.state_transform.pred_to_endstate(endstate_pred)
+        obs = torch.zeros((1, self.obs_dim), dtype=torch.float32, device=self.device)
+        obs[:, 6:9] = 1.0  # non-zero goal to avoid division by zero in normalize
+        endstate_pred, score_pred = self.policy.inference(depth, obs)
 
 
 def parser():
@@ -364,6 +475,7 @@ def parser():
     parser.add_argument("--use_tensorrt", type=int, default=0, help="use tensorrt or not")
     parser.add_argument("--trial", type=int, default=1, help="trial number")
     parser.add_argument("--epoch", type=int, default=50, help="epoch number")
+    parser.add_argument("--obs_dim", type=int, default=13, help="observation dimension (9/13/15)")
     return parser
 
 
@@ -374,6 +486,7 @@ if __name__ == "__main__":
     print("load weight from:", weight)
 
     settings = {'use_tensorrt': args.use_tensorrt,
+                'obs_dim': args.obs_dim,
                 'goal': [50, 0, 2],      # 目标点位置
                 'pitch_angle_deg': -0,   # 相机俯仰角(仰为负)
                 'odom_topic': '/sim/odom',                   # 里程计话题

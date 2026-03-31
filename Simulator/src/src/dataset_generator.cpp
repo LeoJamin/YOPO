@@ -7,14 +7,14 @@
 #include <Eigen/Geometry>
 #include <yaml-cpp/yaml.h>
 #include <iostream>
-#include <filesystem>
+#include <experimental/filesystem>
 #include <fstream>
 #include <iomanip>
 #include "sensor_simulator.cuh"
 #include "maps.hpp"
 
 using namespace raycast;
-namespace fs = std::filesystem;
+namespace fs = std::experimental::filesystem;
 
 void prepareSavePath(const std::string &path, bool print=false)
 {
@@ -123,6 +123,14 @@ int main(int argc, char **argv)
     float safe_dist = config["safe_dist"].as<float>();
     float ply_res = config["ply_res"].as<float>();
 
+
+    // 4. 读取气泡包络参数
+    float r_uav = config["bubble"]["r_uav"].as<float>();
+    float r_load = config["bubble"]["r_load"].as<float>();
+    float r_safe = config["bubble"]["r_safe"].as<float>();
+
+
+
     // 中心对齐，计算偏移量
     int dataset_num = env_num * image_num;
     float x_min = -x_range / 2.0f;
@@ -185,47 +193,123 @@ int main(int argc, char **argv)
         kdtree.setInputCloud(filtered_cloud);
 
         // 收集当前环境的数据
-        std::ofstream pose_file(save_path + "pose-" + std::to_string(map_i) + ".csv");
-        pose_file << "px,py,pz,qw,qx,qy,qz\n";
-        for (int image_i = 0; image_i < image_num; ++image_i)
-        {
-            Eigen::Vector3f pos;
-            float dist;
-            do{
-                pos.x() = x_min + uniform_uniform(generator) * x_range;
-                pos.y() = y_min + uniform_uniform(generator) * y_range;
-                pos.z() = z_min + uniform_uniform(generator) * (z_max - z_min);
-                pcl::PointXYZ searchPoint(pos.x(), pos.y(), pos.z());
-                std::vector<int> pointIdxNKNSearch(1);
-                std::vector<float> pointNKNSquaredDistance(1);
-                int found_num = kdtree.nearestKSearch(searchPoint, 1, pointIdxNKNSearch, pointNKNSquaredDistance);
-                dist = sqrt(pointNKNSquaredDistance[0]);
-            } while (dist < safe_dist);
+    std::ofstream pose_file(save_path + "pose-" + std::to_string(map_i) + ".csv");
+    // [修改 1]：在 CSV 文件中添加新的列标题，记录吊载的摆角和物理属性
+    pose_file << "px,py,pz,qw,qx,qy,qz,theta,phi,d_theta,d_phi,length,mass\n";
 
-            float roll = normal_distribution(generator) * roll_range / 3.0f;   // 3 * sigmoid = range
-            float pitch = normal_distribution(generator) * pitch_range / 3.0f; // 3 * sigmoid = range
-            float yaw = uniform_uniform(generator) * 360.0f;
+    // 定义随机化范围 (Domain Randomization)
+    std::uniform_real_distribution<float> length_dist(0.4f, 1.2f); // 绳长在 0.4m 到 1.2m 之间
+    std::uniform_real_distribution<float> mass_dist(0.05f, 0.3f);   // 载荷在 50g 到 300g 之间
 
-            Eigen::Quaternionf quat = RPY2Quat(roll, pitch, yaw);
-            Eigen::Quaternionf quat_wc = quat * quat_bc;
+    for (int image_i = 0; image_i < image_num; ++image_i)
+    {
+        Eigen::Vector3f pos;
+        float dist_metric;
+        float theta, phi, d_theta, d_phi, current_M, current_L;
 
-            cudaMat::SE3<float> T_wc(quat_wc.w(), quat_wc.x(), quat_wc.y(), quat_wc.z(),
-                                     pos.x(), pos.y(), pos.z());
+        int max_attempts = 10000;
+        int attempt = 0;
+        do {
+            if (++attempt > max_attempts) {
+                std::cerr << "WARNING: Could not find valid position after " << max_attempts << " attempts for map " << map_i << ", image " << image_i << std::endl;
+                break;
+            }
+            // 1. 生成无人机本体的随机空间坐标
+            pos.x() = x_min + uniform_uniform(generator) * x_range;
+            pos.y() = y_min + uniform_uniform(generator) * y_range;
+            pos.z() = z_min + uniform_uniform(generator) * (z_max - z_min);
 
-            cv::Mat depth_image;
-            renderDepthImage(&grid_map, &camera, T_wc, depth_image);
+            current_L = length_dist(generator);
+            current_M = mass_dist(generator);
 
-            std::string filename = image_path + "/img_" + std::to_string(image_i) + ".png";
-            saveDepthAs16BitPNG(depth_image, camera.max_depth_dist, filename);
+            // 2. 随机采样摆角状态
+            // 【修复】：强行取绝对值，防止产生负向极角污染 Dynamics Loss 计算
+            theta = std::abs(normal_distribution(generator) * (20.0f * M_PI / 180.0f) / 3.0f);
+            phi = uniform_uniform(generator) * 2.0f * M_PI;
+            d_theta = normal_distribution(generator)*0.2f;
+            d_phi = normal_distribution(generator)*0.2f;
 
-            pose_file << std::fixed << std::setprecision(6)
-                      << pos.x() << "," << pos.y() << "," << pos.z() << ","
-                      << quat_wc.w() << "," << quat_wc.x() << ","
-                      << quat_wc.y() << "," << quat_wc.z() << "\n";
+            // 3. 计算负载空间坐标
+            Eigen::Vector3f payload_pos;
+            payload_pos.x() = pos.x() + current_L * sin(theta) * cos(phi);
+            payload_pos.y() = pos.y() + current_L * sin(theta) * sin(phi);
+            payload_pos.z() = pos.z() - current_L * cos(theta);
 
-            printProgressBar(map_i * image_num + image_i + 1, dataset_num);
-        }
-        pose_file.close();
+            // 4. --- 核心修改：多气泡碰撞检测 (AutoTrans Logic) ---
+            // 为了保证全覆盖，计算最小允许步长 d
+            float r_min = std::min(r_uav, r_load);
+            float d_max = 2.0f * std::sqrt(std::max(r_min * r_min - r_safe * r_safe, 1e-4f));
+            //float d_max = 2.0f * std::sqrt(std::max(std::pow(r_min, 2) - std::pow(r_safe, 2), 1e-4f));
+            // 确定气泡数量 N
+
+            int N = std::max((int)std::ceil(current_L / d_max) + 1, 2);
+            bool is_collision = false;
+            float min_clearance = 1e6;
+
+            for (int i = 0; i < N; ++i) {
+                float ratio = (float)i / (N - 1);
+                // 线性插值计算每个气泡的中心和当前半径
+                Eigen::Vector3f p_bubble = pos * (1.0f - ratio) + payload_pos * ratio;
+                float r_bubble = r_uav + ratio * (r_load - r_uav);
+
+                // KD-Tree 搜索最近障碍物
+                pcl::PointXYZ searchPoint(p_bubble.x(), p_bubble.y(), p_bubble.z());
+                std::vector<int> idx(1);
+                std::vector<float> dist_sq(1);
+                int found = kdtree.nearestKSearch(searchPoint, 1, idx, dist_sq);
+                if (found < 1) {
+                    is_collision = true;
+                    break;
+                }
+                float dist_to_obs = std::sqrt(dist_sq[0]);
+
+                // 检查是否侵入气泡半径
+                if (dist_to_obs < r_bubble) {
+                    is_collision = true;
+                    break;
+                }
+                // 记录最小间隙 (归一化到气泡边缘的距离)
+                if (dist_to_obs - r_bubble < min_clearance) {
+                    min_clearance = dist_to_obs - r_bubble;
+                }
+            }
+
+            dist_metric = is_collision ? -1.0f : min_clearance;
+
+        } while (dist_metric < 0); // 只要气泡链有任何一点碰撞，重新采样
+
+        // 5. 生成相机的姿态扰动
+        float roll = normal_distribution(generator) * roll_range / 3.0f;
+        float pitch = normal_distribution(generator) * pitch_range / 3.0f;
+        float yaw = uniform_uniform(generator) * 360.0f;
+
+        Eigen::Quaternionf quat = RPY2Quat(roll, pitch, yaw);
+        Eigen::Quaternionf quat_wc = quat * quat_bc;
+
+        cudaMat::SE3<float> T_wc(quat_wc.w(), quat_wc.x(), quat_wc.y(), quat_wc.z(),
+                                 pos.x(), pos.y(), pos.z());
+
+        cv::Mat depth_image;
+        renderDepthImage(&grid_map, &camera, T_wc, depth_image);
+
+        std::string filename = image_path + "/img_" + std::to_string(image_i) + ".png";
+        saveDepthAs16BitPNG(depth_image, camera.max_depth_dist, filename);
+        // 把相机的 yaw (角度) 转为弧度
+        float yaw_rad = yaw * M_PI / 180.0f;
+        // 【修复】：将绝对方位角 phi 转换为相机视角下的相对方位角 relative_phi
+        float relative_phi = fmod(phi - yaw_rad + 2.0f * M_PI, 2.0f * M_PI);
+        if (relative_phi > M_PI) { relative_phi -= 2.0f * M_PI; } // 映射到 [-pi, pi] 更有利于网络学习
+        // 写入位姿和吊载状态
+        pose_file << std::fixed << std::setprecision(6)
+          << pos.x() << "," << pos.y() << "," << pos.z() << ","
+          << quat_wc.w() << "," << quat_wc.x() << ","
+          << quat_wc.y() << "," << quat_wc.z() << ","
+          << theta << "," << relative_phi << "," << d_theta << "," << d_phi << ","
+          << current_L << "," << current_M << "\n";
+
+        printProgressBar(map_i * image_num + image_i + 1, dataset_num);
+    }
+    pose_file.close();
         grid_map.freeGridMap();
     }
 

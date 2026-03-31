@@ -19,8 +19,9 @@
 #include <chrono>
 #include <omp.h>
 #include <yaml-cpp/yaml.h>
+#include <atomic>
 #include "maps.hpp"
-
+//
 class SensorSimulator {
 public:
     SensorSimulator(ros::NodeHandle &nh) : nh_(nh) {
@@ -116,6 +117,9 @@ public:
         timer_depth_ = nh_.createTimer(ros::Duration(1 / depth_fps), &SensorSimulator::timerDepthCallback, this);
         timer_lidar_ = nh_.createTimer(ros::Duration(1 / lidar_fps), &SensorSimulator::timerLidarCallback, this);
         printf("3.Simulation Ready! \n");
+    }
+
+    void run() {
         ros::spin();
     }
 
@@ -134,7 +138,7 @@ public:
 private:
     bool render_depth{false};
     bool render_lidar{false};
-    bool odom_init{false};
+    std::atomic<bool> odom_init{false};
     Eigen::Quaternionf quat;
     Eigen::Vector3f pos;
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud;

@@ -1,9 +1,9 @@
 #include <Eigen/Geometry>
 #include <nav_msgs/Odometry.h>
 #include <nodelet/nodelet.h>
-#include <quadrotor_msgs/Corrections.h>
-#include <quadrotor_msgs/PositionCommand.h>
-#include <quadrotor_msgs/SO3Command.h>
+#include <yopo_quadrotor_msgs/Corrections.h>
+#include <yopo_quadrotor_msgs/PositionCommand.h>
+#include <yopo_quadrotor_msgs/SO3Command.h>
 #include <ros/ros.h>
 #include <sensor_msgs/Imu.h>
 #include <so3_control/SO3Control.h>
@@ -35,10 +35,10 @@ public:
 private:
   void publishSO3Command(void);
   void position_cmd_callback(
-    const quadrotor_msgs::PositionCommand::ConstPtr& cmd);
+    const yopo_quadrotor_msgs::PositionCommand::ConstPtr& cmd);
   void odom_callback(const nav_msgs::Odometry::ConstPtr& odom);
   void enable_motors_callback(const std_msgs::Bool::ConstPtr& msg);
-  void corrections_callback(const quadrotor_msgs::Corrections::ConstPtr& msg);
+  void corrections_callback(const yopo_quadrotor_msgs::Corrections::ConstPtr& msg);
   void imu_callback(const sensor_msgs::Imu& imu);
 
   void initLogRecorder();
@@ -57,7 +57,11 @@ private:
 
   bool record_log_{false};
   bool cur_acc_init_{false}, cur_odom_init_{false};
-  Eigen::Vector3d des_pos_, des_vel_, des_acc_, kx_, kv_;
+  Eigen::Vector3d des_pos_ = Eigen::Vector3d::Zero();
+  Eigen::Vector3d des_vel_ = Eigen::Vector3d::Zero();
+  Eigen::Vector3d des_acc_ = Eigen::Vector3d::Zero();
+  Eigen::Vector3d kx_ = Eigen::Vector3d(5.7, 5.7, 6.2);
+  Eigen::Vector3d kv_ = Eigen::Vector3d(3.4, 3.4, 4.0);
   Eigen::Vector3d cur_pos_, cur_vel_, cur_acc_;
   double          des_yaw_, des_yaw_dot_;
   double          current_yaw_;
@@ -79,8 +83,8 @@ SO3ControlNodelet::publishSO3Command(void)
   const Eigen::Vector3d&    force       = controller_.getComputedForce();
   const Eigen::Quaterniond& orientation = controller_.getComputedOrientation();
 
-  quadrotor_msgs::SO3Command::Ptr so3_command(
-    new quadrotor_msgs::SO3Command); //! @note memory leak?
+  yopo_quadrotor_msgs::SO3Command::Ptr so3_command(
+    new yopo_quadrotor_msgs::SO3Command); //! @note memory leak?
   so3_command->header.stamp    = ros::Time::now();
   so3_command->header.frame_id = frame_id_;
   so3_command->force.x         = force(0);
@@ -106,7 +110,7 @@ SO3ControlNodelet::publishSO3Command(void)
 
 void
 SO3ControlNodelet::position_cmd_callback(
-  const quadrotor_msgs::PositionCommand::ConstPtr& cmd)
+  const yopo_quadrotor_msgs::PositionCommand::ConstPtr& cmd)
 {
   des_pos_ = Eigen::Vector3d(cmd->position.x, cmd->position.y, cmd->position.z);
   des_vel_ = Eigen::Vector3d(cmd->velocity.x, cmd->velocity.y, cmd->velocity.z);
@@ -189,7 +193,7 @@ SO3ControlNodelet::enable_motors_callback(const std_msgs::Bool::ConstPtr& msg)
 
 void
 SO3ControlNodelet::corrections_callback(
-  const quadrotor_msgs::Corrections::ConstPtr& msg)
+  const yopo_quadrotor_msgs::Corrections::ConstPtr& msg)
 {
   corrections_[0] = msg->kf_correction;
   corrections_[1] = msg->angle_corrections[0];
@@ -245,7 +249,7 @@ SO3ControlNodelet::onInit(void)
   n.param("so3_control/init_state_y", init_y_, 0.0);
   n.param("so3_control/init_state_z", init_z_, -10000.0);
 
-  so3_command_pub_ = n.advertise<quadrotor_msgs::SO3Command>("so3_cmd", 10);
+  so3_command_pub_ = n.advertise<yopo_quadrotor_msgs::SO3Command>("so3_cmd", 10);
 
   odom_sub_ = n.subscribe("odom", 10, &SO3ControlNodelet::odom_callback, this,
                           ros::TransportHints().tcpNoDelay());
