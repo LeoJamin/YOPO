@@ -46,7 +46,7 @@ class DynamicsLoss(nn.Module):
         # 计算由当前轨迹加速度产生的“准静态平衡摆角” (Equilibrium angle)
         target_theta_rad = th.atan(acc_xy_norm / denominator)
 
-        # 核心改进：引入初始摆角约束
+        # 引入初始摆角约束
         # 如果初始摆角 init_theta 很大，且当前加速度方向加剧了摆动，则惩罚加大
         # 这里使用简化模型：惩罚 (当前轨迹诱导摆角 + 初始摆角偏差)
         total_swing = target_theta_rad + 0.2 * th.abs(init_theta - target_theta_rad)

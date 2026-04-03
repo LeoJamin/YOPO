@@ -29,7 +29,9 @@ if __name__ == "__main__":
     configure_random_seed(0)    # set random seed
 
     # save the configuration and other files
-    log_dir = os.path.dirname(os.path.abspath(__file__)) + "/saved"
+    # Allow override via YOPO_SAVE_DIR env var (used by refine_loop.py)
+    log_dir = os.environ.get("YOPO_SAVE_DIR",
+                             os.path.dirname(os.path.abspath(__file__)) + "/saved")
     os.makedirs(log_dir, exist_ok=True)
     checkpoint_path = log_dir + "/YOPO_{}/epoch{}.pth".format(args.trial, args.epoch) if args.pretrained else ""
 
@@ -42,6 +44,6 @@ if __name__ == "__main__":
         save_on_exit=True,
     )
 
-    trainer.train(epoch=50, save_interval=10)
+    trainer.train(epoch=args.epoch, save_interval=10)
 
     print("Run YOPO Finish!")

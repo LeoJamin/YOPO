@@ -83,10 +83,46 @@ class YopoNet:
             self.policy.load_state_dict(torch.load(weight, weights_only=True))
         else:
             state_dict = torch.load(weight, weights_only=True)
-            self.policy = YopoNetwork(
-                observation_dim=config.get('obs_dim', 13),
-                pendulum_latent_dim=cfg._data.get("pendulum_encoder", {}).get("latent_dim", 8),
-            )
+            # Auto-detect architecture from checkpoint weights
+            has_encoder = any(k.startswith("pendulum_encoder.") for k in state_dict.keys())
+            if has_encoder:
+                # New architecture: PendulumEncoder present
+                latent_dim = cfg._data.get("pendulum_encoder", {}).get("latent_dim", 8)
+                self.policy = YopoNetwork(
+                    observation_dim=config.get('obs_dim', 13),
+                    pendulum_latent_dim=latent_dim,
+                )
+            else:
+                # Legacy architecture: no encoder, raw obs_dim concat
+                # head input = hidden_state(64) + obs_dim
+                from policy.models.backbone import YopoBackbone
+                from policy.models.head import YopoHead
+
+                class LegacyYopoNetwork(torch.nn.Module):
+                    def __init__(self, obs_dim=13, hidden_state=64):
+                        super().__init__()
+                        self.state_transform = StateTransform()
+                        self.image_backbone = YopoBackbone(hidden_state)
+                        self.state_backbone = torch.nn.Sequential()
+                        self.yopo_head = YopoHead(hidden_state + obs_dim, 10)
+                        self.pendulum_encoder = None
+                    def forward(self, depth, obs):
+                        depth_feature = self.image_backbone(depth)
+                        obs_feature = self.state_backbone(obs)
+                        input_tensor = torch.cat((obs_feature, depth_feature), 1)
+                        output = self.yopo_head(input_tensor)
+                        endstate = torch.tanh(output[:, :9])
+                        score = torch.nn.functional.softplus(output[:, 9])
+                        return endstate, score
+                    def inference(self, depth, obs):
+                        obs = self.state_transform.normalize_obs(obs)
+                        obs = self.state_transform.prepare_input(obs)
+                        endstate_pred, score_pred = self.forward(depth, obs)
+                        endstate = self.state_transform.pred_to_endstate(endstate_pred)
+                        return endstate, score_pred
+
+                self.policy = LegacyYopoNetwork(obs_dim=config.get('obs_dim', 13))
+
             self.policy.load_state_dict(state_dict)
             self.policy = self.policy.to(self.device)
             self.policy.eval()

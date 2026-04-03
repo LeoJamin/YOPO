@@ -90,13 +90,11 @@ class YopoTrainer:
         one_epoch_progress = self.progress_log.add_task(f"Epoch: {epoch}", total=len(self.train_dataloader))
         inspect_interval = max(1, len(self.train_dataloader) // 16)
         traj_losses, score_losses, smooth_losses, safety_losses, goal_losses, acc_losses, dyn_losses, start_time = [], [], [], [], [], [], [], time.time()
-        # --- [修改 1]：解包 7 个变量，匹配 YOPODataset 的输出 ---
         for step, (depth, pos, rot, obs_b, p_state, p_params, map_id) in enumerate(self.train_dataloader):  # obs: body frame
             if depth.shape[0] != self.batch_size:  continue  # batch size == number of env
 
             self.optimizer.zero_grad()
 
-            # --- [修改 2]：将 p_state 和 p_params 传入计算函数 ---
             trajectory_loss, score_loss, smooth_cost, safety_cost, goal_cost, acc_cost, dyn_cost = self.forward_and_compute_loss(depth, pos, rot, obs_b, p_state, p_params, map_id)
 
             loss = self.loss_weight[0] * trajectory_loss + self.loss_weight[1] * score_loss
@@ -142,7 +140,7 @@ class YopoTrainer:
     def eval_one_epoch(self, epoch: int):
         one_epoch_progress = self.progress_log.add_task(f"Eval: {epoch}", total=len(self.val_dataloader))
         traj_losses, score_losses = [], []
-        # --- [修改 4]：验证集同样解包 7 个变量 ---
+
         for step, (depth, pos, rot, obs_b, p_state, p_params, map_id) in enumerate(self.val_dataloader):  # obs: body frame
             if depth.shape[0] != self.batch_size:  continue  # batch size == num of env
 
@@ -158,7 +156,7 @@ class YopoTrainer:
         self.progress_log.remove_task(one_epoch_progress)
 
     def forward_and_compute_loss(self, depth, pos, rot, obs_b, p_state, p_params, map_id):
-        # --- [修改 5]：将负载数据也移至 GPU ---
+
         depth, pos, rot, obs_b, p_state, p_params, map_id = [x.to(self.device) for x in [depth, pos, rot, obs_b, p_state, p_params, map_id]]
 
         # 1. pre-process

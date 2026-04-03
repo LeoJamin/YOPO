@@ -10,7 +10,7 @@ from loss.differentiable_pendulum import DifferentiablePendulumLoss
 class YOPOLoss(nn.Module):
     def __init__(self):
         """
-        Compute the cost: including smoothness, safety, guidance, goal cost, etc.
+        Compute the cost: including smoothness, safety, guidance, goal cost, dynamics,etc.
         Currently, keeping multi-segment polynomial support (not yet verified), but only using a single-segment polynomial (m = 1) for now.
         dp: decision parameters
         df: fixed parameters
@@ -45,7 +45,7 @@ class YOPOLoss(nn.Module):
         print("-------------------------")
 
     def qp_generation(self):
-        # 论文中的映射矩阵
+        # 映射矩阵
         A = th.zeros((6, 6))# 6个约束条件（初始位置、速度、加速度）对应6个决策参数（每段的多项式系数）
         for i in range(3):
             A[2 * i, i] = math.factorial(i)

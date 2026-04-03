@@ -26,7 +26,7 @@ SETUP = f"source {WS}/devel/setup.bash"
 METHODS = [
     {"name": "YOPO-1(9D)",              "trial": 1,  "obs_dim": 9,  "epoch": 50},
     {"name": "YOPO-44(13D,linear)",     "trial": 44, "obs_dim": 13, "epoch": 50},
-    {"name": "YOPO-46(13D,diffphys)",   "trial": 46, "obs_dim": 13, "epoch": 50},
+    {"name": "YOPO-49(13D,diffphys)",   "trial": 49, "obs_dim": 13, "epoch": 50},
 ]
 
 # Hard goal set — 15 goals in 5 categories
@@ -234,7 +234,7 @@ def main():
         print(ln)
 
     # Save
-    out = f"{YOPO_DIR}/saved/YOPO_46/comparison_hard_3way.json"
+    out = f"{YOPO_DIR}/saved/YOPO_49/comparison_hard_3way.json"
     os.makedirs(os.path.dirname(out), exist_ok=True)
     with open(out,'w') as f: json.dump({"methods":[m["name"] for m in METHODS],"metrics":metrics,"results":all_results,"categories":CATEGORIES},f,indent=2,default=str)
     print(f"\nSaved to {out}")

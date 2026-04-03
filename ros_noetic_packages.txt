@@ -1,0 +1,241 @@
+ii  ros-noetic-actionlib                        1.14.3-1focal.20250519.235901        amd64        The actionlib stack provides a standardized interface for interfacing with preemptable tasks.
+ii  ros-noetic-actionlib-msgs                   1.13.2-1focal.20250426.013228        amd64        actionlib_msgs defines the common messages to interact with an action server and an action client.
+ii  ros-noetic-actionlib-tutorials              0.2.0-1focal.20250520.000327         amd64        The actionlib_tutorials package
+ii  ros-noetic-angles                           1.9.14-1focal.20250426.230930        amd64        This package provides a set of simple math utilities to work with angles.
+ii  ros-noetic-bond                             1.8.7-1focal.20250426.013629         amd64        A bond allows two processes, A and B, to know when the other has terminated, either cleanly or by crashing.
+ii  ros-noetic-bond-core                        1.8.7-1focal.20250519.232600         amd64        A bond allows two processes, A and B, to know when the other has terminated, either cleanly or by crashing.
+ii  ros-noetic-bondcpp                          1.8.7-1focal.20250519.230329         amd64        C++ implementation of bond, a mechanism for checking when another process has terminated.
+ii  ros-noetic-bondpy                           1.8.7-1focal.20250519.232145         amd64        Python implementation of bond, a mechanism for checking when another process has terminated.
+ii  ros-noetic-camera-calibration               1.17.0-1focal.20250520.005809        amd64        camera_calibration allows easy calibration of monocular or stereo cameras using a checkerboard calibration target.
+ii  ros-noetic-camera-calibration-parsers       1.12.1-1focal.20250519.235403        amd64        camera_calibration_parsers contains routines for reading and writing camera calibration parameters.
+ii  ros-noetic-camera-info-manager              1.12.1-1focal.20250520.000220        amd64        This package provides a C++ interface for camera calibration information.
+ii  ros-noetic-catkin                           0.8.12-1focal.20250426.001935        amd64        Low-level build system macros and infrastructure for ROS.
+ii  ros-noetic-class-loader                     0.5.2-1focal.20250426.005342         amd64        The class_loader package is a ROS-independent package for loading plugins during runtime and the foundation of the higher level ROS &quot;pluginlib&quot; library.
+ii  ros-noetic-cmake-modules                    0.5.2-1focal.20250426.003525         amd64        A common repository for CMake Modules which are not distributed with CMake but are commonly used by ROS packages.
+ii  ros-noetic-common-msgs                      1.13.2-1focal.20250520.013139        amd64        common_msgs contains messages that are widely used by other ROS packages.
+ii  ros-noetic-common-tutorials                 0.2.0-1focal.20250520.001345         amd64        Metapackage that contains common tutorials
+ii  ros-noetic-compressed-depth-image-transport 1.15.0-1focal.20250521.004155        amd64        Compressed_depth_image_transport provides a plugin to image_transport for transparently sending depth images (raw, floating-point) using PNG compression.
+ii  ros-noetic-compressed-image-transport       1.15.0-1focal.20250521.004234        amd64        Compressed_image_transport provides a plugin to image_transport for transparently sending images encoded as JPEG or PNG.
+ii  ros-noetic-control-msgs                     1.5.2-1focal.20250426.013409         amd64        control_msgs contains base messages and actions useful for controlling robots.
+ii  ros-noetic-control-toolbox                  1.19.0-1focal.20250521.003230        amd64        The control toolbox contains modules that are useful across all controllers.
+ii  ros-noetic-controller-interface             0.20.0-1focal.20250519.231323        amd64        Interface base class for controllers.
+ii  ros-noetic-controller-manager               0.20.0-1focal.20250520.005452        amd64        The controller manager.
+ii  ros-noetic-controller-manager-msgs          0.20.0-1focal.20250519.235753        amd64        Messages and services for the controller manager.
+ii  ros-noetic-cpp-common                       0.7.3-1focal.20250426.004527         amd64        cpp_common contains C++ code for doing things that are not necessarily ROS related, but are useful for multiple packages.
+ii  ros-noetic-cv-bridge                        1.16.2-1focal.20250519.235655        amd64        This contains CvBridge, which converts between ROS Image messages and OpenCV images.
+ii  ros-noetic-depth-image-proc                 1.17.0-1focal.20250520.012250        amd64        Contains nodelets for processing depth images such as those produced by OpenNI camera.
+ii  ros-noetic-desktop                          1.5.0-1focal.20250521.014654         amd64        A metapackage to aggregate several packages.
+ii  ros-noetic-desktop-full                     1.5.0-1focal.20250521.014741         amd64        A metapackage to aggregate several packages.
+ii  ros-noetic-diagnostic-aggregator            1.12.1-1focal.20250519.233912        amd64        diagnostic_aggregator
+ii  ros-noetic-diagnostic-analysis              1.12.1-1focal.20250519.234837        amd64        The diagnostic_analysis package can convert a log of diagnostics data into a series of CSV files.
+ii  ros-noetic-diagnostic-common-diagnostics    1.12.1-1focal.20250520.004213        amd64        diagnostic_common_diagnostics
+ii  ros-noetic-diagnostic-msgs                  1.13.2-1focal.20250426.013751        amd64        This package holds the diagnostic messages which provide the standardized interface for the diagnostic and runtime monitoring systems in ROS.
+ii  ros-noetic-diagnostic-updater               1.12.1-1focal.20250519.233305        amd64        diagnostic_updater contains tools for easily updating diagnostics.
+ii  ros-noetic-diagnostics                      1.12.1-1focal.20250520.004640        amd64        diagnostics
+ii  ros-noetic-diff-drive-controller            0.22.0-1focal.20250521.001737        amd64        Controller for a differential drive mobile base.
+ii  ros-noetic-dynamic-reconfigure              1.7.6-1focal.20250521.000900         amd64        The dynamic_reconfigure package provides a means to update parameters at runtime without having to restart the node.
+ii  ros-noetic-eigen-conversions                1.13.4-1focal.20250426.012425        amd64        Conversion functions between: - Eigen and KDL - Eigen and geometry_msgs.
+ii  ros-noetic-executive-smach                  2.5.3-1focal.20250520.015747         amd64        This metapackage depends on the SMACH library and ROS SMACH integration packages.
+ii  ros-noetic-filters                          1.9.3-1focal.20250519.233517         amd64        This library provides a standardized interface for processing data as a sequence of filters.
+ii  ros-noetic-forward-command-controller       0.22.0-1focal.20250520.000736        amd64        forward_command_controller
+ii  ros-noetic-gazebo-dev                       2.9.3-1focal.20250426.005053         amd64        Provides a cmake config for the default version of Gazebo for the ROS distribution.
+ii  ros-noetic-gazebo-msgs                      2.9.3-1focal.20250520.004928         amd64        Message and service data structures for interacting with Gazebo from ROS.
+ii  ros-noetic-gazebo-plugins                   2.9.3-1focal.20250521.004734         amd64        Robot-independent Gazebo plugins for sensors, motors and dynamic reconfigurable components.
+ii  ros-noetic-gazebo-ros                       2.9.3-1focal.20250521.003802         amd64        Provides ROS plugins that offer message and service publishers for interfacing with Gazebo through ROS.
+ii  ros-noetic-gazebo-ros-control               2.9.3-1focal.20250521.005335         amd64        gazebo_ros_control
+ii  ros-noetic-gazebo-ros-pkgs                  2.9.3-1focal.20250521.011748         amd64        Interface for using ROS with the Gazebo simulator.
+ii  ros-noetic-gencpp                           0.7.2-1focal.20250426.005903         amd64        C++ ROS message and service generators.
+ii  ros-noetic-geneus                           3.0.0-1focal.20250426.010129         amd64        EusLisp ROS message and service generators.
+ii  ros-noetic-genlisp                          0.4.18-1focal.20250426.005852        amd64        Common-Lisp ROS message and service generators.
+ii  ros-noetic-genmsg                           0.6.1-1focal.20250426.005243         amd64        Standalone Python library for generating ROS message and service data structures for various languages.
+ii  ros-noetic-gennodejs                        2.0.2-1focal.20250426.005653         amd64        Javascript ROS message and service generators.
+ii  ros-noetic-genpy                            0.6.18-1focal.20250426.005606        amd64        Python ROS message and service generators.
+ii  ros-noetic-geographic-msgs                  0.5.6-1focal.20250426.013201         amd64        ROS messages for Geographic Information Systems.
+ii  ros-noetic-geometry                         1.13.4-1focal.20250520.021541        amd64        A metapackage for geometry library suite.
+ii  ros-noetic-geometry-msgs                    1.13.2-1focal.20250426.011953        amd64        geometry_msgs provides messages for common geometric primitives such as points, vectors, and poses.
+ii  ros-noetic-geometry-tutorials               0.2.4-1focal.20250520.022154         amd64        Metapackage of geometry tutorials ROS.
+ii  ros-noetic-gl-dependency                    1.1.4-1focal.20250426.003855         amd64        This encapsulates the GL dependency for a specific ROS distribution and its Qt version
+ii  ros-noetic-hardware-interface               0.20.0-1focal.20250519.231100        amd64        Hardware Interface base class.
+ii  ros-noetic-image-common                     1.12.1-1focal.20250520.015250        amd64        Common code for working with images in ROS.
+ii  ros-noetic-image-geometry                   1.16.2-1focal.20250520.005312        amd64        `image_geometry` contains C++ and Python libraries for interpreting images geometrically.
+ii  ros-noetic-image-pipeline                   1.17.0-1focal.20250521.010122        amd64        image_pipeline fills the gap between getting raw images from a camera driver and higher-level vision processing.
+ii  ros-noetic-image-proc                       1.17.0-1focal.20250521.004322        amd64        Single image rectification and color processing.
+ii  ros-noetic-image-publisher                  1.17.0-1focal.20250521.003823        amd64        Contains a node publish an image stream from single image file or avi motion file.
+ii  ros-noetic-image-rotate                     1.17.0-1focal.20250521.003149        amd64        Contains a node that rotates an image stream in a way that minimizes the angle between a vector in some arbitrary frame and a vector in the camera frame.
+ii  ros-noetic-image-transport                  1.12.1-1focal.20250519.235437        amd64        image_transport should always be used to subscribe to and publish images.
+ii  ros-noetic-image-transport-plugins          1.15.0-1focal.20250521.012022        amd64        A set of plugins for publishing and subscribing to sensor_msgs/Image topics in representations other than raw pixel data.
+ii  ros-noetic-image-view                       1.17.0-1focal.20250521.003902        amd64        A simple viewer for ROS image topics.
+ii  ros-noetic-interactive-marker-tutorials     0.11.2-1focal.20250520.002856        amd64        The interactive_marker_tutorials package
+ii  ros-noetic-interactive-markers              1.12.2-1focal.20250520.002353        amd64        3D interactive marker communication library for RViz and similar tools.
+ii  ros-noetic-joint-limits-interface           0.20.0-1focal.20250519.234747        amd64        Interface for enforcing joint limits.
+ii  ros-noetic-joint-state-controller           0.22.0-1focal.20250520.000738        amd64        Controller to publish joint state
+ii  ros-noetic-joint-state-publisher            1.15.2-1focal.20250519.235627        amd64        This package contains a tool for setting and publishing joint state values for a given URDF.
+ii  ros-noetic-joint-state-publisher-gui        1.15.2-1focal.20250519.235716        amd64        This package contains a GUI tool for setting and publishing joint state values for a given URDF.
+ii  ros-noetic-joy                              1.15.1-1focal.20250520.004901        amd64        ROS driver for a generic Linux joystick.
+ii  ros-noetic-kdl-conversions                  1.13.4-1focal.20250426.014106        amd64        Conversion functions between KDL and geometry_msgs types.
+ii  ros-noetic-kdl-parser                       1.14.2-1focal.20250519.234758        amd64        The Kinematics and Dynamics Library (KDL) defines a tree structure to represent the kinematic and dynamic parameters of a robot mechanism.
+ii  ros-noetic-laser-assembler                  1.7.8-1focal.20250520.003141         amd64        Provides nodes to assemble point clouds from either LaserScan or PointCloud messages
+ii  ros-noetic-laser-filters                    1.9.1-2focal.20250521.004125         amd64        Assorted filters designed to operate on 2D planar laser scanners, which use the sensor_msgs/LaserScan type.
+ii  ros-noetic-laser-geometry                   1.6.8-1focal.20250520.002454         amd64        This package contains a class for converting from a 2D laser scan as defined by sensor_msgs/LaserScan into a point cloud as defined by sensor_msgs/PointCloud or sensor_msgs/PointCloud2.
+ii  ros-noetic-laser-pipeline                   1.6.4-1focal.20250521.012210         amd64        Meta-package of libraries for processing laser data, including converting laser data into 3D representations.
+ii  ros-noetic-librviz-tutorial                 0.11.2-1focal.20250520.011204        amd64        Tutorial showing how to compile your own C++ program with RViz displays and features.
+ii  ros-noetic-map-msgs                         1.14.2-1focal.20250519.235841        amd64        This package defines messages commonly used in mapping packages.
+ii  ros-noetic-mavros-msgs                      1.20.1-1focal.20250520.005026        amd64        mavros_msgs defines messages for MAVROS.
+ii  ros-noetic-media-export                     0.3.0-1focal.20250426.005754         amd64        Placeholder package enabling generic export of media paths.
+ii  ros-noetic-message-filters                  1.17.4-1focal.20250519.233523        amd64        A set of message filters which take in messages and may output those messages at a later time, based on the conditions that filter needs met.
+ii  ros-noetic-message-generation               0.4.1-1focal.20250426.010337         amd64        Package modeling the build-time dependencies for generating language bindings of messages.
+ii  ros-noetic-message-runtime                  0.4.13-1focal.20250426.011132        amd64        Package modeling the run-time dependencies for language bindings of messages.
+ii  ros-noetic-mk                               1.15.10-1focal.20250426.230532       amd64        A collection of .mk include files for building ROS architectural elements.
+ii  ros-noetic-nav-msgs                         1.13.2-1focal.20250426.013359        amd64        nav_msgs defines the common messages used to interact with the navigation stack.
+ii  ros-noetic-nodelet                          1.11.2-1focal.20250519.231850        amd64        The nodelet package is designed to provide a way to run multiple algorithms in the same process with zero copy transport between algorithms.
+ii  ros-noetic-nodelet-core                     1.11.2-1focal.20250521.010457        amd64        Nodelet Core Metapackage
+ii  ros-noetic-nodelet-topic-tools              1.11.2-1focal.20250521.003920        amd64        This package contains common nodelet tools such as a mux, demux and throttle.
+ii  ros-noetic-nodelet-tutorial-math            0.2.0-1focal.20250519.232311         amd64        Package for Nodelet tutorial.
+ii  ros-noetic-octomap                          1.9.8-1focal.20250426.005809         amd64        The OctoMap library implements a 3D occupancy grid mapping approach, providing data structures and mapping algorithms in C++.
+ii  ros-noetic-octomap-msgs                     0.3.5-1focal.20250426.012548         amd64        This package provides messages and serializations / conversion for the OctoMap library.
+ii  ros-noetic-octomap-ros                      0.4.1-1focal.20250520.004725         amd64        octomap_ros provides conversion functions between ROS and OctoMap's native types.
+ii  ros-noetic-pcl-conversions                  1.7.4-1focal.20250520.005606         amd64        Provides conversions from PCL data types and ROS message types
+ii  ros-noetic-pcl-msgs                         0.3.0-1focal.20250520.005335         amd64        Package containing PCL (Point Cloud Library)-related ROS messages.
+ii  ros-noetic-pcl-ros                          1.7.4-1focal.20250521.004323         amd64        PCL (Point Cloud Library) ROS interface stack.
+ii  ros-noetic-perception                       1.5.0-1focal.20250521.013504         amd64        A metapackage to aggregate several packages.
+ii  ros-noetic-perception-pcl                   1.7.4-1focal.20250521.013426         amd64        PCL (Point Cloud Library) ROS interface stack.
+ii  ros-noetic-pluginlib                        1.13.2-1focal.20250426.231402        amd64        The pluginlib package provides tools for writing and dynamically loading plugins using the ROS build infrastructure.
+ii  ros-noetic-pluginlib-tutorials              0.2.0-1focal.20250519.231312         amd64        The pluginlib_tutorials package
+ii  ros-noetic-polled-camera                    1.12.1-1focal.20250520.000507        amd64        polled_camera contains a service and C++ helper classes for implementing a polled camera driver node and requesting images from it.
+ii  ros-noetic-position-controllers             0.22.0-1focal.20250520.000937        amd64        position_controllers
+ii  ros-noetic-python-qt-binding                0.4.6-1focal.20250426.201332         amd64        This stack provides Python bindings for Qt.
+ii  ros-noetic-qt-dotgraph                      0.4.5-1focal.20250426.202029         amd64        qt_dotgraph provides helpers to work with dot graphs.
+ii  ros-noetic-qt-gui                           0.4.5-1focal.20250426.202313         amd64        qt_gui provides the infrastructure for an integrated graphical user interface based on Qt.
+ii  ros-noetic-qt-gui-cpp                       0.4.5-1focal.20250427.060425         amd64        qt_gui_cpp provides the foundation for C++-bindings for qt_gui and creates bindings for every generator available.
+ii  ros-noetic-qt-gui-py-common                 0.4.5-1focal.20250426.201640         amd64        qt_gui_py_common provides common functionality for GUI plugins written in Python.
+ii  ros-noetic-qwt-dependency                   1.1.1-2focal.20250426.010052         amd64        This encapsulates the Qwt dependency for a specific ROS distribution and its Qt version
+ii  ros-noetic-realtime-tools                   1.16.1-1focal.20250520.000413        amd64        Contains a set of tools that can be used from a hard realtime thread, without breaking the realtime behavior.
+ii  ros-noetic-resource-retriever               1.12.10-1focal.20250426.231456       amd64        This package retrieves data from url-format files such as http://, ftp://, package:// file://, etc., and loads the data into memory.
+ii  ros-noetic-robot                            1.5.0-1focal.20250521.012857         amd64        A metapackage which extends ros_base and includes ROS libaries for any robot hardware.
+ii  ros-noetic-robot-state-publisher            1.15.3-1focal.20250520.002451        amd64        This package allows you to publish the state of a robot to tf2.
+ii  ros-noetic-ros                              1.15.10-1focal.20250426.231030       amd64        ROS packaging system
+ii  ros-noetic-ros-base                         1.5.0-1focal.20250521.010531         amd64        A metapackage which extends ros_core and includes other basic non-robot tools like actionlib, dynamic reconfigure, nodelets, and pluginlib.
+ii  ros-noetic-ros-comm                         1.17.4-1focal.20250520.000923        amd64        ROS communications-related packages, including core client libraries (roscpp, rospy) and graph introspection tools (rostopic, rosnode, rosservice, rosparam).
+ii  ros-noetic-ros-core                         1.5.0-1focal.20250520.015810         amd64        A metapackage to aggregate the packages required to use publish / subscribe, services, launch files, and other core ROS concepts.
+ii  ros-noetic-ros-environment                  1.3.2-1focal.20250426.010109         amd64        The package provides the environment variables `ROS_VERSION`, `ROS_DISTRO`, `ROS_PACKAGE_PATH`, and `ROS_ETC_DIR`.
+ii  ros-noetic-ros-tutorials                    0.10.3-1focal.20250519.233900        amd64        ros_tutorials contains packages that demonstrate various features of ROS, as well as support packages which help demonstrate those features.
+ii  ros-noetic-rosbag                           1.17.4-1focal.20250519.234429        amd64        This is a set of tools for recording from and playing back to ROS topics.
+ii  ros-noetic-rosbag-migration-rule            1.0.2-1focal.20250426.010122         amd64        This empty package allows to export rosbag migration rule files without depending on rosbag.
+ii  ros-noetic-rosbag-storage                   1.17.4-1focal.20250519.233542        amd64        This is a set of tools for recording from and playing back ROS message without relying on the ROS client library.
+ii  ros-noetic-rosbash                          1.15.10-1focal.20250426.230519       amd64        Assorted shell commands for using ros with bash.
+ii  ros-noetic-rosboost-cfg                     1.15.10-1focal.20250426.201140       amd64        Contains scripts used by the rosboost-cfg tool for determining cflags/lflags/etc.
+ii  ros-noetic-rosbuild                         1.15.10-1focal.20250426.201143       amd64        rosbuild contains scripts for managing the CMake-based build system for ROS.
+ii  ros-noetic-rosclean                         1.15.10-1focal.20250426.201147       amd64        rosclean: cleanup filesystem resources (e.g.
+ii  ros-noetic-rosconsole                       1.14.4-1focal.20250426.230918        amd64        ROS console output library.
+ii  ros-noetic-rosconsole-bridge                0.5.5-1focal.20250426.231403         amd64        rosconsole_bridge is a package used in conjunction with console_bridge and rosconsole for connecting console_bridge-based logging to rosconsole-based logging.
+ii  ros-noetic-roscpp                           1.17.4-1focal.20250519.225343        amd64        roscpp is a C++ implementation of ROS.
+ii  ros-noetic-roscpp-core                      0.7.3-1focal.20250426.011153         amd64        Underlying data libraries for roscpp messages.
+ii  ros-noetic-roscpp-serialization             0.7.3-1focal.20250426.010742         amd64        roscpp_serialization contains the code for serialization as described in MessagesSerializationAndAdaptingTypes.
+ii  ros-noetic-roscpp-traits                    0.7.3-1focal.20250426.010711         amd64        roscpp_traits contains the message traits code as described in MessagesTraits.
+ii  ros-noetic-roscpp-tutorials                 0.10.3-1focal.20250519.231628        amd64        This package attempts to show the features of ROS step-by-step, including using messages, servers, parameters, etc.
+ii  ros-noetic-roscreate                        1.15.10-1focal.20250426.230758       amd64        roscreate contains a tool that assists in the creation of ROS filesystem resources.
+ii  ros-noetic-rosgraph                         1.17.4-1focal.20250519.224802        amd64        rosgraph contains the rosgraph command-line tool, which prints information about the ROS Computation Graph.
+ii  ros-noetic-rosgraph-msgs                    1.11.4-1focal.20250426.012754        amd64        Messages relating to the ROS Computation Graph.
+ii  ros-noetic-roslang                          1.15.10-1focal.20250426.201201       amd64        roslang is a common package that all ROS client libraries depend on.
+ii  ros-noetic-roslaunch                        1.17.4-1focal.20250519.232645        amd64        roslaunch is a tool for easily launching multiple ROS nodes locally and remotely via SSH, as well as setting parameters on the Parameter Server.
+ii  ros-noetic-roslib                           1.15.10-1focal.20250426.230521       amd64        Base dependencies and support libraries for ROS.
+ii  ros-noetic-roslint                          0.12.0-1focal.20250426.010138        amd64        CMake lint commands for ROS packages.
+ii  ros-noetic-roslisp                          1.9.25-1focal.20250426.230524        amd64        Lisp client library for ROS, the Robot Operating System.
+ii  ros-noetic-roslz4                           1.17.4-1focal.20250519.224812        amd64        A Python and C++ implementation of the LZ4 streaming format.
+ii  ros-noetic-rosmake                          1.15.10-1focal.20250426.201209       amd64        rosmake is a ros dependency aware build tool which can be used to build all dependencies in the correct order.
+ii  ros-noetic-rosmaster                        1.17.4-1focal.20250519.225411        amd64        ROS Master implementation.
+ii  ros-noetic-rosmsg                           1.17.4-1focal.20250519.234838        amd64        rosmsg contains two command-line tools: rosmsg and rossrv.
+ii  ros-noetic-rosnode                          1.17.4-1focal.20250519.235748        amd64        rosnode is a command-line tool for displaying debug information about ROS Nodes, including publications, subscriptions and connections.
+ii  ros-noetic-rosout                           1.17.4-1focal.20250519.231643        amd64        System-wide logging mechanism for messages sent to the /rosout topic.
+ii  ros-noetic-rospack                          2.6.4-1focal.20250426.230225         amd64        ROS Package Tool
+ii  ros-noetic-rosparam                         1.17.4-1focal.20250519.225309        amd64        rosparam contains the rosparam command-line tool for getting and setting ROS Parameters on the Parameter Server using YAML-encoded files.
+ii  ros-noetic-rospy                            1.17.4-1focal.20250519.231646        amd64        rospy is a pure Python client library for ROS.
+ii  ros-noetic-rospy-tutorials                  0.10.3-1focal.20250519.233633        amd64        This package attempts to show the features of ROS python API step-by-step, including using messages, servers, parameters, etc.
+ii  ros-noetic-rosservice                       1.17.4-1focal.20250519.235234        amd64        rosservice contains the rosservice command-line tool for listing and querying ROS Services.
+ii  ros-noetic-rostest                          1.17.4-1focal.20250519.233130        amd64        Integration test suite based on roslaunch that is compatible with xUnit frameworks.
+ii  ros-noetic-rostime                          0.7.3-1focal.20250426.004754         amd64        Time and Duration implementations for C++ libraries, including roscpp.
+ii  ros-noetic-rostopic                         1.17.4-1focal.20250519.235106        amd64        rostopic contains the rostopic command-line tool for displaying debug information about ROS Topics, including publishers, subscribers, publishing rate, and ROS Messages.
+ii  ros-noetic-rosunit                          1.15.10-1focal.20250426.230759       amd64        Unit-testing package for ROS.
+ii  ros-noetic-roswtf                           1.17.4-1focal.20250519.235947        amd64        roswtf is a tool for diagnosing issues with a running ROS system.
+ii  ros-noetic-rqt-action                       0.4.11-1focal.20250520.001424        amd64        rqt_action provides a feature to introspect all available ROS action (from actionlib) types.
+ii  ros-noetic-rqt-bag                          0.5.3-1focal.20250519.235942         amd64        rqt_bag provides a GUI plugin for displaying and replaying ROS bag files.
+ii  ros-noetic-rqt-bag-plugins                  0.5.3-1focal.20250520.001317         amd64        rqt_bag provides a GUI plugin for displaying and replaying ROS bag files.
+ii  ros-noetic-rqt-common-plugins               0.4.11-1focal.20250521.005128        amd64        rqt_common_plugins metapackage provides ROS backend graphical tools suite that can be used on/off of robot runtime.
+ii  ros-noetic-rqt-console                      0.4.14-1focal.20250520.001205        amd64        rqt_console provides a GUI plugin for displaying and filtering ROS messages.
+ii  ros-noetic-rqt-dep                          0.4.14-1focal.20250520.000033        amd64        rqt_dep provides a GUI plugin for visualizing the ROS dependency graph.
+ii  ros-noetic-rqt-graph                        0.4.16-1focal.20250519.235907        amd64        rqt_graph provides a GUI plugin for visualizing the ROS computation graph.
+ii  ros-noetic-rqt-gui                          0.5.5-1focal.20250519.232427         amd64        rqt_gui provides the main to start an instance of the ROS integrated graphical user interface provided by qt_gui.
+ii  ros-noetic-rqt-gui-cpp                      0.5.5-1focal.20250519.232315         amd64        rqt_gui_cpp enables GUI plugins to use the C++ client library for ROS.
+ii  ros-noetic-rqt-gui-py                       0.5.5-1focal.20250519.233238         amd64        rqt_gui_py enables GUI plugins to use the Python client library for ROS.
+ii  ros-noetic-rqt-image-view                   0.4.19-1focal.20250520.001352        amd64        rqt_image_view provides a GUI plugin for displaying images using image_transport.
+ii  ros-noetic-rqt-launch                       0.4.10-1focal.20250520.001300        amd64        This rqt plugin ROS package provides easy view of .launch files.
+ii  ros-noetic-rqt-logger-level                 0.4.13-1focal.20250519.235914        amd64        rqt_logger_level provides a GUI plugin for configuring the logger level of ROS nodes.
+ii  ros-noetic-rqt-moveit                       0.5.13-1focal.20250520.001222        amd64        An rqt-based tool that assists monitoring tasks for MoveIt! motion planner developers and users.
+ii  ros-noetic-rqt-msg                          0.4.12-1focal.20250520.001309        amd64        A Python GUI plugin for introspecting available ROS message types.
+ii  ros-noetic-rqt-nav-view                     0.5.8-1focal.20250520.003700         amd64        rqt_nav_view provides a gui for viewing navigation maps and paths.
+ii  ros-noetic-rqt-plot                         0.4.16-1focal.20250520.001122        amd64        rqt_plot provides a GUI plugin visualizing numeric values in a 2D plot using different plotting backends.
+ii  ros-noetic-rqt-pose-view                    0.5.13-1focal.20250520.004134        amd64        rqt_pose_view provides a GUI plugin for visualizing 3D poses.
+ii  ros-noetic-rqt-publisher                    0.4.12-1focal.20250520.001359        amd64        rqt_publisher provides a GUI plugin for publishing arbitrary messages with fixed or computed field values.
+ii  ros-noetic-rqt-py-common                    0.5.5-1focal.20250520.000903         amd64        rqt_py_common provides common functionality for rqt plugins written in Python.
+ii  ros-noetic-rqt-py-console                   0.4.12-1focal.20250519.233341        amd64        rqt_py_console is a Python GUI plugin providing an interactive Python console.
+ii  ros-noetic-rqt-reconfigure                  0.5.7-1focal.20250521.003225         amd64        This rqt plugin succeeds former dynamic_reconfigure's GUI (reconfigure_gui), and provides the way to view and edit the parameters that are accessible via dynamic_reconfigure.
+ii  ros-noetic-rqt-robot-dashboard              0.5.8-1focal.20250520.003750         amd64        rqt_robot_dashboard provides an infrastructure for building robot dashboard plugins in rqt.
+ii  ros-noetic-rqt-robot-monitor                0.5.15-1focal.20250520.001222        amd64        rqt_robot_monitor displays diagnostics_agg topics messages that are published by diagnostic_aggregator.
+ii  ros-noetic-rqt-robot-plugins                0.5.8-1focal.20250520.013008         amd64        Metapackage of rqt plugins that are particularly used with robots during its operation.
+ii  ros-noetic-rqt-robot-steering               0.5.14-1focal.20250519.235722        amd64        rqt_robot_steering provides a GUI plugin for steering a robot using Twist messages.
+ii  ros-noetic-rqt-runtime-monitor              0.5.10-1focal.20250519.233325        amd64        rqt_runtime_monitor provides a GUI plugin viewing DiagnosticsArray messages.
+ii  ros-noetic-rqt-rviz                         0.7.2-1focal.20250520.012319         amd64        rqt_rviz provides a GUI plugin embedding RViz.
+ii  ros-noetic-rqt-service-caller               0.4.12-1focal.20250520.001357        amd64        rqt_service_caller provides a GUI plugin for calling arbitrary services.
+ii  ros-noetic-rqt-shell                        0.4.13-1focal.20250519.233725        amd64        rqt_shell is a Python GUI plugin providing an interactive shell.
+ii  ros-noetic-rqt-srv                          0.4.11-1focal.20250520.001432        amd64        A Python GUI plugin for introspecting available ROS message types.
+ii  ros-noetic-rqt-tf-tree                      0.6.5-1focal.20250520.001233         amd64        rqt_tf_tree provides a GUI plugin for visualizing the ROS TF frame tree.
+ii  ros-noetic-rqt-top                          0.4.11-1focal.20250519.233400        amd64        RQT plugin for monitoring ROS processes.
+ii  ros-noetic-rqt-topic                        0.4.15-1focal.20250519.235732        amd64        rqt_topic provides a GUI plugin for displaying debug information about ROS topics including publishers, subscribers, publishing rate, and ROS Messages.
+ii  ros-noetic-rqt-web                          0.4.11-1focal.20250519.233405        amd64        rqt_web is a simple web content viewer for rqt.
+ii  ros-noetic-rviz                             1.14.26-1focal.20250520.002916       amd64        3D visualization tool for ROS.
+ii  ros-noetic-rviz-plugin-tutorials            0.11.2-1focal.20250520.022635        amd64        Tutorials showing how to write plugins for RViz.
+ii  ros-noetic-rviz-python-tutorial             0.11.2-1focal.20250520.022649        amd64        Tutorials showing how to call into rviz internals from python scripts.
+ii  ros-noetic-self-test                        1.12.1-1focal.20250519.233601        amd64        self_test
+ii  ros-noetic-sensor-msgs                      1.13.2-1focal.20250519.234916        amd64        This package defines messages for commonly used sensors, including cameras and scanning laser rangefinders.
+ii  ros-noetic-shape-msgs                       1.13.2-1focal.20250426.012615        amd64        This package contains messages for defining shapes, such as simple solid object primitives (cube, sphere, etc), planes, and meshes.
+ii  ros-noetic-simulators                       1.5.0-1focal.20250521.012934         amd64        A metapackage to aggregate several packages.
+ii  ros-noetic-smach                            2.5.3-1focal.20250426.003520         amd64        SMACH is a task-level architecture for rapidly creating complex robot behavior.
+ii  ros-noetic-smach-msgs                       2.5.3-1focal.20250426.060145         amd64        this package contains a set of messages that are used by the introspection interfaces for smach.
+ii  ros-noetic-smach-ros                        2.5.3-1focal.20250520.000906         amd64        The smach_ros package contains extensions for the SMACH library to integrate it tightly with ROS.
+ii  ros-noetic-smclib                           1.8.7-1focal.20250426.010546         amd64        The State Machine Compiler (SMC) from http://smc.sourceforge.net/ converts a language-independent description of a state machine into the source code to support that state machine.
+ii  ros-noetic-stage                            4.3.0-1focal.20250426.004649         amd64        Mobile robot simulator http://rtv.github.com/Stage
+ii  ros-noetic-stage-ros                        1.8.0-1focal.20250520.002057         amd64        This package provides ROS specific hooks for stage
+ii  ros-noetic-std-msgs                         0.5.14-1focal.20250426.011621        amd64        Standard ROS Messages including common message types representing primitive data types and other basic message constructs, such as multiarrays.
+ii  ros-noetic-std-srvs                         1.11.4-1focal.20250426.011617        amd64        Common service definitions.
+ii  ros-noetic-stereo-image-proc                1.17.0-1focal.20250521.005052        amd64        Stereo and single image rectification and disparity processing.
+ii  ros-noetic-stereo-msgs                      1.13.2-1focal.20250520.005342        amd64        stereo_msgs contains messages specific to stereo processing, such as disparity images.
+ii  ros-noetic-tf                               1.13.4-1focal.20250520.001125        amd64        tf is a package that lets the user keep track of multiple coordinate frames over time.
+ii  ros-noetic-tf-conversions                   1.13.4-1focal.20250520.015950        amd64        This package contains a set of conversion functions to convert common tf datatypes (point, vector, pose, etc) into semantically identical datatypes used by other libraries.
+ii  ros-noetic-tf2                              0.7.10-1focal.20250502.231751        amd64        tf2 is the second generation of the transform library, which lets the user keep track of multiple coordinate frames over time.
+ii  ros-noetic-tf2-eigen                        0.7.10-1focal.20250502.232642        amd64        tf2_eigen
+ii  ros-noetic-tf2-geometry-msgs                0.7.10-1focal.20250520.001448        amd64        tf2_geometry_msgs
+ii  ros-noetic-tf2-kdl                          0.7.10-1focal.20250520.001448        amd64        KDL binding for tf2
+ii  ros-noetic-tf2-msgs                         0.7.10-1focal.20250502.231510        amd64        tf2_msgs
+ii  ros-noetic-tf2-py                           0.7.10-1focal.20250519.232104        amd64        The tf2_py package
+ii  ros-noetic-tf2-ros                          0.7.10-1focal.20250520.000336        amd64        This package contains the ROS bindings for the tf2 library, for both Python and C++.
+ii  ros-noetic-theora-image-transport           1.15.0-1focal.20250521.004408        amd64        Theora_image_transport provides a plugin to image_transport for transparently sending an image stream encoded with the Theora codec.
+ii  ros-noetic-topic-tools                      1.17.4-1focal.20250519.233757        amd64        Tools for directing, throttling, selecting, and otherwise messing with ROS topics at a meta level.
+ii  ros-noetic-trajectory-msgs                  1.13.2-1focal.20250426.012617        amd64        This package defines messages for defining robot trajectories.
+ii  ros-noetic-transmission-interface           0.20.0-1focal.20250519.231320        amd64        Transmission Interface.
+ii  ros-noetic-turtle-actionlib                 0.2.0-1focal.20250520.000451         amd64        turtle_actionlib demonstrates how to write an action server and client with the turtlesim.
+ii  ros-noetic-turtle-tf                        0.2.4-1focal.20250520.003429         amd64        turtle_tf demonstrates how to write a tf broadcaster and listener with the turtlesim.
+ii  ros-noetic-turtle-tf2                       0.2.4-1focal.20250520.002604         amd64        turtle_tf2 demonstrates how to write a tf2 broadcaster and listener with the turtlesim.
+ii  ros-noetic-turtlesim                        0.10.3-1focal.20250519.230656        amd64        turtlesim is a tool made for teaching ROS and ROS packages.
+ii  ros-noetic-urdf                             1.13.4-1focal.20250519.233550        amd64        This package contains a C++ parser for the Unified Robot Description Format (URDF), which is an XML format for representing a robot model.
+ii  ros-noetic-urdf-parser-plugin               1.13.4-1focal.20250426.230328        amd64        This package contains a C++ base class for URDF parsers.
+ii  ros-noetic-urdf-sim-tutorial                0.5.1-1focal.20250521.010112         amd64        The urdf_sim_tutorial package
+ii  ros-noetic-urdf-tutorial                    0.5.0-2focal.20250520.012713         amd64        This package contains a number of URDF tutorials.
+ii  ros-noetic-uuid-msgs                        1.0.6-1focal.20250426.013002         amd64        ROS messages for universally unique identifiers.
+ii  ros-noetic-vision-opencv                    1.16.2-1focal.20250520.015345        amd64        Packages for interfacing ROS with OpenCV, a library of programming functions for real time computer vision.
+ii  ros-noetic-visualization-marker-tutorials   0.11.2-1focal.20250519.230754        amd64        The visulalization_marker_tutorials package
+ii  ros-noetic-visualization-msgs               1.13.2-1focal.20250426.012640        amd64        visualization_msgs is a set of messages used by higher level packages, such as rviz, that deal in visualization-specific data.
+ii  ros-noetic-visualization-tutorials          0.11.2-1focal.20250520.023319        amd64        Metapackage referencing tutorials related to rviz and visualization.
+ii  ros-noetic-viz                              1.5.0-1focal.20250521.012248         amd64        A metapackage to aggregate several packages.
+ii  ros-noetic-webkit-dependency                1.1.3-1focal.20250426.230409         amd64        This encapsulates the WebKit dependency for a specific ROS distribution and its Qt version
+ii  ros-noetic-xacro                            1.14.20-1focal.20250519.233806       amd64        Xacro (XML Macros) Xacro is an XML macro language.
+ii  ros-noetic-xmlrpcpp                         1.17.4-1focal.20250519.224718        amd64        XmlRpc++ is a C++ implementation of the XML-RPC protocol.

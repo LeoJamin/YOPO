@@ -22,7 +22,7 @@ class YopoNetwork(nn.Module):
             self,
             observation_dim: int = 13,
             output_dim: int = 10,
-            hidden_state: int = 64,
+            hidden_state: int = 64, # depth feature dimension from ResNet18
             pendulum_latent_dim: int = 8,
     ):
         super(YopoNetwork, self).__init__()

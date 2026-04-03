@@ -3,9 +3,9 @@ vel_max_train: 4.0
 acc_max_train: 4.0
 wg: 0.15
 ws: 10.0
-wa: 0.3
+wa: 2.0
 wc: 1.5
-wd: 16.0
+wd: 75.0
 detach_qvec: true
 dataset_path: ../dataset
 image_height: 96
@@ -44,7 +44,7 @@ map_expand_max:
 - 6.0
 pendulum_encoder:
   latent_dim: 8
-gradient_decay: true
+gradient_decay: false
 score_dyn_boost: 5.0
 payload:
   cable_length: 0.8

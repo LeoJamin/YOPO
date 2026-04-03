@@ -118,10 +118,7 @@ class DifferentiablePendulumLoss(nn.Module):
             sin_phi = torch.sin(phi)
             cos_phi = torch.cos(phi)
 
-            # Effective acceleration vector: a_eff = a_uav + g*e_z
-            # Projected onto spherical coordinate basis vectors
-            # q_theta = [cos(th)cos(ph), cos(th)sin(ph), sin(th)]
-            # q_phi   = [-sin(ph), cos(ph), 0]
+            # Effective acceleration: a_eff = a_uav + g*e_z
             a_eff_x = ax
             a_eff_y = ay
             a_eff_z = az + self.g
@@ -139,25 +136,26 @@ class DifferentiablePendulumLoss(nn.Module):
             ddtheta = (dphi ** 2 * sin_theta * cos_theta
                        - (1.0 / cable_L) * a_dot_q_theta)
 
-            # Singularity protection at theta ~ 0
-            sin_theta_safe = sin_theta.clamp(min=0.02)
-            ddphi = (-2.0 * dtheta * dphi * cos_theta / sin_theta_safe
-                     - (1.0 / (cable_L * sin_theta_safe ** 2)) * a_dot_q_phi)
+            # Singularity-safe phi dynamics:
+            # Near theta=0, use linear damping instead of 1/sin^2 (avoids Inf)
+            sin_theta_safe = sin_theta.abs().clamp(min=0.1)
+            ddphi_full = (-2.0 * dtheta * dphi * cos_theta / sin_theta_safe
+                          - (1.0 / (cable_L * sin_theta_safe)) * a_dot_q_phi)
+            # Near singularity: weak damping
+            ddphi_damp = -0.5 * dphi
+            # Smooth blend: use full equation when sin(theta) > 0.15
+            blend = (sin_theta.abs() / 0.15).clamp(0.0, 1.0)
+            ddphi = blend * ddphi_full + (1.0 - blend) * ddphi_damp
 
-            # Clamp angular accelerations for numerical stability
-            ddtheta = ddtheta.clamp(-50.0, 50.0)
-            ddphi = ddphi.clamp(-50.0, 50.0)
+            # Clamp angular accelerations
+            ddtheta = ddtheta.clamp(-20.0, 20.0)
+            ddphi = ddphi.clamp(-20.0, 20.0)
 
-            # Semi-implicit Euler integration (more stable than explicit)
-            dtheta = dtheta + ddtheta * self.dt
-            dphi = dphi + ddphi * self.dt
-            theta = theta + dtheta * self.dt
+            # Semi-implicit Euler integration
+            dtheta = (dtheta + ddtheta * self.dt).clamp(-5.0, 5.0)
+            dphi = (dphi + ddphi * self.dt).clamp(-5.0, 5.0)
+            theta = (theta + dtheta * self.dt).clamp(0.01, math.pi * 0.8)
             phi = phi + dphi * self.dt
-
-            # Clamp states for stability
-            theta = theta.clamp(1e-4, math.pi - 0.01)
-            dtheta = dtheta.clamp(-10.0, 10.0)
-            dphi = dphi.clamp(-10.0, 10.0)
 
             # --- Temporal gradient decay ---
             # Apply decay to the cost contribution of this timestep
