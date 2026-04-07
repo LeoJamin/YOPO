@@ -93,13 +93,13 @@ trainer = YopoTrainer(
     loss_weight=[1.0, 1.0, 1.0],
     tensorboard_path=log_dir, save_on_exit=False,
 )
-trainer.train(epoch={args.epochs}, save_interval={args.epochs})
+trainer.train(epoch={args.epochs}, save_interval=10)
 print("DSE_TRAIN_DONE")
 print("DSE_TRIAL_PATH=" + trainer.tensorboard_path)
 """
     proc = subprocess.run(
         [PYTHON, "-u", "-c", train_script],
-        capture_output=True, text=True, env=env, timeout=7200 * 3,
+        capture_output=True, text=True, env=env, timeout=7200 * 5,  # 10h for 50-epoch runs
     )
     print(proc.stdout[-2000:] if len(proc.stdout) > 2000 else proc.stdout)
     if proc.stderr:

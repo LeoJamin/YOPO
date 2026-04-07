@@ -44,7 +44,7 @@ map_expand_max:
 - 6.0
 pendulum_encoder:
   latent_dim: 8
-gradient_decay: false
+gradient_decay: true
 score_dyn_boost: 5.0
 payload:
   cable_length: 0.8
