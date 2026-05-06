@@ -11,8 +11,11 @@
         <remap from="~odom" to="/sim/odom"/>
         <remap from="~imu" to="/sim/imu"/>
         <remap from="~cmd" to="so3_cmd"/>
-        <remap from="~force_disturbance" to="force_disturbance"/>    
-        <remap from="~moment_disturbance" to="moment_disturbance"/>        
+        <remap from="~force_disturbance" to="force_disturbance"/>
+        <remap from="~moment_disturbance" to="moment_disturbance"/>
+        <!-- Make payload odometry available on /sim/payload_odom so the
+             planner (test_yopo_ros.py) can subscribe to it for swing state. -->
+        <remap from="~payload_odom" to="/sim/payload_odom"/>
     </node>
 
     <node pkg="so3_control" type="network_control_node" name="network_controller_node" output="screen">

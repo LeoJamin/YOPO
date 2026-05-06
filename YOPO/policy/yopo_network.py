@@ -39,11 +39,18 @@ class YopoNetwork(nn.Module):
         # Image backbone: depth -> 64D feature
         self.image_backbone = YopoBackbone(hidden_state)
 
-        # Pendulum state encoder: 4D -> 8D learned latent
+        # Pendulum state encoder: 4D -> 8D learned latent.
+        # Encoding ("raw" | "sin_cos") read from cfg if available, else "raw".
+        try:
+            from config.config import cfg as _cfg
+            encoding = _cfg._data.get("pendulum_encoder", {}).get("encoding", "raw")
+        except Exception:
+            encoding = "raw"
         if self.pendulum_dim > 0:
             self.pendulum_encoder = PendulumStateEncoder(
                 input_dim=self.pendulum_dim,
                 latent_dim=self.pendulum_latent_dim,
+                encoding=encoding,
             )
         else:
             self.pendulum_encoder = None

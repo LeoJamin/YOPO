@@ -58,6 +58,12 @@ ABLATIONS = {
                            wa_override=None, inflated_r=None),  # L + DynamicsLoss
     "A4_no_dyn":      dict(obs_dim=15, use_dynamics=False, mask=[True, True, True, True, True, True], detach_qvec=True,
                            wa_override=None, inflated_r=None),  # Full 15D, NO DynamicsLoss
+    # 13D obs (theta, phi, dtheta, dphi only — no L, no m), DynamicsLoss OFF.
+    # Matched-architecture ablation for YOPO_3 (the canonical 13D paper
+    # model). Used in B2 of EXPERIMENT_PLAN to isolate the effect of the
+    # dynamics loss while holding network architecture fixed.
+    "A_yopo3_no_dyn": dict(obs_dim=13, use_dynamics=False, mask=[True, True, True, True, False, False], detach_qvec=True,
+                           wa_override=None, inflated_r=None),
 }
 
 

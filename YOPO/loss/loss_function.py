@@ -6,6 +6,7 @@ from loss.safety_loss import SafetyLoss
 from loss.smoothness_loss import SmoothnessLoss
 from loss.guidance_loss import GuidanceLoss
 from loss.differentiable_pendulum import DifferentiablePendulumLoss
+from loss.cartesian_pendulum import CartesianPendulumLoss
 
 class YOPOLoss(nn.Module):
     def __init__(self):
@@ -30,11 +31,33 @@ class YOPOLoss(nn.Module):
         self.goal_loss = GuidanceLoss()
 
         gradient_decay = cfg._data.get("gradient_decay", True)
-        self.dynamics_loss = DifferentiablePendulumLoss(
-            self._L, self.sgm_time, self.device,
-            gradient_decay_enabled=gradient_decay,
-        )
+        # Surrogate selection: "spherical" (default) or "cartesian".
+        # The Cartesian formulation removes the theta.clamp(0.01, pi*0.8) bias
+        # at the cost of one additional unit-sphere projection per step.
+        surrogate = cfg._data.get("pendulum_surrogate", "spherical")
+        if surrogate == "cartesian":
+            self.dynamics_loss = CartesianPendulumLoss(
+                self._L, self.sgm_time, self.device,
+                gradient_decay_enabled=gradient_decay,
+            )
+        elif surrogate == "spherical":
+            self.dynamics_loss = DifferentiablePendulumLoss(
+                self._L, self.sgm_time, self.device,
+                gradient_decay_enabled=gradient_decay,
+            )
+        else:
+            raise ValueError(f"Unknown pendulum_surrogate: {surrogate!r}. "
+                             f"Expected 'spherical' or 'cartesian'.")
+        print(f"| {'surrogate':<12} = {surrogate:>9} |")
         # dynamics_weight is already set by denormalize_weight() above — do NOT overwrite
+
+        # Curriculum support: keep the full weight as a baseline so we can
+        # scale it down during early epochs without losing the target value.
+        self._dynamics_weight_full = self.dynamics_weight
+        curr = cfg._data.get("dynamics_curriculum", {}) or {}
+        self._curriculum_enabled = bool(curr.get("enabled", False))
+        self._curriculum_ramp_start = int(curr.get("ramp_start_epoch", 0))
+        self._curriculum_ramp_end   = int(curr.get("ramp_end_epoch", 0))
 
 
         print("------ Actual Loss ------")
@@ -43,6 +66,28 @@ class YOPOLoss(nn.Module):
         print(f"| {'goal':<12} = {self.goal_weight:6.4f} |")
         print(f"| {'dynamics':<12} = {self.dynamics_weight:6.4f} |")
         print("-------------------------")
+
+    def apply_dynamics_curriculum(self, epoch: int):
+        """Linear ramp of the dynamics-loss weight over early epochs.
+
+        Behaviour:
+          - epoch  < ramp_start: weight = 0
+          - epoch >= ramp_end:   weight = baseline (full)
+          - between:             weight = baseline * (epoch - start) / (end - start)
+
+        No-op when curriculum is disabled, or when baseline is already 0
+        (e.g. the dynamics-disabled ablation A4_no_dyn).
+        """
+        if not self._curriculum_enabled or self._dynamics_weight_full == 0:
+            return
+        if epoch < self._curriculum_ramp_start:
+            factor = 0.0
+        elif epoch >= self._curriculum_ramp_end:
+            factor = 1.0
+        else:
+            span = max(1, self._curriculum_ramp_end - self._curriculum_ramp_start)
+            factor = (epoch - self._curriculum_ramp_start) / span
+        self.dynamics_weight = factor * self._dynamics_weight_full
 
     def qp_generation(self):
         # 映射矩阵

@@ -75,6 +75,8 @@ class YopoTrainer:
         with self.progress_log:
             total_progress = self.progress_log.add_task("Training", total=epoch)
             for self.epoch_i in range(epoch):
+                # Update dynamics-loss weight per curriculum schedule (no-op if disabled).
+                self.yopo_loss.apply_dynamics_curriculum(self.epoch_i)
                 self.policy.train()
                 self.train_one_epoch(self.epoch_i, total_progress)
                 self.policy.eval()

@@ -1,0 +1,1725 @@
+
+============================================================
+Running ablation: A4_full_model | obs_dim=15 | dynamics=True | detach=True
+============================================================
+record tensorboard log to  saved/YOPO_2
+Loading network...
+---------- Param --------
+| max speed    =    4.0 |
+| max accel    =    4.0 |
+| traj time    =    2.5 |
+| max radio    =   10.0 |
+-------------------------
+Training from scratch
+Building ESDF map for Slung-load Bubble Chain...
+ESDF Maps Built Successfully!
+| surrogate    = cartesian |
+------ Actual Loss ------
+| smooth       = 0.0098 |
+| safety       = 1.5000 |
+| goal         = 0.1500 |
+| dynamics     = 4.6875 |
+-------------------------
+Network Loaded! Loading Dataset...
+----------------- Sampling State --------------------
+| X-Y-Z | Vel 95% Range(m/s)  | Acc 95% Range(m/s2) |
+|-------|---------------------|---------------------|
+|   0   |    0.0   ~   4.0    |   -4.0   ~   4.0    |
+|   1   |   -3.6   ~   3.6    |   -4.0   ~   4.0    |
+|   2   |   -2.4   ~   2.4    |   -2.4   ~   2.4    |
+-----------------------------------------------------
+| Goal Pitch 90% (deg)        |   -20.0  ~  20.0    |
+| Goal Yaw   90% (deg)        |   -40.0  ~  40.0    |
+-----------------------------------------------------
+Datafolders:
+     /home/jamine/research/diff-slung/code/YOPO/policy/../../dataset/0
+     /home/jamine/research/diff-slung/code/YOPO/policy/../../dataset/1
+     /home/jamine/research/diff-slung/code/YOPO/policy/../../dataset/2
+     /home/jamine/research/diff-slung/code/YOPO/policy/../../dataset/3
+     /home/jamine/research/diff-slung/code/YOPO/policy/../../dataset/4
+     /home/jamine/research/diff-slung/code/YOPO/policy/../../dataset/5
+     /home/jamine/research/diff-slung/code/YOPO/policy/../../dataset/6
+     /home/jamine/research/diff-slung/code/YOPO/policy/../../dataset/7
+     /home/jamine/research/diff-slung/code/YOPO/policy/../../dataset/8
+     /home/jamine/research/diff-slung/code/YOPO/policy/../../dataset/9
+Loaded payload state library: 187473 states from ODE simulation
+Loading train dataset
+=============== Train Data Summary ===============
+Images       | Count: 90000 |  Shape: 160,96
+Positions    | Count: 90000 |  Shape: 3
+Quaternions  | Count: 90000 |  Shape: 4
+Payload      | Count: 90000 |  State: 4, Param: 2
+==================================================
+Loaded payload state library: 187473 states from ODE simulation
+Loading valid dataset
+=============== Valid Data Summary ===============
+Images       | Count: 10000 |  Shape: 160,96
+Positions    | Count: 10000 |  Shape: 3
+Quaternions  | Count: 10000 |  Shape: 4
+Payload      | Count: 10000 |  State: 4, Param: 2
+==================================================
+Dataset Loaded!
+[01:02:24] Epoch: 0, Traj Loss: 12.2, Score Loss: 6.76, Dyn  yopo_trainer.py:122
+           Loss: 5.49, Batch FPS: 25.1                                          
+[01:02:37] Epoch: 0, Traj Loss: 11.5, Score Loss: 4.69, Dyn  yopo_trainer.py:122
+           Loss: 5.35, Batch FPS: 27.1                                          
+[01:02:50] Epoch: 0, Traj Loss: 10.9, Score Loss: 4.57, Dyn  yopo_trainer.py:122
+           Loss: 5.07, Batch FPS: 26.7                                          
+[01:03:03] Epoch: 0, Traj Loss: 10.6, Score Loss: 4.46, Dyn  yopo_trainer.py:122
+           Loss: 4.92, Batch FPS: 27.3                                          
+[01:03:16] Epoch: 0, Traj Loss: 10.4, Score Loss: 4.5, Dyn   yopo_trainer.py:122
+           Loss: 4.81, Batch FPS: 27.5                                          
+[01:03:29] Epoch: 0, Traj Loss: 10.2, Score Loss: 4.37, Dyn  yopo_trainer.py:122
+           Loss: 4.77, Batch FPS: 27.3                                          
+[01:03:41] Epoch: 0, Traj Loss: 10.2, Score Loss: 4.29, Dyn  yopo_trainer.py:122
+           Loss: 4.72, Batch FPS: 27.7                                          
+[01:03:54] Epoch: 0, Traj Loss: 10.2, Score Loss: 4.07, Dyn  yopo_trainer.py:122
+           Loss: 4.58, Batch FPS: 27.9                                          
+[01:04:07] Epoch: 0, Traj Loss: 9.98, Score Loss: 3.82, Dyn  yopo_trainer.py:122
+           Loss: 4.59, Batch FPS: 27.5                                          
+[01:04:20] Epoch: 0, Traj Loss: 9.67, Score Loss: 3.55, Dyn  yopo_trainer.py:122
+           Loss: 4.45, Batch FPS: 27                                            
+[01:04:33] Epoch: 0, Traj Loss: 9.96, Score Loss: 3.54, Dyn  yopo_trainer.py:122
+           Loss: 4.61, Batch FPS: 26.2                                          
+[01:04:46] Epoch: 0, Traj Loss: 9.87, Score Loss: 3.46, Dyn  yopo_trainer.py:122
+           Loss: 4.56, Batch FPS: 26.8                                          
+[01:04:59] Epoch: 0, Traj Loss: 9.62, Score Loss: 3.23, Dyn  yopo_trainer.py:122
+           Loss: 4.46, Batch FPS: 26.9                                          
+[01:05:12] Epoch: 0, Traj Loss: 9.56, Score Loss: 3.16, Dyn  yopo_trainer.py:122
+           Loss: 4.41, Batch FPS: 26.6                                          
+[01:05:25] Epoch: 0, Traj Loss: 9.7, Score Loss: 3.22, Dyn   yopo_trainer.py:122
+           Loss: 4.5, Batch FPS: 27.4                                           
+[01:05:38] Epoch: 0, Traj Loss: 9.57, Score Loss: 3.06, Dyn  yopo_trainer.py:122
+           Loss: 4.44, Batch FPS: 27.5                                          
+[01:05:44] Eval: 0, Traj Loss: 7.4, Score Loss: 2.53         yopo_trainer.py:155
+[01:05:57] Epoch: 1, Traj Loss: 9.7, Score Loss: 3.02, Dyn   yopo_trainer.py:122
+           Loss: 4.5, Batch FPS: 27.2                                           
+[01:06:10] Epoch: 1, Traj Loss: 9.48, Score Loss: 3.01, Dyn  yopo_trainer.py:122
+           Loss: 4.36, Batch FPS: 27.4                                          
+[01:06:23] Epoch: 1, Traj Loss: 9.5, Score Loss: 2.97, Dyn   yopo_trainer.py:122
+           Loss: 4.38, Batch FPS: 27.1                                          
+[01:06:36] Epoch: 1, Traj Loss: 9.57, Score Loss: 2.88, Dyn  yopo_trainer.py:122
+           Loss: 4.52, Batch FPS: 27.3                                          
+[01:06:49] Epoch: 1, Traj Loss: 9.33, Score Loss: 2.81, Dyn  yopo_trainer.py:122
+           Loss: 4.36, Batch FPS: 27.4                                          
+[01:07:02] Epoch: 1, Traj Loss: 9.55, Score Loss: 2.89, Dyn  yopo_trainer.py:122
+           Loss: 4.4, Batch FPS: 27                                             
+[01:07:15] Epoch: 1, Traj Loss: 9.51, Score Loss: 2.73, Dyn  yopo_trainer.py:122
+           Loss: 4.43, Batch FPS: 26.8                                          
+[01:07:28] Epoch: 1, Traj Loss: 9.35, Score Loss: 2.65, Dyn  yopo_trainer.py:122
+           Loss: 4.3, Batch FPS: 27.2                                           
+[01:07:41] Epoch: 1, Traj Loss: 9.39, Score Loss: 2.66, Dyn  yopo_trainer.py:122
+           Loss: 4.35, Batch FPS: 27                                            
+[01:07:54] Epoch: 1, Traj Loss: 9.33, Score Loss: 2.6, Dyn   yopo_trainer.py:122
+           Loss: 4.34, Batch FPS: 26.8                                          
+[01:08:07] Epoch: 1, Traj Loss: 9.45, Score Loss: 2.54, Dyn  yopo_trainer.py:122
+           Loss: 4.43, Batch FPS: 27                                            
+[01:08:20] Epoch: 1, Traj Loss: 9.29, Score Loss: 2.45, Dyn  yopo_trainer.py:122
+           Loss: 4.41, Batch FPS: 26.9                                          
+[01:08:33] Epoch: 1, Traj Loss: 9.46, Score Loss: 2.5, Dyn   yopo_trainer.py:122
+           Loss: 4.37, Batch FPS: 26.4                                          
+[01:08:47] Epoch: 1, Traj Loss: 9.32, Score Loss: 2.42, Dyn  yopo_trainer.py:122
+           Loss: 4.36, Batch FPS: 26.2                                          
+[01:09:00] Epoch: 1, Traj Loss: 9.33, Score Loss: 2.38, Dyn  yopo_trainer.py:122
+           Loss: 4.43, Batch FPS: 27.4                                          
+[01:09:13] Epoch: 1, Traj Loss: 9.28, Score Loss: 2.34, Dyn  yopo_trainer.py:122
+           Loss: 4.38, Batch FPS: 26.7                                          
+[01:09:19] Eval: 1, Traj Loss: 7.08, Score Loss: 1.78        yopo_trainer.py:155
+[01:09:32] Epoch: 2, Traj Loss: 9.16, Score Loss: 2.27, Dyn  yopo_trainer.py:122
+           Loss: 4.31, Batch FPS: 27.5                                          
+[01:09:45] Epoch: 2, Traj Loss: 9.28, Score Loss: 2.28, Dyn  yopo_trainer.py:122
+           Loss: 4.33, Batch FPS: 27.6                                          
+[01:09:57] Epoch: 2, Traj Loss: 9.27, Score Loss: 2.28, Dyn  yopo_trainer.py:122
+           Loss: 4.32, Batch FPS: 27.6                                          
+[01:10:10] Epoch: 2, Traj Loss: 9.03, Score Loss: 2.14, Dyn  yopo_trainer.py:122
+           Loss: 4.25, Batch FPS: 27.8                                          
+[01:10:23] Epoch: 2, Traj Loss: 9.31, Score Loss: 2.26, Dyn  yopo_trainer.py:122
+           Loss: 4.37, Batch FPS: 27                                            
+[01:10:36] Epoch: 2, Traj Loss: 9.25, Score Loss: 2.18, Dyn  yopo_trainer.py:122
+           Loss: 4.38, Batch FPS: 27.4                                          
+[01:10:49] Epoch: 2, Traj Loss: 9.37, Score Loss: 2.21, Dyn  yopo_trainer.py:122
+           Loss: 4.37, Batch FPS: 27.2                                          
+[01:11:02] Epoch: 2, Traj Loss: 9.1, Score Loss: 2.15, Dyn   yopo_trainer.py:122
+           Loss: 4.26, Batch FPS: 26.7                                          
+[01:11:15] Epoch: 2, Traj Loss: 9.38, Score Loss: 2.21, Dyn  yopo_trainer.py:122
+           Loss: 4.39, Batch FPS: 27.3                                          
+[01:11:27] Epoch: 2, Traj Loss: 9.04, Score Loss: 2.06, Dyn  yopo_trainer.py:122
+           Loss: 4.25, Batch FPS: 27.5                                          
+[01:11:40] Epoch: 2, Traj Loss: 9.19, Score Loss: 2.1, Dyn   yopo_trainer.py:122
+           Loss: 4.3, Batch FPS: 27.6                                           
+[01:11:53] Epoch: 2, Traj Loss: 9.02, Score Loss: 2.03, Dyn  yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 27.5                                          
+[01:12:06] Epoch: 2, Traj Loss: 9.06, Score Loss: 2.04, Dyn  yopo_trainer.py:122
+           Loss: 4.34, Batch FPS: 26.7                                          
+[01:12:19] Epoch: 2, Traj Loss: 9.14, Score Loss: 2.05, Dyn  yopo_trainer.py:122
+           Loss: 4.26, Batch FPS: 27.2                                          
+[01:12:32] Epoch: 2, Traj Loss: 9.1, Score Loss: 2.01, Dyn   yopo_trainer.py:122
+           Loss: 4.29, Batch FPS: 27.1                                          
+[01:12:45] Epoch: 2, Traj Loss: 8.93, Score Loss: 1.93, Dyn  yopo_trainer.py:122
+           Loss: 4.24, Batch FPS: 27.8                                          
+[01:12:51] Eval: 2, Traj Loss: 6.87, Score Loss: 1.56        yopo_trainer.py:155
+[01:13:04] Epoch: 3, Traj Loss: 9.14, Score Loss: 2.01, Dyn  yopo_trainer.py:122
+           Loss: 4.27, Batch FPS: 27.8                                          
+[01:13:16] Epoch: 3, Traj Loss: 9.05, Score Loss: 2, Dyn     yopo_trainer.py:122
+           Loss: 4.29, Batch FPS: 27.5                                          
+[01:13:29] Epoch: 3, Traj Loss: 9.11, Score Loss: 1.96, Dyn  yopo_trainer.py:122
+           Loss: 4.27, Batch FPS: 27.9                                          
+[01:13:42] Epoch: 3, Traj Loss: 9.02, Score Loss: 1.95, Dyn  yopo_trainer.py:122
+           Loss: 4.28, Batch FPS: 27.7                                          
+[01:13:54] Epoch: 3, Traj Loss: 9.14, Score Loss: 1.94, Dyn  yopo_trainer.py:122
+           Loss: 4.27, Batch FPS: 27.9                                          
+[01:14:07] Epoch: 3, Traj Loss: 9.27, Score Loss: 1.99, Dyn  yopo_trainer.py:122
+           Loss: 4.34, Batch FPS: 27.7                                          
+[01:14:20] Epoch: 3, Traj Loss: 9.08, Score Loss: 1.9, Dyn   yopo_trainer.py:122
+           Loss: 4.24, Batch FPS: 27.6                                          
+[01:14:32] Epoch: 3, Traj Loss: 9.01, Score Loss: 1.89, Dyn  yopo_trainer.py:122
+           Loss: 4.29, Batch FPS: 27.6                                          
+[01:14:45] Epoch: 3, Traj Loss: 9, Score Loss: 1.89, Dyn     yopo_trainer.py:122
+           Loss: 4.3, Batch FPS: 28.1                                           
+[01:14:58] Epoch: 3, Traj Loss: 8.86, Score Loss: 1.79, Dyn  yopo_trainer.py:122
+           Loss: 4.28, Batch FPS: 27.8                                          
+[01:15:10] Epoch: 3, Traj Loss: 9.03, Score Loss: 1.86, Dyn  yopo_trainer.py:122
+           Loss: 4.33, Batch FPS: 27.7                                          
+[01:15:23] Epoch: 3, Traj Loss: 9.08, Score Loss: 1.86, Dyn  yopo_trainer.py:122
+           Loss: 4.36, Batch FPS: 27.9                                          
+[01:15:36] Epoch: 3, Traj Loss: 9.06, Score Loss: 1.83, Dyn  yopo_trainer.py:122
+           Loss: 4.32, Batch FPS: 27.4                                          
+[01:15:48] Epoch: 3, Traj Loss: 9.11, Score Loss: 1.88, Dyn  yopo_trainer.py:122
+           Loss: 4.28, Batch FPS: 27.9                                          
+[01:16:01] Epoch: 3, Traj Loss: 9.1, Score Loss: 1.9, Dyn    yopo_trainer.py:122
+           Loss: 4.34, Batch FPS: 27.8                                          
+[01:16:14] Epoch: 3, Traj Loss: 8.94, Score Loss: 1.79, Dyn  yopo_trainer.py:122
+           Loss: 4.26, Batch FPS: 27.7                                          
+[01:16:20] Eval: 3, Traj Loss: 6.96, Score Loss: 1.44        yopo_trainer.py:155
+[01:16:33] Epoch: 4, Traj Loss: 9.1, Score Loss: 1.88, Dyn   yopo_trainer.py:122
+           Loss: 4.28, Batch FPS: 26.8                                          
+[01:16:46] Epoch: 4, Traj Loss: 9.01, Score Loss: 1.82, Dyn  yopo_trainer.py:122
+           Loss: 4.39, Batch FPS: 27.8                                          
+[01:16:58] Epoch: 4, Traj Loss: 8.99, Score Loss: 1.83, Dyn  yopo_trainer.py:122
+           Loss: 4.25, Batch FPS: 27.9                                          
+[01:17:11] Epoch: 4, Traj Loss: 9, Score Loss: 1.77, Dyn     yopo_trainer.py:122
+           Loss: 4.33, Batch FPS: 27.9                                          
+[01:17:23] Epoch: 4, Traj Loss: 9.01, Score Loss: 1.83, Dyn  yopo_trainer.py:122
+           Loss: 4.27, Batch FPS: 27.8                                          
+[01:17:36] Epoch: 4, Traj Loss: 9.03, Score Loss: 1.83, Dyn  yopo_trainer.py:122
+           Loss: 4.35, Batch FPS: 27.9                                          
+[01:17:49] Epoch: 4, Traj Loss: 8.95, Score Loss: 1.81, Dyn  yopo_trainer.py:122
+           Loss: 4.27, Batch FPS: 27.5                                          
+[01:18:01] Epoch: 4, Traj Loss: 8.95, Score Loss: 1.78, Dyn  yopo_trainer.py:122
+           Loss: 4.26, Batch FPS: 27.8                                          
+[01:18:14] Epoch: 4, Traj Loss: 8.99, Score Loss: 1.84, Dyn  yopo_trainer.py:122
+           Loss: 4.25, Batch FPS: 27.4                                          
+[01:18:27] Epoch: 4, Traj Loss: 8.97, Score Loss: 1.79, Dyn  yopo_trainer.py:122
+           Loss: 4.27, Batch FPS: 27.7                                          
+[01:18:39] Epoch: 4, Traj Loss: 9, Score Loss: 1.78, Dyn     yopo_trainer.py:122
+           Loss: 4.3, Batch FPS: 28.2                                           
+[01:18:52] Epoch: 4, Traj Loss: 9.08, Score Loss: 1.82, Dyn  yopo_trainer.py:122
+           Loss: 4.34, Batch FPS: 27.7                                          
+[01:19:05] Epoch: 4, Traj Loss: 8.93, Score Loss: 1.73, Dyn  yopo_trainer.py:122
+           Loss: 4.23, Batch FPS: 28                                            
+[01:19:17] Epoch: 4, Traj Loss: 9.05, Score Loss: 1.81, Dyn  yopo_trainer.py:122
+           Loss: 4.34, Batch FPS: 28.1                                          
+[01:19:30] Epoch: 4, Traj Loss: 9, Score Loss: 1.72, Dyn     yopo_trainer.py:122
+           Loss: 4.3, Batch FPS: 27.8                                           
+[01:19:42] Epoch: 4, Traj Loss: 9.05, Score Loss: 1.79, Dyn  yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 28.1                                          
+[01:19:49] Eval: 4, Traj Loss: 6.78, Score Loss: 1.32        yopo_trainer.py:155
+[01:20:01] Epoch: 5, Traj Loss: 8.94, Score Loss: 1.7, Dyn   yopo_trainer.py:122
+           Loss: 4.23, Batch FPS: 27.3                                          
+[01:20:14] Epoch: 5, Traj Loss: 8.95, Score Loss: 1.77, Dyn  yopo_trainer.py:122
+           Loss: 4.28, Batch FPS: 27.5                                          
+[01:20:27] Epoch: 5, Traj Loss: 8.95, Score Loss: 1.72, Dyn  yopo_trainer.py:122
+           Loss: 4.37, Batch FPS: 27.7                                          
+[01:20:40] Epoch: 5, Traj Loss: 9.02, Score Loss: 1.71, Dyn  yopo_trainer.py:122
+           Loss: 4.24, Batch FPS: 27.6                                          
+[01:20:52] Epoch: 5, Traj Loss: 8.94, Score Loss: 1.74, Dyn  yopo_trainer.py:122
+           Loss: 4.28, Batch FPS: 28                                            
+[01:21:05] Epoch: 5, Traj Loss: 8.98, Score Loss: 1.7, Dyn   yopo_trainer.py:122
+           Loss: 4.32, Batch FPS: 27.8                                          
+[01:21:17] Epoch: 5, Traj Loss: 8.96, Score Loss: 1.72, Dyn  yopo_trainer.py:122
+           Loss: 4.35, Batch FPS: 27.8                                          
+[01:21:30] Epoch: 5, Traj Loss: 8.82, Score Loss: 1.63, Dyn  yopo_trainer.py:122
+           Loss: 4.26, Batch FPS: 27.6                                          
+[01:21:43] Epoch: 5, Traj Loss: 9.08, Score Loss: 1.75, Dyn  yopo_trainer.py:122
+           Loss: 4.33, Batch FPS: 27.5                                          
+[01:21:56] Epoch: 5, Traj Loss: 8.89, Score Loss: 1.68, Dyn  yopo_trainer.py:122
+           Loss: 4.28, Batch FPS: 27.6                                          
+[01:22:08] Epoch: 5, Traj Loss: 8.86, Score Loss: 1.68, Dyn  yopo_trainer.py:122
+           Loss: 4.3, Batch FPS: 27.7                                           
+[01:22:21] Epoch: 5, Traj Loss: 9.06, Score Loss: 1.74, Dyn  yopo_trainer.py:122
+           Loss: 4.35, Batch FPS: 27.9                                          
+[01:22:34] Epoch: 5, Traj Loss: 8.93, Score Loss: 1.67, Dyn  yopo_trainer.py:122
+           Loss: 4.26, Batch FPS: 27.6                                          
+[01:22:46] Epoch: 5, Traj Loss: 9.14, Score Loss: 1.72, Dyn  yopo_trainer.py:122
+           Loss: 4.34, Batch FPS: 27.7                                          
+[01:22:59] Epoch: 5, Traj Loss: 8.89, Score Loss: 1.7, Dyn   yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.6                                          
+[01:23:12] Epoch: 5, Traj Loss: 8.85, Score Loss: 1.69, Dyn  yopo_trainer.py:122
+           Loss: 4.27, Batch FPS: 28                                            
+[01:23:18] Eval: 5, Traj Loss: 6.77, Score Loss: 1.32        yopo_trainer.py:155
+[01:23:31] Epoch: 6, Traj Loss: 9, Score Loss: 1.7, Dyn      yopo_trainer.py:122
+           Loss: 4.26, Batch FPS: 27.8                                          
+[01:23:43] Epoch: 6, Traj Loss: 8.92, Score Loss: 1.68, Dyn  yopo_trainer.py:122
+           Loss: 4.28, Batch FPS: 28.1                                          
+[01:23:56] Epoch: 6, Traj Loss: 8.8, Score Loss: 1.63, Dyn   yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 27.7                                          
+[01:24:09] Epoch: 6, Traj Loss: 8.87, Score Loss: 1.68, Dyn  yopo_trainer.py:122
+           Loss: 4.2, Batch FPS: 27.2                                           
+[01:24:21] Epoch: 6, Traj Loss: 8.85, Score Loss: 1.64, Dyn  yopo_trainer.py:122
+           Loss: 4.23, Batch FPS: 27.6                                          
+[01:24:34] Epoch: 6, Traj Loss: 8.76, Score Loss: 1.62, Dyn  yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.8                                          
+[01:24:47] Epoch: 6, Traj Loss: 9.11, Score Loss: 1.71, Dyn  yopo_trainer.py:122
+           Loss: 4.43, Batch FPS: 27.5                                          
+[01:25:00] Epoch: 6, Traj Loss: 8.89, Score Loss: 1.6, Dyn   yopo_trainer.py:122
+           Loss: 4.29, Batch FPS: 27.3                                          
+[01:25:12] Epoch: 6, Traj Loss: 8.79, Score Loss: 1.61, Dyn  yopo_trainer.py:122
+           Loss: 4.25, Batch FPS: 27.6                                          
+[01:25:25] Epoch: 6, Traj Loss: 8.77, Score Loss: 1.63, Dyn  yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 27.9                                          
+[01:25:38] Epoch: 6, Traj Loss: 8.75, Score Loss: 1.58, Dyn  yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.4                                          
+[01:25:50] Epoch: 6, Traj Loss: 8.96, Score Loss: 1.67, Dyn  yopo_trainer.py:122
+           Loss: 4.38, Batch FPS: 27.9                                          
+[01:26:03] Epoch: 6, Traj Loss: 8.97, Score Loss: 1.67, Dyn  yopo_trainer.py:122
+           Loss: 4.35, Batch FPS: 27.7                                          
+[01:26:16] Epoch: 6, Traj Loss: 8.83, Score Loss: 1.62, Dyn  yopo_trainer.py:122
+           Loss: 4.26, Batch FPS: 27.8                                          
+[01:26:28] Epoch: 6, Traj Loss: 8.81, Score Loss: 1.63, Dyn  yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 28                                            
+[01:26:41] Epoch: 6, Traj Loss: 8.98, Score Loss: 1.68, Dyn  yopo_trainer.py:122
+           Loss: 4.32, Batch FPS: 27.7                                          
+[01:26:47] Eval: 6, Traj Loss: 6.63, Score Loss: 1.27        yopo_trainer.py:155
+[01:27:00] Epoch: 7, Traj Loss: 8.91, Score Loss: 1.69, Dyn  yopo_trainer.py:122
+           Loss: 4.24, Batch FPS: 27.7                                          
+[01:27:13] Epoch: 7, Traj Loss: 8.92, Score Loss: 1.62, Dyn  yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 27.8                                          
+[01:27:25] Epoch: 7, Traj Loss: 8.85, Score Loss: 1.63, Dyn  yopo_trainer.py:122
+           Loss: 4.3, Batch FPS: 28.2                                           
+[01:27:38] Epoch: 7, Traj Loss: 8.73, Score Loss: 1.54, Dyn  yopo_trainer.py:122
+           Loss: 4.25, Batch FPS: 28                                            
+[01:27:50] Epoch: 7, Traj Loss: 8.9, Score Loss: 1.6, Dyn    yopo_trainer.py:122
+           Loss: 4.3, Batch FPS: 27.7                                           
+[01:28:03] Epoch: 7, Traj Loss: 8.74, Score Loss: 1.59, Dyn  yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 27.5                                          
+[01:28:16] Epoch: 7, Traj Loss: 8.86, Score Loss: 1.63, Dyn  yopo_trainer.py:122
+           Loss: 4.24, Batch FPS: 27.5                                          
+[01:28:28] Epoch: 7, Traj Loss: 8.77, Score Loss: 1.57, Dyn  yopo_trainer.py:122
+           Loss: 4.32, Batch FPS: 27.6                                          
+[01:28:41] Epoch: 7, Traj Loss: 8.93, Score Loss: 1.59, Dyn  yopo_trainer.py:122
+           Loss: 4.25, Batch FPS: 28                                            
+[01:28:54] Epoch: 7, Traj Loss: 8.87, Score Loss: 1.58, Dyn  yopo_trainer.py:122
+           Loss: 4.37, Batch FPS: 27.7                                          
+[01:29:06] Epoch: 7, Traj Loss: 8.97, Score Loss: 1.65, Dyn  yopo_trainer.py:122
+           Loss: 4.31, Batch FPS: 27.8                                          
+[01:29:19] Epoch: 7, Traj Loss: 8.71, Score Loss: 1.53, Dyn  yopo_trainer.py:122
+           Loss: 4.2, Batch FPS: 27.6                                           
+[01:29:32] Epoch: 7, Traj Loss: 8.6, Score Loss: 1.53, Dyn   yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.6                                          
+[01:29:44] Epoch: 7, Traj Loss: 8.95, Score Loss: 1.61, Dyn  yopo_trainer.py:122
+           Loss: 4.35, Batch FPS: 28                                            
+[01:29:57] Epoch: 7, Traj Loss: 8.72, Score Loss: 1.56, Dyn  yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 27.8                                          
+[01:30:10] Epoch: 7, Traj Loss: 8.86, Score Loss: 1.59, Dyn  yopo_trainer.py:122
+           Loss: 4.27, Batch FPS: 27.9                                          
+[01:30:16] Eval: 7, Traj Loss: 6.65, Score Loss: 1.28        yopo_trainer.py:155
+[01:30:29] Epoch: 8, Traj Loss: 8.7, Score Loss: 1.55, Dyn   yopo_trainer.py:122
+           Loss: 4.23, Batch FPS: 27.6                                          
+[01:30:41] Epoch: 8, Traj Loss: 9.09, Score Loss: 1.64, Dyn  yopo_trainer.py:122
+           Loss: 4.32, Batch FPS: 28                                            
+[01:30:54] Epoch: 8, Traj Loss: 8.96, Score Loss: 1.62, Dyn  yopo_trainer.py:122
+           Loss: 4.33, Batch FPS: 28.3                                          
+[01:31:06] Epoch: 8, Traj Loss: 8.66, Score Loss: 1.52, Dyn  yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 27.7                                          
+[01:31:19] Epoch: 8, Traj Loss: 8.9, Score Loss: 1.58, Dyn   yopo_trainer.py:122
+           Loss: 4.26, Batch FPS: 27.7                                          
+[01:31:32] Epoch: 8, Traj Loss: 8.78, Score Loss: 1.55, Dyn  yopo_trainer.py:122
+           Loss: 4.24, Batch FPS: 27.6                                          
+[01:31:45] Epoch: 8, Traj Loss: 8.76, Score Loss: 1.54, Dyn  yopo_trainer.py:122
+           Loss: 4.27, Batch FPS: 27.7                                          
+[01:31:57] Epoch: 8, Traj Loss: 8.71, Score Loss: 1.52, Dyn  yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 27.5                                          
+[01:32:10] Epoch: 8, Traj Loss: 8.65, Score Loss: 1.54, Dyn  yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 27.9                                          
+[01:32:22] Epoch: 8, Traj Loss: 8.95, Score Loss: 1.58, Dyn  yopo_trainer.py:122
+           Loss: 4.34, Batch FPS: 28                                            
+[01:32:35] Epoch: 8, Traj Loss: 8.89, Score Loss: 1.59, Dyn  yopo_trainer.py:122
+           Loss: 4.24, Batch FPS: 27.8                                          
+[01:32:48] Epoch: 8, Traj Loss: 8.79, Score Loss: 1.55, Dyn  yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 27.5                                          
+[01:33:00] Epoch: 8, Traj Loss: 8.76, Score Loss: 1.5, Dyn   yopo_trainer.py:122
+           Loss: 4.25, Batch FPS: 27.9                                          
+[01:33:13] Epoch: 8, Traj Loss: 8.64, Score Loss: 1.49, Dyn  yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 27.8                                          
+[01:33:26] Epoch: 8, Traj Loss: 8.83, Score Loss: 1.53, Dyn  yopo_trainer.py:122
+           Loss: 4.25, Batch FPS: 27.8                                          
+[01:33:38] Epoch: 8, Traj Loss: 8.89, Score Loss: 1.59, Dyn  yopo_trainer.py:122
+           Loss: 4.33, Batch FPS: 28.1                                          
+[01:33:45] Eval: 8, Traj Loss: 6.66, Score Loss: 1.22        yopo_trainer.py:155
+[01:33:57] Epoch: 9, Traj Loss: 8.76, Score Loss: 1.48, Dyn  yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 27.7                                          
+[01:34:10] Epoch: 9, Traj Loss: 8.73, Score Loss: 1.52, Dyn  yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 27.6                                          
+[01:34:23] Epoch: 9, Traj Loss: 8.77, Score Loss: 1.51, Dyn  yopo_trainer.py:122
+           Loss: 4.25, Batch FPS: 27.5                                          
+[01:34:35] Epoch: 9, Traj Loss: 8.84, Score Loss: 1.57, Dyn  yopo_trainer.py:122
+           Loss: 4.2, Batch FPS: 27.6                                           
+[01:34:48] Epoch: 9, Traj Loss: 8.94, Score Loss: 1.52, Dyn  yopo_trainer.py:122
+           Loss: 4.29, Batch FPS: 27.5                                          
+[01:35:01] Epoch: 9, Traj Loss: 8.84, Score Loss: 1.53, Dyn  yopo_trainer.py:122
+           Loss: 4.35, Batch FPS: 28                                            
+[01:35:13] Epoch: 9, Traj Loss: 8.59, Score Loss: 1.47, Dyn  yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.8                                          
+[01:35:26] Epoch: 9, Traj Loss: 8.79, Score Loss: 1.55, Dyn  yopo_trainer.py:122
+           Loss: 4.23, Batch FPS: 28                                            
+[01:35:39] Epoch: 9, Traj Loss: 8.83, Score Loss: 1.54, Dyn  yopo_trainer.py:122
+           Loss: 4.23, Batch FPS: 27.6                                          
+[01:35:51] Epoch: 9, Traj Loss: 8.75, Score Loss: 1.49, Dyn  yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 27.6                                          
+[01:36:04] Epoch: 9, Traj Loss: 8.86, Score Loss: 1.49, Dyn  yopo_trainer.py:122
+           Loss: 4.28, Batch FPS: 27.9                                          
+[01:36:16] Epoch: 9, Traj Loss: 8.85, Score Loss: 1.52, Dyn  yopo_trainer.py:122
+           Loss: 4.27, Batch FPS: 28.2                                          
+[01:36:29] Epoch: 9, Traj Loss: 8.72, Score Loss: 1.5, Dyn   yopo_trainer.py:122
+           Loss: 4.2, Batch FPS: 27.9                                           
+[01:36:41] Epoch: 9, Traj Loss: 8.87, Score Loss: 1.55, Dyn  yopo_trainer.py:122
+           Loss: 4.29, Batch FPS: 28.3                                          
+[01:36:54] Epoch: 9, Traj Loss: 8.83, Score Loss: 1.53, Dyn  yopo_trainer.py:122
+           Loss: 4.2, Batch FPS: 28                                             
+[01:37:06] Epoch: 9, Traj Loss: 8.71, Score Loss: 1.53, Dyn  yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 28.1                                          
+[01:37:13] Eval: 9, Traj Loss: 6.57, Score Loss: 1.13        yopo_trainer.py:155
+[01:37:26] Epoch: 10, Traj Loss: 8.71, Score Loss: 1.51, Dyn yopo_trainer.py:122
+           Loss: 4.25, Batch FPS: 27.6                                          
+[01:37:38] Epoch: 10, Traj Loss: 8.7, Score Loss: 1.47, Dyn  yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 27.8                                          
+[01:37:51] Epoch: 10, Traj Loss: 8.71, Score Loss: 1.52, Dyn yopo_trainer.py:122
+           Loss: 4.2, Batch FPS: 28.2                                           
+[01:38:03] Epoch: 10, Traj Loss: 8.85, Score Loss: 1.51, Dyn yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 27.5                                          
+[01:38:16] Epoch: 10, Traj Loss: 8.76, Score Loss: 1.52, Dyn yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 27.8                                          
+[01:38:29] Epoch: 10, Traj Loss: 8.94, Score Loss: 1.58, Dyn yopo_trainer.py:122
+           Loss: 4.39, Batch FPS: 27.7                                          
+[01:38:42] Epoch: 10, Traj Loss: 8.86, Score Loss: 1.52, Dyn yopo_trainer.py:122
+           Loss: 4.26, Batch FPS: 27.4                                          
+[01:38:54] Epoch: 10, Traj Loss: 8.92, Score Loss: 1.57, Dyn yopo_trainer.py:122
+           Loss: 4.34, Batch FPS: 27.9                                          
+[01:39:07] Epoch: 10, Traj Loss: 8.68, Score Loss: 1.5, Dyn  yopo_trainer.py:122
+           Loss: 4.23, Batch FPS: 28                                            
+[01:39:19] Epoch: 10, Traj Loss: 8.83, Score Loss: 1.53, Dyn yopo_trainer.py:122
+           Loss: 4.33, Batch FPS: 27.6                                          
+[01:39:32] Epoch: 10, Traj Loss: 8.75, Score Loss: 1.47, Dyn yopo_trainer.py:122
+           Loss: 4.25, Batch FPS: 27.6                                          
+[01:39:45] Epoch: 10, Traj Loss: 8.68, Score Loss: 1.49, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 27.7                                          
+[01:39:58] Epoch: 10, Traj Loss: 8.76, Score Loss: 1.47, Dyn yopo_trainer.py:122
+           Loss: 4.23, Batch FPS: 27.5                                          
+[01:40:10] Epoch: 10, Traj Loss: 8.86, Score Loss: 1.46, Dyn yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 27.7                                          
+[01:40:23] Epoch: 10, Traj Loss: 8.72, Score Loss: 1.47, Dyn yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 27.9                                          
+[01:40:35] Epoch: 10, Traj Loss: 8.93, Score Loss: 1.53, Dyn yopo_trainer.py:122
+           Loss: 4.33, Batch FPS: 27.9                                          
+[01:40:42] Eval: 10, Traj Loss: 6.59, Score Loss: 1.14       yopo_trainer.py:155
+[01:40:55] Epoch: 11, Traj Loss: 8.74, Score Loss: 1.44, Dyn yopo_trainer.py:122
+           Loss: 4.25, Batch FPS: 27.3                                          
+[01:41:07] Epoch: 11, Traj Loss: 8.74, Score Loss: 1.47, Dyn yopo_trainer.py:122
+           Loss: 4.2, Batch FPS: 27.7                                           
+[01:41:20] Epoch: 11, Traj Loss: 8.65, Score Loss: 1.43, Dyn yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 27.6                                          
+[01:41:33] Epoch: 11, Traj Loss: 8.88, Score Loss: 1.48, Dyn yopo_trainer.py:122
+           Loss: 4.31, Batch FPS: 27.9                                          
+[01:41:45] Epoch: 11, Traj Loss: 8.66, Score Loss: 1.45, Dyn yopo_trainer.py:122
+           Loss: 4.2, Batch FPS: 27.3                                           
+[01:41:58] Epoch: 11, Traj Loss: 8.69, Score Loss: 1.47, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.8                                          
+[01:42:11] Epoch: 11, Traj Loss: 8.7, Score Loss: 1.47, Dyn  yopo_trainer.py:122
+           Loss: 4.09, Batch FPS: 27.9                                          
+[01:42:23] Epoch: 11, Traj Loss: 8.72, Score Loss: 1.49, Dyn yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 27.7                                          
+[01:42:36] Epoch: 11, Traj Loss: 8.72, Score Loss: 1.44, Dyn yopo_trainer.py:122
+           Loss: 4.23, Batch FPS: 28                                            
+[01:42:49] Epoch: 11, Traj Loss: 8.94, Score Loss: 1.51, Dyn yopo_trainer.py:122
+           Loss: 4.36, Batch FPS: 27.6                                          
+[01:43:01] Epoch: 11, Traj Loss: 8.75, Score Loss: 1.45, Dyn yopo_trainer.py:122
+           Loss: 4.27, Batch FPS: 27.5                                          
+[01:43:14] Epoch: 11, Traj Loss: 8.8, Score Loss: 1.47, Dyn  yopo_trainer.py:122
+           Loss: 4.28, Batch FPS: 27.6                                          
+[01:43:27] Epoch: 11, Traj Loss: 8.75, Score Loss: 1.5, Dyn  yopo_trainer.py:122
+           Loss: 4.23, Batch FPS: 27.8                                          
+[01:43:39] Epoch: 11, Traj Loss: 8.74, Score Loss: 1.5, Dyn  yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 27.7                                          
+[01:43:52] Epoch: 11, Traj Loss: 8.58, Score Loss: 1.39, Dyn yopo_trainer.py:122
+           Loss: 4.15, Batch FPS: 27.8                                          
+[01:44:05] Epoch: 11, Traj Loss: 8.72, Score Loss: 1.47, Dyn yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 27.8                                          
+[01:44:11] Eval: 11, Traj Loss: 6.69, Score Loss: 1.14       yopo_trainer.py:155
+[01:44:24] Epoch: 12, Traj Loss: 8.79, Score Loss: 1.47, Dyn yopo_trainer.py:122
+           Loss: 4.2, Batch FPS: 27.7                                           
+[01:44:36] Epoch: 12, Traj Loss: 8.71, Score Loss: 1.42, Dyn yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 27.6                                          
+[01:44:49] Epoch: 12, Traj Loss: 8.7, Score Loss: 1.47, Dyn  yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 28                                            
+[01:45:01] Epoch: 12, Traj Loss: 8.69, Score Loss: 1.45, Dyn yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 28.4                                          
+[01:45:14] Epoch: 12, Traj Loss: 8.7, Score Loss: 1.42, Dyn  yopo_trainer.py:122
+           Loss: 4.29, Batch FPS: 27.9                                          
+[01:45:26] Epoch: 12, Traj Loss: 8.67, Score Loss: 1.45, Dyn yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 27.8                                          
+[01:45:39] Epoch: 12, Traj Loss: 8.65, Score Loss: 1.47, Dyn yopo_trainer.py:122
+           Loss: 4.2, Batch FPS: 28                                             
+[01:45:52] Epoch: 12, Traj Loss: 8.67, Score Loss: 1.41, Dyn yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 27.7                                          
+[01:46:04] Epoch: 12, Traj Loss: 8.72, Score Loss: 1.43, Dyn yopo_trainer.py:122
+           Loss: 4.27, Batch FPS: 27.9                                          
+[01:46:17] Epoch: 12, Traj Loss: 8.63, Score Loss: 1.4, Dyn  yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.7                                          
+[01:46:30] Epoch: 12, Traj Loss: 8.66, Score Loss: 1.44, Dyn yopo_trainer.py:122
+           Loss: 4.23, Batch FPS: 27.6                                          
+[01:46:42] Epoch: 12, Traj Loss: 8.7, Score Loss: 1.45, Dyn  yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.9                                          
+[01:46:55] Epoch: 12, Traj Loss: 8.76, Score Loss: 1.46, Dyn yopo_trainer.py:122
+           Loss: 4.23, Batch FPS: 27.6                                          
+[01:47:08] Epoch: 12, Traj Loss: 8.72, Score Loss: 1.46, Dyn yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 27.7                                          
+[01:47:21] Epoch: 12, Traj Loss: 8.84, Score Loss: 1.41, Dyn yopo_trainer.py:122
+           Loss: 4.33, Batch FPS: 27.1                                          
+[01:47:33] Epoch: 12, Traj Loss: 8.63, Score Loss: 1.41, Dyn yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 27.5                                          
+[01:47:40] Eval: 12, Traj Loss: 6.53, Score Loss: 1.15       yopo_trainer.py:155
+[01:47:52] Epoch: 13, Traj Loss: 8.67, Score Loss: 1.41, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 27.4                                          
+[01:48:05] Epoch: 13, Traj Loss: 8.72, Score Loss: 1.45, Dyn yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 27.8                                          
+[01:48:18] Epoch: 13, Traj Loss: 8.65, Score Loss: 1.4, Dyn  yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 27.6                                          
+[01:48:30] Epoch: 13, Traj Loss: 8.68, Score Loss: 1.39, Dyn yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 27.9                                          
+[01:48:43] Epoch: 13, Traj Loss: 8.74, Score Loss: 1.45, Dyn yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 27.9                                          
+[01:48:56] Epoch: 13, Traj Loss: 8.85, Score Loss: 1.46, Dyn yopo_trainer.py:122
+           Loss: 4.29, Batch FPS: 28                                            
+[01:49:08] Epoch: 13, Traj Loss: 8.64, Score Loss: 1.41, Dyn yopo_trainer.py:122
+           Loss: 4.2, Batch FPS: 27.9                                           
+[01:49:21] Epoch: 13, Traj Loss: 8.69, Score Loss: 1.42, Dyn yopo_trainer.py:122
+           Loss: 4.15, Batch FPS: 27.6                                          
+[01:49:33] Epoch: 13, Traj Loss: 8.5, Score Loss: 1.36, Dyn  yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 27.8                                          
+[01:49:46] Epoch: 13, Traj Loss: 8.71, Score Loss: 1.4, Dyn  yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 27.9                                          
+[01:49:59] Epoch: 13, Traj Loss: 8.56, Score Loss: 1.34, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 27.9                                          
+[01:50:11] Epoch: 13, Traj Loss: 8.74, Score Loss: 1.41, Dyn yopo_trainer.py:122
+           Loss: 4.2, Batch FPS: 27.7                                           
+[01:50:24] Epoch: 13, Traj Loss: 8.55, Score Loss: 1.41, Dyn yopo_trainer.py:122
+           Loss: 4.08, Batch FPS: 27.9                                          
+[01:50:36] Epoch: 13, Traj Loss: 8.7, Score Loss: 1.42, Dyn  yopo_trainer.py:122
+           Loss: 4.28, Batch FPS: 28                                            
+[01:50:49] Epoch: 13, Traj Loss: 8.62, Score Loss: 1.41, Dyn yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 27.7                                          
+[01:51:02] Epoch: 13, Traj Loss: 8.67, Score Loss: 1.42, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 27.7                                          
+[01:51:08] Eval: 13, Traj Loss: 6.53, Score Loss: 1.1        yopo_trainer.py:155
+[01:51:21] Epoch: 14, Traj Loss: 8.76, Score Loss: 1.44, Dyn yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 27.7                                          
+[01:51:34] Epoch: 14, Traj Loss: 8.54, Score Loss: 1.39, Dyn yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 27.9                                          
+[01:51:46] Epoch: 14, Traj Loss: 8.63, Score Loss: 1.45, Dyn yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 27.8                                           
+[01:51:59] Epoch: 14, Traj Loss: 8.59, Score Loss: 1.37, Dyn yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 27.8                                          
+[01:52:12] Epoch: 14, Traj Loss: 8.68, Score Loss: 1.38, Dyn yopo_trainer.py:122
+           Loss: 4.24, Batch FPS: 27.6                                          
+[01:52:24] Epoch: 14, Traj Loss: 8.53, Score Loss: 1.38, Dyn yopo_trainer.py:122
+           Loss: 4.15, Batch FPS: 28                                            
+[01:52:37] Epoch: 14, Traj Loss: 8.84, Score Loss: 1.43, Dyn yopo_trainer.py:122
+           Loss: 4.3, Batch FPS: 27.5                                           
+[01:52:50] Epoch: 14, Traj Loss: 8.69, Score Loss: 1.41, Dyn yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 27.6                                          
+[01:53:02] Epoch: 14, Traj Loss: 8.7, Score Loss: 1.41, Dyn  yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 28.1                                          
+[01:53:15] Epoch: 14, Traj Loss: 8.73, Score Loss: 1.44, Dyn yopo_trainer.py:122
+           Loss: 4.2, Batch FPS: 27.8                                           
+[01:53:27] Epoch: 14, Traj Loss: 8.82, Score Loss: 1.42, Dyn yopo_trainer.py:122
+           Loss: 4.27, Batch FPS: 27.7                                          
+[01:53:40] Epoch: 14, Traj Loss: 8.74, Score Loss: 1.43, Dyn yopo_trainer.py:122
+           Loss: 4.24, Batch FPS: 27.7                                          
+[01:53:53] Epoch: 14, Traj Loss: 8.68, Score Loss: 1.39, Dyn yopo_trainer.py:122
+           Loss: 4.27, Batch FPS: 27.7                                          
+[01:54:05] Epoch: 14, Traj Loss: 8.82, Score Loss: 1.42, Dyn yopo_trainer.py:122
+           Loss: 4.31, Batch FPS: 27.8                                          
+[01:54:18] Epoch: 14, Traj Loss: 8.75, Score Loss: 1.42, Dyn yopo_trainer.py:122
+           Loss: 4.28, Batch FPS: 27.7                                          
+[01:54:31] Epoch: 14, Traj Loss: 8.62, Score Loss: 1.39, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.9                                          
+[01:54:37] Eval: 14, Traj Loss: 6.61, Score Loss: 1.14       yopo_trainer.py:155
+[01:54:50] Epoch: 15, Traj Loss: 8.79, Score Loss: 1.38, Dyn yopo_trainer.py:122
+           Loss: 4.25, Batch FPS: 27.8                                          
+[01:55:03] Epoch: 15, Traj Loss: 8.6, Score Loss: 1.39, Dyn  yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 27.6                                          
+[01:55:15] Epoch: 15, Traj Loss: 8.73, Score Loss: 1.39, Dyn yopo_trainer.py:122
+           Loss: 4.26, Batch FPS: 28.1                                          
+[01:55:28] Epoch: 15, Traj Loss: 8.66, Score Loss: 1.37, Dyn yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 27.3                                          
+[01:55:40] Epoch: 15, Traj Loss: 8.68, Score Loss: 1.41, Dyn yopo_trainer.py:122
+           Loss: 4.25, Batch FPS: 27.9                                          
+[01:55:53] Epoch: 15, Traj Loss: 8.73, Score Loss: 1.42, Dyn yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 27.7                                          
+[01:56:06] Epoch: 15, Traj Loss: 8.59, Score Loss: 1.38, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 28                                            
+[01:56:18] Epoch: 15, Traj Loss: 8.45, Score Loss: 1.32, Dyn yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 28.1                                          
+[01:56:31] Epoch: 15, Traj Loss: 8.63, Score Loss: 1.41, Dyn yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 27.3                                          
+[01:56:44] Epoch: 15, Traj Loss: 8.65, Score Loss: 1.4, Dyn  yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.5                                          
+[01:56:56] Epoch: 15, Traj Loss: 8.61, Score Loss: 1.36, Dyn yopo_trainer.py:122
+           Loss: 4.24, Batch FPS: 27.7                                          
+[01:57:09] Epoch: 15, Traj Loss: 8.78, Score Loss: 1.42, Dyn yopo_trainer.py:122
+           Loss: 4.24, Batch FPS: 27.8                                          
+[01:57:22] Epoch: 15, Traj Loss: 8.84, Score Loss: 1.44, Dyn yopo_trainer.py:122
+           Loss: 4.27, Batch FPS: 27.8                                          
+[01:57:34] Epoch: 15, Traj Loss: 8.65, Score Loss: 1.36, Dyn yopo_trainer.py:122
+           Loss: 4.25, Batch FPS: 28.1                                          
+[01:57:47] Epoch: 15, Traj Loss: 8.59, Score Loss: 1.38, Dyn yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 27.7                                          
+[01:58:00] Epoch: 15, Traj Loss: 8.69, Score Loss: 1.4, Dyn  yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 27.4                                          
+[01:58:06] Eval: 15, Traj Loss: 6.52, Score Loss: 1.04       yopo_trainer.py:155
+[01:58:19] Epoch: 16, Traj Loss: 8.57, Score Loss: 1.32, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 27.6                                          
+[01:58:31] Epoch: 16, Traj Loss: 8.72, Score Loss: 1.42, Dyn yopo_trainer.py:122
+           Loss: 4.2, Batch FPS: 27.8                                           
+[01:58:44] Epoch: 16, Traj Loss: 8.67, Score Loss: 1.38, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 28                                            
+[01:58:57] Epoch: 16, Traj Loss: 8.75, Score Loss: 1.42, Dyn yopo_trainer.py:122
+           Loss: 4.33, Batch FPS: 27.7                                          
+[01:59:09] Epoch: 16, Traj Loss: 8.44, Score Loss: 1.31, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 27.9                                          
+[01:59:22] Epoch: 16, Traj Loss: 8.74, Score Loss: 1.39, Dyn yopo_trainer.py:122
+           Loss: 4.29, Batch FPS: 27.8                                          
+[01:59:34] Epoch: 16, Traj Loss: 8.79, Score Loss: 1.4, Dyn  yopo_trainer.py:122
+           Loss: 4.26, Batch FPS: 27.9                                          
+[01:59:47] Epoch: 16, Traj Loss: 8.64, Score Loss: 1.36, Dyn yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 27.4                                          
+[02:00:00] Epoch: 16, Traj Loss: 8.76, Score Loss: 1.41, Dyn yopo_trainer.py:122
+           Loss: 4.23, Batch FPS: 27.5                                          
+[02:00:13] Epoch: 16, Traj Loss: 8.54, Score Loss: 1.35, Dyn yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 27.9                                           
+[02:00:25] Epoch: 16, Traj Loss: 8.61, Score Loss: 1.37, Dyn yopo_trainer.py:122
+           Loss: 4.2, Batch FPS: 27.5                                           
+[02:00:38] Epoch: 16, Traj Loss: 8.56, Score Loss: 1.33, Dyn yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 27.3                                          
+[02:00:51] Epoch: 16, Traj Loss: 8.57, Score Loss: 1.38, Dyn yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 27.8                                          
+[02:01:04] Epoch: 16, Traj Loss: 8.57, Score Loss: 1.34, Dyn yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.6                                          
+[02:01:16] Epoch: 16, Traj Loss: 8.6, Score Loss: 1.36, Dyn  yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.9                                          
+[02:01:29] Epoch: 16, Traj Loss: 8.59, Score Loss: 1.39, Dyn yopo_trainer.py:122
+           Loss: 4.2, Batch FPS: 27.5                                           
+[02:01:35] Eval: 16, Traj Loss: 6.49, Score Loss: 1.03       yopo_trainer.py:155
+[02:01:48] Epoch: 17, Traj Loss: 8.55, Score Loss: 1.32, Dyn yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 27.9                                          
+[02:02:00] Epoch: 17, Traj Loss: 8.5, Score Loss: 1.33, Dyn  yopo_trainer.py:122
+           Loss: 4.09, Batch FPS: 27.7                                          
+[02:02:13] Epoch: 17, Traj Loss: 8.71, Score Loss: 1.4, Dyn  yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 27.8                                          
+[02:02:26] Epoch: 17, Traj Loss: 8.67, Score Loss: 1.35, Dyn yopo_trainer.py:122
+           Loss: 4.24, Batch FPS: 27.4                                          
+[02:02:39] Epoch: 17, Traj Loss: 8.71, Score Loss: 1.36, Dyn yopo_trainer.py:122
+           Loss: 4.28, Batch FPS: 27.6                                          
+[02:02:51] Epoch: 17, Traj Loss: 8.56, Score Loss: 1.34, Dyn yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 27.8                                          
+[02:03:04] Epoch: 17, Traj Loss: 8.42, Score Loss: 1.32, Dyn yopo_trainer.py:122
+           Loss: 4.04, Batch FPS: 27.8                                          
+[02:03:17] Epoch: 17, Traj Loss: 8.53, Score Loss: 1.34, Dyn yopo_trainer.py:122
+           Loss: 4.11, Batch FPS: 27.8                                          
+[02:03:29] Epoch: 17, Traj Loss: 8.68, Score Loss: 1.31, Dyn yopo_trainer.py:122
+           Loss: 4.15, Batch FPS: 27.8                                          
+[02:03:42] Epoch: 17, Traj Loss: 8.52, Score Loss: 1.33, Dyn yopo_trainer.py:122
+           Loss: 4.11, Batch FPS: 27.9                                          
+[02:03:54] Epoch: 17, Traj Loss: 8.75, Score Loss: 1.42, Dyn yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 27.7                                          
+[02:04:07] Epoch: 17, Traj Loss: 8.64, Score Loss: 1.34, Dyn yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 27.7                                          
+[02:04:20] Epoch: 17, Traj Loss: 8.55, Score Loss: 1.33, Dyn yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 27.9                                          
+[02:04:32] Epoch: 17, Traj Loss: 8.65, Score Loss: 1.36, Dyn yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 27.8                                          
+[02:04:45] Epoch: 17, Traj Loss: 8.52, Score Loss: 1.31, Dyn yopo_trainer.py:122
+           Loss: 4.09, Batch FPS: 27.5                                          
+[02:04:58] Epoch: 17, Traj Loss: 8.56, Score Loss: 1.38, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 27.3                                          
+[02:05:04] Eval: 17, Traj Loss: 6.5, Score Loss: 1.01        yopo_trainer.py:155
+[02:05:17] Epoch: 18, Traj Loss: 8.64, Score Loss: 1.36, Dyn yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 27.7                                          
+[02:05:30] Epoch: 18, Traj Loss: 8.56, Score Loss: 1.32, Dyn yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.8                                          
+[02:05:42] Epoch: 18, Traj Loss: 8.55, Score Loss: 1.33, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.9                                          
+[02:05:55] Epoch: 18, Traj Loss: 8.57, Score Loss: 1.36, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 27.6                                          
+[02:06:08] Epoch: 18, Traj Loss: 8.68, Score Loss: 1.34, Dyn yopo_trainer.py:122
+           Loss: 4.24, Batch FPS: 28                                            
+[02:06:20] Epoch: 18, Traj Loss: 8.6, Score Loss: 1.31, Dyn  yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 27.7                                          
+[02:06:33] Epoch: 18, Traj Loss: 8.53, Score Loss: 1.3, Dyn  yopo_trainer.py:122
+           Loss: 4.15, Batch FPS: 27.5                                          
+[02:06:46] Epoch: 18, Traj Loss: 8.64, Score Loss: 1.36, Dyn yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 28                                            
+[02:06:59] Epoch: 18, Traj Loss: 8.44, Score Loss: 1.34, Dyn yopo_trainer.py:122
+           Loss: 4.05, Batch FPS: 27                                            
+[02:07:11] Epoch: 18, Traj Loss: 8.66, Score Loss: 1.36, Dyn yopo_trainer.py:122
+           Loss: 4.25, Batch FPS: 27.7                                          
+[02:07:24] Epoch: 18, Traj Loss: 8.56, Score Loss: 1.35, Dyn yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 27.7                                          
+[02:07:37] Epoch: 18, Traj Loss: 8.52, Score Loss: 1.33, Dyn yopo_trainer.py:122
+           Loss: 4.2, Batch FPS: 27.6                                           
+[02:07:49] Epoch: 18, Traj Loss: 8.64, Score Loss: 1.36, Dyn yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 28                                            
+[02:08:02] Epoch: 18, Traj Loss: 8.56, Score Loss: 1.33, Dyn yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 28.2                                          
+[02:08:14] Epoch: 18, Traj Loss: 8.75, Score Loss: 1.35, Dyn yopo_trainer.py:122
+           Loss: 4.3, Batch FPS: 28.1                                           
+[02:08:27] Epoch: 18, Traj Loss: 8.61, Score Loss: 1.37, Dyn yopo_trainer.py:122
+           Loss: 4.27, Batch FPS: 27.8                                          
+[02:08:33] Eval: 18, Traj Loss: 6.48, Score Loss: 1.04       yopo_trainer.py:155
+[02:08:46] Epoch: 19, Traj Loss: 8.59, Score Loss: 1.34, Dyn yopo_trainer.py:122
+           Loss: 4.23, Batch FPS: 27.8                                          
+[02:08:58] Epoch: 19, Traj Loss: 8.6, Score Loss: 1.35, Dyn  yopo_trainer.py:122
+           Loss: 4.25, Batch FPS: 27.8                                          
+[02:09:11] Epoch: 19, Traj Loss: 8.62, Score Loss: 1.32, Dyn yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 27.7                                          
+[02:09:24] Epoch: 19, Traj Loss: 8.72, Score Loss: 1.33, Dyn yopo_trainer.py:122
+           Loss: 4.25, Batch FPS: 27.7                                          
+[02:09:36] Epoch: 19, Traj Loss: 8.52, Score Loss: 1.32, Dyn yopo_trainer.py:122
+           Loss: 4.08, Batch FPS: 27.9                                          
+[02:09:49] Epoch: 19, Traj Loss: 8.64, Score Loss: 1.36, Dyn yopo_trainer.py:122
+           Loss: 4.24, Batch FPS: 27.9                                          
+[02:10:01] Epoch: 19, Traj Loss: 8.52, Score Loss: 1.3, Dyn  yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 27.9                                          
+[02:10:14] Epoch: 19, Traj Loss: 8.59, Score Loss: 1.29, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 27.8                                          
+[02:10:27] Epoch: 19, Traj Loss: 8.55, Score Loss: 1.32, Dyn yopo_trainer.py:122
+           Loss: 4.09, Batch FPS: 27.3                                          
+[02:10:40] Epoch: 19, Traj Loss: 8.53, Score Loss: 1.34, Dyn yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 27.4                                          
+[02:10:52] Epoch: 19, Traj Loss: 8.47, Score Loss: 1.29, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 27.6                                          
+[02:11:05] Epoch: 19, Traj Loss: 8.56, Score Loss: 1.31, Dyn yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 28                                            
+[02:11:18] Epoch: 19, Traj Loss: 8.57, Score Loss: 1.32, Dyn yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 27.6                                           
+[02:11:30] Epoch: 19, Traj Loss: 8.66, Score Loss: 1.34, Dyn yopo_trainer.py:122
+           Loss: 4.27, Batch FPS: 27.9                                          
+[02:11:43] Epoch: 19, Traj Loss: 8.66, Score Loss: 1.31, Dyn yopo_trainer.py:122
+           Loss: 4.3, Batch FPS: 28.1                                           
+[02:11:55] Epoch: 19, Traj Loss: 8.44, Score Loss: 1.33, Dyn yopo_trainer.py:122
+           Loss: 4.07, Batch FPS: 27.8                                          
+[02:12:02] Eval: 19, Traj Loss: 6.5, Score Loss: 1.06        yopo_trainer.py:155
+[02:12:14] Epoch: 20, Traj Loss: 8.46, Score Loss: 1.32, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.5                                          
+[02:12:27] Epoch: 20, Traj Loss: 8.56, Score Loss: 1.33, Dyn yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 27.9                                          
+[02:12:40] Epoch: 20, Traj Loss: 8.62, Score Loss: 1.36, Dyn yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 28                                            
+[02:12:52] Epoch: 20, Traj Loss: 8.44, Score Loss: 1.27, Dyn yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 28.1                                          
+[02:13:05] Epoch: 20, Traj Loss: 8.5, Score Loss: 1.33, Dyn  yopo_trainer.py:122
+           Loss: 4.15, Batch FPS: 27.7                                          
+[02:13:18] Epoch: 20, Traj Loss: 8.56, Score Loss: 1.31, Dyn yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.3                                          
+[02:13:30] Epoch: 20, Traj Loss: 8.6, Score Loss: 1.31, Dyn  yopo_trainer.py:122
+           Loss: 4.24, Batch FPS: 27.3                                          
+[02:13:43] Epoch: 20, Traj Loss: 8.59, Score Loss: 1.3, Dyn  yopo_trainer.py:122
+           Loss: 4.2, Batch FPS: 27.8                                           
+[02:13:56] Epoch: 20, Traj Loss: 8.48, Score Loss: 1.31, Dyn yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 27.9                                          
+[02:14:09] Epoch: 20, Traj Loss: 8.42, Score Loss: 1.29, Dyn yopo_trainer.py:122
+           Loss: 4.04, Batch FPS: 27.2                                          
+[02:14:21] Epoch: 20, Traj Loss: 8.58, Score Loss: 1.32, Dyn yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 27.8                                          
+[02:14:34] Epoch: 20, Traj Loss: 8.42, Score Loss: 1.25, Dyn yopo_trainer.py:122
+           Loss: 4.06, Batch FPS: 27.6                                          
+[02:14:47] Epoch: 20, Traj Loss: 8.61, Score Loss: 1.31, Dyn yopo_trainer.py:122
+           Loss: 4.27, Batch FPS: 27.8                                          
+[02:14:59] Epoch: 20, Traj Loss: 8.62, Score Loss: 1.35, Dyn yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 27.7                                          
+[02:15:12] Epoch: 20, Traj Loss: 8.6, Score Loss: 1.34, Dyn  yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 27.7                                          
+[02:15:25] Epoch: 20, Traj Loss: 8.61, Score Loss: 1.36, Dyn yopo_trainer.py:122
+           Loss: 4.23, Batch FPS: 27.6                                          
+[02:15:31] Eval: 20, Traj Loss: 6.46, Score Loss: 1.09       yopo_trainer.py:155
+[02:15:44] Epoch: 21, Traj Loss: 8.5, Score Loss: 1.31, Dyn  yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.7                                          
+[02:15:56] Epoch: 21, Traj Loss: 8.89, Score Loss: 1.37, Dyn yopo_trainer.py:122
+           Loss: 4.32, Batch FPS: 27.7                                          
+[02:16:09] Epoch: 21, Traj Loss: 8.6, Score Loss: 1.33, Dyn  yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 28.2                                          
+[02:16:21] Epoch: 21, Traj Loss: 8.62, Score Loss: 1.32, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.7                                          
+[02:16:34] Epoch: 21, Traj Loss: 8.55, Score Loss: 1.33, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 28.2                                          
+[02:16:46] Epoch: 21, Traj Loss: 8.58, Score Loss: 1.31, Dyn yopo_trainer.py:122
+           Loss: 4.25, Batch FPS: 28                                            
+[02:16:59] Epoch: 21, Traj Loss: 8.54, Score Loss: 1.28, Dyn yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 28.2                                          
+[02:17:11] Epoch: 21, Traj Loss: 8.45, Score Loss: 1.31, Dyn yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 28.2                                          
+[02:17:24] Epoch: 21, Traj Loss: 8.61, Score Loss: 1.33, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 27.7                                          
+[02:17:36] Epoch: 21, Traj Loss: 8.54, Score Loss: 1.31, Dyn yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 28.2                                          
+[02:17:49] Epoch: 21, Traj Loss: 8.65, Score Loss: 1.33, Dyn yopo_trainer.py:122
+           Loss: 4.3, Batch FPS: 27.9                                           
+[02:18:02] Epoch: 21, Traj Loss: 8.67, Score Loss: 1.34, Dyn yopo_trainer.py:122
+           Loss: 4.25, Batch FPS: 27.6                                          
+[02:18:14] Epoch: 21, Traj Loss: 8.59, Score Loss: 1.33, Dyn yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 27.7                                          
+[02:18:27] Epoch: 21, Traj Loss: 8.5, Score Loss: 1.29, Dyn  yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 27.7                                          
+[02:18:40] Epoch: 21, Traj Loss: 8.5, Score Loss: 1.28, Dyn  yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 27.9                                          
+[02:18:52] Epoch: 21, Traj Loss: 8.55, Score Loss: 1.3, Dyn  yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.8                                          
+[02:18:59] Eval: 21, Traj Loss: 6.42, Score Loss: 1.01       yopo_trainer.py:155
+[02:19:11] Epoch: 22, Traj Loss: 8.5, Score Loss: 1.27, Dyn  yopo_trainer.py:122
+           Loss: 4.11, Batch FPS: 27.7                                          
+[02:19:24] Epoch: 22, Traj Loss: 8.59, Score Loss: 1.3, Dyn  yopo_trainer.py:122
+           Loss: 4.27, Batch FPS: 28                                            
+[02:19:37] Epoch: 22, Traj Loss: 8.32, Score Loss: 1.28, Dyn yopo_trainer.py:122
+           Loss: 4.05, Batch FPS: 27.8                                          
+[02:19:49] Epoch: 22, Traj Loss: 8.68, Score Loss: 1.34, Dyn yopo_trainer.py:122
+           Loss: 4.29, Batch FPS: 27.9                                          
+[02:20:02] Epoch: 22, Traj Loss: 8.55, Score Loss: 1.3, Dyn  yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 27.7                                          
+[02:20:14] Epoch: 22, Traj Loss: 8.46, Score Loss: 1.27, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 28.1                                          
+[02:20:27] Epoch: 22, Traj Loss: 8.53, Score Loss: 1.31, Dyn yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 28.3                                          
+[02:20:39] Epoch: 22, Traj Loss: 8.52, Score Loss: 1.29, Dyn yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 28.2                                          
+[02:20:52] Epoch: 22, Traj Loss: 8.54, Score Loss: 1.29, Dyn yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 28.2                                          
+[02:21:04] Epoch: 22, Traj Loss: 8.76, Score Loss: 1.35, Dyn yopo_trainer.py:122
+           Loss: 4.24, Batch FPS: 27.9                                          
+[02:21:17] Epoch: 22, Traj Loss: 8.66, Score Loss: 1.3, Dyn  yopo_trainer.py:122
+           Loss: 4.23, Batch FPS: 27.7                                          
+[02:21:29] Epoch: 22, Traj Loss: 8.72, Score Loss: 1.33, Dyn yopo_trainer.py:122
+           Loss: 4.25, Batch FPS: 27.8                                          
+[02:21:42] Epoch: 22, Traj Loss: 8.53, Score Loss: 1.29, Dyn yopo_trainer.py:122
+           Loss: 4.2, Batch FPS: 27.6                                           
+[02:21:55] Epoch: 22, Traj Loss: 8.54, Score Loss: 1.3, Dyn  yopo_trainer.py:122
+           Loss: 4.15, Batch FPS: 27.6                                          
+[02:22:08] Epoch: 22, Traj Loss: 8.6, Score Loss: 1.33, Dyn  yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 27.8                                          
+[02:22:20] Epoch: 22, Traj Loss: 8.53, Score Loss: 1.33, Dyn yopo_trainer.py:122
+           Loss: 4.11, Batch FPS: 27.6                                          
+[02:22:27] Eval: 22, Traj Loss: 6.51, Score Loss: 0.998      yopo_trainer.py:155
+[02:22:39] Epoch: 23, Traj Loss: 8.62, Score Loss: 1.33, Dyn yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 27.6                                          
+[02:22:52] Epoch: 23, Traj Loss: 8.41, Score Loss: 1.25, Dyn yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 27.8                                          
+[02:23:05] Epoch: 23, Traj Loss: 8.68, Score Loss: 1.32, Dyn yopo_trainer.py:122
+           Loss: 4.24, Batch FPS: 27.7                                          
+[02:23:17] Epoch: 23, Traj Loss: 8.49, Score Loss: 1.26, Dyn yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 28                                             
+[02:23:30] Epoch: 23, Traj Loss: 8.73, Score Loss: 1.33, Dyn yopo_trainer.py:122
+           Loss: 4.24, Batch FPS: 27.8                                          
+[02:23:42] Epoch: 23, Traj Loss: 8.59, Score Loss: 1.3, Dyn  yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 28                                            
+[02:23:55] Epoch: 23, Traj Loss: 8.55, Score Loss: 1.28, Dyn yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 27.6                                          
+[02:24:08] Epoch: 23, Traj Loss: 8.52, Score Loss: 1.3, Dyn  yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 27.8                                          
+[02:24:20] Epoch: 23, Traj Loss: 8.71, Score Loss: 1.34, Dyn yopo_trainer.py:122
+           Loss: 4.25, Batch FPS: 27.9                                          
+[02:24:33] Epoch: 23, Traj Loss: 8.71, Score Loss: 1.35, Dyn yopo_trainer.py:122
+           Loss: 4.24, Batch FPS: 27.6                                          
+[02:24:45] Epoch: 23, Traj Loss: 8.46, Score Loss: 1.28, Dyn yopo_trainer.py:122
+           Loss: 4.02, Batch FPS: 27.9                                          
+[02:24:58] Epoch: 23, Traj Loss: 8.51, Score Loss: 1.27, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 28.3                                          
+[02:25:10] Epoch: 23, Traj Loss: 8.52, Score Loss: 1.25, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.7                                          
+[02:25:23] Epoch: 23, Traj Loss: 8.55, Score Loss: 1.29, Dyn yopo_trainer.py:122
+           Loss: 4.28, Batch FPS: 27.7                                          
+[02:25:36] Epoch: 23, Traj Loss: 8.57, Score Loss: 1.26, Dyn yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 27.4                                          
+[02:25:49] Epoch: 23, Traj Loss: 8.37, Score Loss: 1.26, Dyn yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 27.9                                           
+[02:25:55] Eval: 23, Traj Loss: 6.41, Score Loss: 1.05       yopo_trainer.py:155
+[02:26:08] Epoch: 24, Traj Loss: 8.61, Score Loss: 1.3, Dyn  yopo_trainer.py:122
+           Loss: 4.26, Batch FPS: 27.7                                          
+[02:26:20] Epoch: 24, Traj Loss: 8.7, Score Loss: 1.33, Dyn  yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 27.9                                          
+[02:26:33] Epoch: 24, Traj Loss: 8.51, Score Loss: 1.28, Dyn yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 27.7                                          
+[02:26:46] Epoch: 24, Traj Loss: 8.56, Score Loss: 1.31, Dyn yopo_trainer.py:122
+           Loss: 4.11, Batch FPS: 27.7                                          
+[02:26:58] Epoch: 24, Traj Loss: 8.55, Score Loss: 1.32, Dyn yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 27.7                                          
+[02:27:11] Epoch: 24, Traj Loss: 8.62, Score Loss: 1.31, Dyn yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 27.3                                          
+[02:27:24] Epoch: 24, Traj Loss: 8.55, Score Loss: 1.29, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 28                                            
+[02:27:36] Epoch: 24, Traj Loss: 8.67, Score Loss: 1.36, Dyn yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 27.9                                          
+[02:27:49] Epoch: 24, Traj Loss: 8.52, Score Loss: 1.29, Dyn yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 27.7                                          
+[02:28:02] Epoch: 24, Traj Loss: 8.43, Score Loss: 1.3, Dyn  yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 27.7                                          
+[02:28:14] Epoch: 24, Traj Loss: 8.48, Score Loss: 1.27, Dyn yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 27.8                                           
+[02:28:27] Epoch: 24, Traj Loss: 8.52, Score Loss: 1.27, Dyn yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 28                                            
+[02:28:39] Epoch: 24, Traj Loss: 8.47, Score Loss: 1.25, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 28.2                                          
+[02:28:52] Epoch: 24, Traj Loss: 8.44, Score Loss: 1.25, Dyn yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 28.3                                          
+[02:29:04] Epoch: 24, Traj Loss: 8.58, Score Loss: 1.3, Dyn  yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 28                                            
+[02:29:17] Epoch: 24, Traj Loss: 8.45, Score Loss: 1.27, Dyn yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 28                                            
+[02:29:23] Eval: 24, Traj Loss: 6.43, Score Loss: 0.954      yopo_trainer.py:155
+[02:29:36] Epoch: 25, Traj Loss: 8.51, Score Loss: 1.29, Dyn yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.8                                          
+[02:29:48] Epoch: 25, Traj Loss: 8.43, Score Loss: 1.26, Dyn yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 28.4                                          
+[02:30:01] Epoch: 25, Traj Loss: 8.64, Score Loss: 1.29, Dyn yopo_trainer.py:122
+           Loss: 4.26, Batch FPS: 27.7                                          
+[02:30:13] Epoch: 25, Traj Loss: 8.64, Score Loss: 1.31, Dyn yopo_trainer.py:122
+           Loss: 4.28, Batch FPS: 28.1                                          
+[02:30:26] Epoch: 25, Traj Loss: 8.57, Score Loss: 1.28, Dyn yopo_trainer.py:122
+           Loss: 4.27, Batch FPS: 27.8                                          
+[02:30:38] Epoch: 25, Traj Loss: 8.46, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 28                                            
+[02:30:51] Epoch: 25, Traj Loss: 8.45, Score Loss: 1.3, Dyn  yopo_trainer.py:122
+           Loss: 4.08, Batch FPS: 28.1                                          
+[02:31:03] Epoch: 25, Traj Loss: 8.43, Score Loss: 1.25, Dyn yopo_trainer.py:122
+           Loss: 4.08, Batch FPS: 27.9                                          
+[02:31:16] Epoch: 25, Traj Loss: 8.42, Score Loss: 1.29, Dyn yopo_trainer.py:122
+           Loss: 4.09, Batch FPS: 27.7                                          
+[02:31:29] Epoch: 25, Traj Loss: 8.53, Score Loss: 1.29, Dyn yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.8                                          
+[02:31:42] Epoch: 25, Traj Loss: 8.43, Score Loss: 1.25, Dyn yopo_trainer.py:122
+           Loss: 4.04, Batch FPS: 27.4                                          
+[02:31:54] Epoch: 25, Traj Loss: 8.59, Score Loss: 1.28, Dyn yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 27.7                                          
+[02:32:07] Epoch: 25, Traj Loss: 8.51, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.8                                          
+[02:32:20] Epoch: 25, Traj Loss: 8.64, Score Loss: 1.3, Dyn  yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 27.8                                          
+[02:32:32] Epoch: 25, Traj Loss: 8.51, Score Loss: 1.25, Dyn yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 27.7                                          
+[02:32:45] Epoch: 25, Traj Loss: 8.73, Score Loss: 1.31, Dyn yopo_trainer.py:122
+           Loss: 4.26, Batch FPS: 27.6                                          
+[02:32:51] Eval: 25, Traj Loss: 6.34, Score Loss: 0.959      yopo_trainer.py:155
+[02:33:04] Epoch: 26, Traj Loss: 8.5, Score Loss: 1.22, Dyn  yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 27.7                                          
+[02:33:17] Epoch: 26, Traj Loss: 8.53, Score Loss: 1.27, Dyn yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 27.3                                          
+[02:33:30] Epoch: 26, Traj Loss: 8.42, Score Loss: 1.28, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.4                                          
+[02:33:42] Epoch: 26, Traj Loss: 8.58, Score Loss: 1.3, Dyn  yopo_trainer.py:122
+           Loss: 4.09, Batch FPS: 27.8                                          
+[02:33:55] Epoch: 26, Traj Loss: 8.6, Score Loss: 1.26, Dyn  yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 28                                            
+[02:34:07] Epoch: 26, Traj Loss: 8.6, Score Loss: 1.29, Dyn  yopo_trainer.py:122
+           Loss: 4.23, Batch FPS: 28.1                                          
+[02:34:20] Epoch: 26, Traj Loss: 8.5, Score Loss: 1.24, Dyn  yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 28                                            
+[02:34:33] Epoch: 26, Traj Loss: 8.5, Score Loss: 1.29, Dyn  yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 27.9                                          
+[02:34:45] Epoch: 26, Traj Loss: 8.6, Score Loss: 1.26, Dyn  yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 27.9                                          
+[02:34:58] Epoch: 26, Traj Loss: 8.59, Score Loss: 1.27, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 27.5                                          
+[02:35:11] Epoch: 26, Traj Loss: 8.58, Score Loss: 1.29, Dyn yopo_trainer.py:122
+           Loss: 4.3, Batch FPS: 27.8                                           
+[02:35:23] Epoch: 26, Traj Loss: 8.42, Score Loss: 1.22, Dyn yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 28.3                                          
+[02:35:36] Epoch: 26, Traj Loss: 8.46, Score Loss: 1.19, Dyn yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.7                                          
+[02:35:48] Epoch: 26, Traj Loss: 8.47, Score Loss: 1.27, Dyn yopo_trainer.py:122
+           Loss: 4.11, Batch FPS: 27.6                                          
+[02:36:01] Epoch: 26, Traj Loss: 8.47, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 28                                            
+[02:36:14] Epoch: 26, Traj Loss: 8.54, Score Loss: 1.28, Dyn yopo_trainer.py:122
+           Loss: 4.24, Batch FPS: 27.6                                          
+[02:36:20] Eval: 26, Traj Loss: 6.4, Score Loss: 0.945       yopo_trainer.py:155
+[02:36:33] Epoch: 27, Traj Loss: 8.58, Score Loss: 1.28, Dyn yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 27.7                                          
+[02:36:45] Epoch: 27, Traj Loss: 8.58, Score Loss: 1.31, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 28.2                                          
+[02:36:58] Epoch: 27, Traj Loss: 8.55, Score Loss: 1.26, Dyn yopo_trainer.py:122
+           Loss: 4.2, Batch FPS: 28.1                                           
+[02:37:10] Epoch: 27, Traj Loss: 8.53, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 27.8                                          
+[02:37:23] Epoch: 27, Traj Loss: 8.61, Score Loss: 1.31, Dyn yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 27.5                                          
+[02:37:36] Epoch: 27, Traj Loss: 8.55, Score Loss: 1.3, Dyn  yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 27.7                                          
+[02:37:48] Epoch: 27, Traj Loss: 8.53, Score Loss: 1.26, Dyn yopo_trainer.py:122
+           Loss: 4.15, Batch FPS: 27.9                                          
+[02:38:01] Epoch: 27, Traj Loss: 8.48, Score Loss: 1.25, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 28.3                                          
+[02:38:13] Epoch: 27, Traj Loss: 8.63, Score Loss: 1.27, Dyn yopo_trainer.py:122
+           Loss: 4.31, Batch FPS: 27.7                                          
+[02:38:26] Epoch: 27, Traj Loss: 8.45, Score Loss: 1.29, Dyn yopo_trainer.py:122
+           Loss: 4.05, Batch FPS: 27.8                                          
+[02:38:39] Epoch: 27, Traj Loss: 8.56, Score Loss: 1.31, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.9                                          
+[02:38:51] Epoch: 27, Traj Loss: 8.52, Score Loss: 1.25, Dyn yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 28.2                                          
+[02:39:03] Epoch: 27, Traj Loss: 8.48, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 28.5                                          
+[02:39:16] Epoch: 27, Traj Loss: 8.46, Score Loss: 1.26, Dyn yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 27.9                                          
+[02:39:29] Epoch: 27, Traj Loss: 8.35, Score Loss: 1.19, Dyn yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 27.6                                          
+[02:39:41] Epoch: 27, Traj Loss: 8.43, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.8                                          
+[02:39:48] Eval: 27, Traj Loss: 6.49, Score Loss: 1.07       yopo_trainer.py:155
+[02:40:00] Epoch: 28, Traj Loss: 8.47, Score Loss: 1.22, Dyn yopo_trainer.py:122
+           Loss: 4.11, Batch FPS: 27.9                                          
+[02:40:13] Epoch: 28, Traj Loss: 8.61, Score Loss: 1.29, Dyn yopo_trainer.py:122
+           Loss: 4.23, Batch FPS: 27.8                                          
+[02:40:25] Epoch: 28, Traj Loss: 8.59, Score Loss: 1.27, Dyn yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.8                                          
+[02:40:38] Epoch: 28, Traj Loss: 8.47, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 27.7                                           
+[02:40:51] Epoch: 28, Traj Loss: 8.52, Score Loss: 1.25, Dyn yopo_trainer.py:122
+           Loss: 4.24, Batch FPS: 27.7                                          
+[02:41:03] Epoch: 28, Traj Loss: 8.59, Score Loss: 1.25, Dyn yopo_trainer.py:122
+           Loss: 4.25, Batch FPS: 27.6                                          
+[02:41:16] Epoch: 28, Traj Loss: 8.35, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 27.7                                          
+[02:41:29] Epoch: 28, Traj Loss: 8.42, Score Loss: 1.25, Dyn yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 28.2                                          
+[02:41:41] Epoch: 28, Traj Loss: 8.43, Score Loss: 1.29, Dyn yopo_trainer.py:122
+           Loss: 4.03, Batch FPS: 27.8                                          
+[02:41:54] Epoch: 28, Traj Loss: 8.59, Score Loss: 1.29, Dyn yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.8                                          
+[02:42:06] Epoch: 28, Traj Loss: 8.54, Score Loss: 1.26, Dyn yopo_trainer.py:122
+           Loss: 4.2, Batch FPS: 27.9                                           
+[02:42:19] Epoch: 28, Traj Loss: 8.47, Score Loss: 1.26, Dyn yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.7                                          
+[02:42:32] Epoch: 28, Traj Loss: 8.46, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 27.5                                          
+[02:42:45] Epoch: 28, Traj Loss: 8.56, Score Loss: 1.3, Dyn  yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 27.7                                          
+[02:42:57] Epoch: 28, Traj Loss: 8.47, Score Loss: 1.28, Dyn yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 27.3                                          
+[02:43:10] Epoch: 28, Traj Loss: 8.49, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 27.9                                          
+[02:43:16] Eval: 28, Traj Loss: 6.45, Score Loss: 0.977      yopo_trainer.py:155
+[02:43:29] Epoch: 29, Traj Loss: 8.59, Score Loss: 1.31, Dyn yopo_trainer.py:122
+           Loss: 4.11, Batch FPS: 27.9                                          
+[02:43:41] Epoch: 29, Traj Loss: 8.35, Score Loss: 1.22, Dyn yopo_trainer.py:122
+           Loss: 4.04, Batch FPS: 28                                            
+[02:43:54] Epoch: 29, Traj Loss: 8.5, Score Loss: 1.26, Dyn  yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 27.5                                          
+[02:44:07] Epoch: 29, Traj Loss: 8.57, Score Loss: 1.29, Dyn yopo_trainer.py:122
+           Loss: 4.25, Batch FPS: 27.9                                          
+[02:44:19] Epoch: 29, Traj Loss: 8.47, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.2, Batch FPS: 27.6                                           
+[02:44:32] Epoch: 29, Traj Loss: 8.51, Score Loss: 1.29, Dyn yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 28.1                                           
+[02:44:45] Epoch: 29, Traj Loss: 8.46, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 27.7                                          
+[02:44:57] Epoch: 29, Traj Loss: 8.64, Score Loss: 1.29, Dyn yopo_trainer.py:122
+           Loss: 4.23, Batch FPS: 27.4                                          
+[02:45:10] Epoch: 29, Traj Loss: 8.66, Score Loss: 1.3, Dyn  yopo_trainer.py:122
+           Loss: 4.28, Batch FPS: 27.9                                          
+[02:45:23] Epoch: 29, Traj Loss: 8.52, Score Loss: 1.25, Dyn yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 28                                            
+[02:45:35] Epoch: 29, Traj Loss: 8.5, Score Loss: 1.23, Dyn  yopo_trainer.py:122
+           Loss: 4.23, Batch FPS: 27.8                                          
+[02:45:48] Epoch: 29, Traj Loss: 8.41, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.15, Batch FPS: 28                                            
+[02:46:00] Epoch: 29, Traj Loss: 8.66, Score Loss: 1.3, Dyn  yopo_trainer.py:122
+           Loss: 4.23, Batch FPS: 28                                            
+[02:46:13] Epoch: 29, Traj Loss: 8.43, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 27.8                                          
+[02:46:26] Epoch: 29, Traj Loss: 8.6, Score Loss: 1.25, Dyn  yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 27.8                                          
+[02:46:38] Epoch: 29, Traj Loss: 8.56, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 27.7                                          
+[02:46:45] Eval: 29, Traj Loss: 6.46, Score Loss: 0.951      yopo_trainer.py:155
+[02:46:57] Epoch: 30, Traj Loss: 8.47, Score Loss: 1.22, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.8                                          
+[02:47:10] Epoch: 30, Traj Loss: 8.38, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 27.9                                          
+[02:47:23] Epoch: 30, Traj Loss: 8.46, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 27.6                                          
+[02:47:35] Epoch: 30, Traj Loss: 8.53, Score Loss: 1.25, Dyn yopo_trainer.py:122
+           Loss: 4.15, Batch FPS: 27.9                                          
+[02:47:48] Epoch: 30, Traj Loss: 8.45, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 27.8                                           
+[02:48:00] Epoch: 30, Traj Loss: 8.43, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.07, Batch FPS: 27.8                                          
+[02:48:13] Epoch: 30, Traj Loss: 8.6, Score Loss: 1.29, Dyn  yopo_trainer.py:122
+           Loss: 4.23, Batch FPS: 27.7                                          
+[02:48:26] Epoch: 30, Traj Loss: 8.54, Score Loss: 1.26, Dyn yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 27.9                                          
+[02:48:38] Epoch: 30, Traj Loss: 8.38, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.07, Batch FPS: 28.1                                          
+[02:48:51] Epoch: 30, Traj Loss: 8.49, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 27.5                                          
+[02:49:03] Epoch: 30, Traj Loss: 8.61, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.27, Batch FPS: 28.2                                          
+[02:49:16] Epoch: 30, Traj Loss: 8.44, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 27.6                                          
+[02:49:29] Epoch: 30, Traj Loss: 8.43, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.09, Batch FPS: 27.9                                          
+[02:49:41] Epoch: 30, Traj Loss: 8.45, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.09, Batch FPS: 27.7                                          
+[02:49:54] Epoch: 30, Traj Loss: 8.5, Score Loss: 1.24, Dyn  yopo_trainer.py:122
+           Loss: 4.15, Batch FPS: 27.8                                          
+[02:50:07] Epoch: 30, Traj Loss: 8.39, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.7                                          
+[02:50:13] Eval: 30, Traj Loss: 6.4, Score Loss: 0.92        yopo_trainer.py:155
+[02:50:26] Epoch: 31, Traj Loss: 8.37, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4, Batch FPS: 28.1                                             
+[02:50:38] Epoch: 31, Traj Loss: 8.51, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 27.7                                          
+[02:50:51] Epoch: 31, Traj Loss: 8.41, Score Loss: 1.22, Dyn yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.7                                          
+[02:51:04] Epoch: 31, Traj Loss: 8.39, Score Loss: 1.22, Dyn yopo_trainer.py:122
+           Loss: 4.08, Batch FPS: 27.9                                          
+[02:51:16] Epoch: 31, Traj Loss: 8.42, Score Loss: 1.25, Dyn yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 27.6                                          
+[02:51:29] Epoch: 31, Traj Loss: 8.5, Score Loss: 1.28, Dyn  yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 27.7                                          
+[02:51:42] Epoch: 31, Traj Loss: 8.56, Score Loss: 1.26, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.2                                          
+[02:51:55] Epoch: 31, Traj Loss: 8.47, Score Loss: 1.28, Dyn yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 27.6                                           
+[02:52:07] Epoch: 31, Traj Loss: 8.46, Score Loss: 1.25, Dyn yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 27.8                                          
+[02:52:20] Epoch: 31, Traj Loss: 8.55, Score Loss: 1.26, Dyn yopo_trainer.py:122
+           Loss: 4.2, Batch FPS: 27.7                                           
+[02:52:33] Epoch: 31, Traj Loss: 8.5, Score Loss: 1.23, Dyn  yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 27.5                                          
+[02:52:45] Epoch: 31, Traj Loss: 8.5, Score Loss: 1.25, Dyn  yopo_trainer.py:122
+           Loss: 4.11, Batch FPS: 27.9                                          
+[02:52:58] Epoch: 31, Traj Loss: 8.58, Score Loss: 1.26, Dyn yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.8                                          
+[02:53:10] Epoch: 31, Traj Loss: 8.54, Score Loss: 1.22, Dyn yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 27.9                                          
+[02:53:23] Epoch: 31, Traj Loss: 8.38, Score Loss: 1.19, Dyn yopo_trainer.py:122
+           Loss: 4.08, Batch FPS: 27.8                                          
+[02:53:36] Epoch: 31, Traj Loss: 8.48, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.24, Batch FPS: 27.8                                          
+[02:53:42] Eval: 31, Traj Loss: 6.52, Score Loss: 0.978      yopo_trainer.py:155
+[02:53:55] Epoch: 32, Traj Loss: 8.33, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.08, Batch FPS: 27.5                                          
+[02:54:07] Epoch: 32, Traj Loss: 8.56, Score Loss: 1.26, Dyn yopo_trainer.py:122
+           Loss: 4.2, Batch FPS: 27.7                                           
+[02:54:20] Epoch: 32, Traj Loss: 8.53, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 27.9                                          
+[02:54:33] Epoch: 32, Traj Loss: 8.44, Score Loss: 1.22, Dyn yopo_trainer.py:122
+           Loss: 4.08, Batch FPS: 27.9                                          
+[02:54:45] Epoch: 32, Traj Loss: 8.46, Score Loss: 1.22, Dyn yopo_trainer.py:122
+           Loss: 4.15, Batch FPS: 27.7                                          
+[02:54:58] Epoch: 32, Traj Loss: 8.57, Score Loss: 1.26, Dyn yopo_trainer.py:122
+           Loss: 4.2, Batch FPS: 27.6                                           
+[02:55:11] Epoch: 32, Traj Loss: 8.45, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.08, Batch FPS: 27.7                                          
+[02:55:23] Epoch: 32, Traj Loss: 8.45, Score Loss: 1.19, Dyn yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.8                                          
+[02:55:36] Epoch: 32, Traj Loss: 8.43, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.6                                          
+[02:55:48] Epoch: 32, Traj Loss: 8.3, Score Loss: 1.17, Dyn  yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 28                                             
+[02:56:01] Epoch: 32, Traj Loss: 8.52, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.15, Batch FPS: 27.9                                          
+[02:56:14] Epoch: 32, Traj Loss: 8.44, Score Loss: 1.26, Dyn yopo_trainer.py:122
+           Loss: 4.09, Batch FPS: 27.8                                          
+[02:56:26] Epoch: 32, Traj Loss: 8.38, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.07, Batch FPS: 27.8                                          
+[02:56:39] Epoch: 32, Traj Loss: 8.43, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 27.8                                          
+[02:56:51] Epoch: 32, Traj Loss: 8.47, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 28                                            
+[02:57:04] Epoch: 32, Traj Loss: 8.42, Score Loss: 1.25, Dyn yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 27.8                                          
+[02:57:10] Eval: 32, Traj Loss: 6.43, Score Loss: 0.947      yopo_trainer.py:155
+[02:57:23] Epoch: 33, Traj Loss: 8.45, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.07, Batch FPS: 28.1                                          
+[02:57:35] Epoch: 33, Traj Loss: 8.42, Score Loss: 1.19, Dyn yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 28                                            
+[02:57:48] Epoch: 33, Traj Loss: 8.47, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 27.7                                          
+[02:58:01] Epoch: 33, Traj Loss: 8.48, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.08, Batch FPS: 27.9                                          
+[02:58:13] Epoch: 33, Traj Loss: 8.44, Score Loss: 1.22, Dyn yopo_trainer.py:122
+           Loss: 4.15, Batch FPS: 27.8                                          
+[02:58:26] Epoch: 33, Traj Loss: 8.41, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 27.8                                           
+[02:58:39] Epoch: 33, Traj Loss: 8.27, Score Loss: 1.17, Dyn yopo_trainer.py:122
+           Loss: 4.09, Batch FPS: 28                                            
+[02:58:51] Epoch: 33, Traj Loss: 8.52, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 27.6                                          
+[02:59:04] Epoch: 33, Traj Loss: 8.63, Score Loss: 1.28, Dyn yopo_trainer.py:122
+           Loss: 4.26, Batch FPS: 27.5                                          
+[02:59:17] Epoch: 33, Traj Loss: 8.49, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.6                                          
+[02:59:29] Epoch: 33, Traj Loss: 8.47, Score Loss: 1.26, Dyn yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 27.7                                          
+[02:59:42] Epoch: 33, Traj Loss: 8.45, Score Loss: 1.25, Dyn yopo_trainer.py:122
+           Loss: 4.2, Batch FPS: 27.9                                           
+[02:59:55] Epoch: 33, Traj Loss: 8.44, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.07, Batch FPS: 27.5                                          
+[03:00:07] Epoch: 33, Traj Loss: 8.49, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 28                                            
+[03:00:20] Epoch: 33, Traj Loss: 8.37, Score Loss: 1.19, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.6                                          
+[03:00:33] Epoch: 33, Traj Loss: 8.57, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 27.6                                          
+[03:00:39] Eval: 33, Traj Loss: 6.43, Score Loss: 0.983      yopo_trainer.py:155
+[03:00:52] Epoch: 34, Traj Loss: 8.46, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 27.7                                          
+[03:01:04] Epoch: 34, Traj Loss: 8.67, Score Loss: 1.31, Dyn yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 28                                            
+[03:01:17] Epoch: 34, Traj Loss: 8.52, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 27.9                                          
+[03:01:30] Epoch: 34, Traj Loss: 8.42, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.7                                          
+[03:01:42] Epoch: 34, Traj Loss: 8.48, Score Loss: 1.19, Dyn yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.8                                          
+[03:01:55] Epoch: 34, Traj Loss: 8.34, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 27.8                                           
+[03:02:07] Epoch: 34, Traj Loss: 8.54, Score Loss: 1.26, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 28.5                                          
+[03:02:20] Epoch: 34, Traj Loss: 8.54, Score Loss: 1.22, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 27.6                                          
+[03:02:33] Epoch: 34, Traj Loss: 8.39, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.07, Batch FPS: 27.5                                          
+[03:02:45] Epoch: 34, Traj Loss: 8.33, Score Loss: 1.18, Dyn yopo_trainer.py:122
+           Loss: 4.07, Batch FPS: 27.9                                          
+[03:02:58] Epoch: 34, Traj Loss: 8.46, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 27.7                                          
+[03:03:11] Epoch: 34, Traj Loss: 8.4, Score Loss: 1.19, Dyn  yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 27.6                                           
+[03:03:23] Epoch: 34, Traj Loss: 8.29, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.07, Batch FPS: 27.5                                          
+[03:03:36] Epoch: 34, Traj Loss: 8.63, Score Loss: 1.27, Dyn yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.4                                          
+[03:03:49] Epoch: 34, Traj Loss: 8.37, Score Loss: 1.25, Dyn yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 27.8                                           
+[03:04:01] Epoch: 34, Traj Loss: 8.41, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 27.8                                           
+[03:04:08] Eval: 34, Traj Loss: 6.28, Score Loss: 0.951      yopo_trainer.py:155
+[03:04:21] Epoch: 35, Traj Loss: 8.56, Score Loss: 1.28, Dyn yopo_trainer.py:122
+           Loss: 4.2, Batch FPS: 27.7                                           
+[03:04:33] Epoch: 35, Traj Loss: 8.35, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 27.5                                          
+[03:04:46] Epoch: 35, Traj Loss: 8.4, Score Loss: 1.2, Dyn   yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.7                                          
+[03:04:59] Epoch: 35, Traj Loss: 8.46, Score Loss: 1.22, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.8                                          
+[03:05:11] Epoch: 35, Traj Loss: 8.52, Score Loss: 1.25, Dyn yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 28                                            
+[03:05:24] Epoch: 35, Traj Loss: 8.49, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.07, Batch FPS: 27.7                                          
+[03:05:36] Epoch: 35, Traj Loss: 8.36, Score Loss: 1.22, Dyn yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 27.8                                           
+[03:05:49] Epoch: 35, Traj Loss: 8.45, Score Loss: 1.22, Dyn yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 27.7                                          
+[03:06:02] Epoch: 35, Traj Loss: 8.4, Score Loss: 1.16, Dyn  yopo_trainer.py:122
+           Loss: 4.15, Batch FPS: 27.7                                          
+[03:06:14] Epoch: 35, Traj Loss: 8.57, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 27.8                                          
+[03:06:27] Epoch: 35, Traj Loss: 8.48, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 27.9                                          
+[03:06:40] Epoch: 35, Traj Loss: 8.34, Score Loss: 1.22, Dyn yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 27.9                                          
+[03:06:52] Epoch: 35, Traj Loss: 8.65, Score Loss: 1.26, Dyn yopo_trainer.py:122
+           Loss: 4.25, Batch FPS: 28                                            
+[03:07:05] Epoch: 35, Traj Loss: 8.36, Score Loss: 1.27, Dyn yopo_trainer.py:122
+           Loss: 4.01, Batch FPS: 27.4                                          
+[03:07:18] Epoch: 35, Traj Loss: 8.45, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.6                                          
+[03:07:30] Epoch: 35, Traj Loss: 8.42, Score Loss: 1.19, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 27.8                                          
+[03:07:37] Eval: 35, Traj Loss: 6.35, Score Loss: 0.969      yopo_trainer.py:155
+[03:07:50] Epoch: 36, Traj Loss: 8.5, Score Loss: 1.22, Dyn  yopo_trainer.py:122
+           Loss: 4.11, Batch FPS: 27.5                                          
+[03:08:02] Epoch: 36, Traj Loss: 8.37, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.06, Batch FPS: 28                                            
+[03:08:15] Epoch: 36, Traj Loss: 8.57, Score Loss: 1.22, Dyn yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 27.6                                          
+[03:08:27] Epoch: 36, Traj Loss: 8.41, Score Loss: 1.22, Dyn yopo_trainer.py:122
+           Loss: 4.11, Batch FPS: 27.8                                          
+[03:08:40] Epoch: 36, Traj Loss: 8.56, Score Loss: 1.26, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 28                                            
+[03:08:53] Epoch: 36, Traj Loss: 8.32, Score Loss: 1.17, Dyn yopo_trainer.py:122
+           Loss: 4.06, Batch FPS: 28.1                                          
+[03:09:05] Epoch: 36, Traj Loss: 8.45, Score Loss: 1.25, Dyn yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 28                                            
+[03:09:18] Epoch: 36, Traj Loss: 8.38, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 27.7                                           
+[03:09:30] Epoch: 36, Traj Loss: 8.43, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 27.6                                          
+[03:09:43] Epoch: 36, Traj Loss: 8.53, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 27.7                                          
+[03:09:56] Epoch: 36, Traj Loss: 8.59, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 27.8                                          
+[03:10:09] Epoch: 36, Traj Loss: 8.46, Score Loss: 1.25, Dyn yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 27.4                                          
+[03:10:21] Epoch: 36, Traj Loss: 8.5, Score Loss: 1.15, Dyn  yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.9                                          
+[03:10:34] Epoch: 36, Traj Loss: 8.43, Score Loss: 1.25, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.8                                          
+[03:10:47] Epoch: 36, Traj Loss: 8.54, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 27.5                                          
+[03:10:59] Epoch: 36, Traj Loss: 8.36, Score Loss: 1.19, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.6                                          
+[03:11:06] Eval: 36, Traj Loss: 6.39, Score Loss: 0.929      yopo_trainer.py:155
+[03:11:19] Epoch: 37, Traj Loss: 8.46, Score Loss: 1.22, Dyn yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 27.4                                           
+[03:11:31] Epoch: 37, Traj Loss: 8.46, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 27.8                                          
+[03:11:44] Epoch: 37, Traj Loss: 8.5, Score Loss: 1.24, Dyn  yopo_trainer.py:122
+           Loss: 4.07, Batch FPS: 27.6                                          
+[03:11:57] Epoch: 37, Traj Loss: 8.36, Score Loss: 1.25, Dyn yopo_trainer.py:122
+           Loss: 4.06, Batch FPS: 27.5                                          
+[03:12:09] Epoch: 37, Traj Loss: 8.36, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.05, Batch FPS: 27.6                                          
+[03:12:22] Epoch: 37, Traj Loss: 8.51, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 27.8                                           
+[03:12:35] Epoch: 37, Traj Loss: 8.37, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 28                                            
+[03:12:47] Epoch: 37, Traj Loss: 8.49, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.5                                          
+[03:13:00] Epoch: 37, Traj Loss: 8.45, Score Loss: 1.22, Dyn yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 27.7                                           
+[03:13:13] Epoch: 37, Traj Loss: 8.49, Score Loss: 1.25, Dyn yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 27.9                                          
+[03:13:25] Epoch: 37, Traj Loss: 8.47, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.7                                          
+[03:13:38] Epoch: 37, Traj Loss: 8.39, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.9                                          
+[03:13:50] Epoch: 37, Traj Loss: 8.44, Score Loss: 1.22, Dyn yopo_trainer.py:122
+           Loss: 4.11, Batch FPS: 27.9                                          
+[03:14:03] Epoch: 37, Traj Loss: 8.6, Score Loss: 1.26, Dyn  yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 27.7                                          
+[03:14:16] Epoch: 37, Traj Loss: 8.36, Score Loss: 1.16, Dyn yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 28                                            
+[03:14:28] Epoch: 37, Traj Loss: 8.51, Score Loss: 1.22, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 27.9                                          
+[03:14:35] Eval: 37, Traj Loss: 6.41, Score Loss: 0.962      yopo_trainer.py:155
+[03:14:47] Epoch: 38, Traj Loss: 8.41, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.7                                          
+[03:15:00] Epoch: 38, Traj Loss: 8.43, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 27.9                                          
+[03:15:13] Epoch: 38, Traj Loss: 8.35, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.7                                          
+[03:15:25] Epoch: 38, Traj Loss: 8.44, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 27.6                                          
+[03:15:38] Epoch: 38, Traj Loss: 8.42, Score Loss: 1.18, Dyn yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 27.5                                           
+[03:15:50] Epoch: 38, Traj Loss: 8.34, Score Loss: 1.19, Dyn yopo_trainer.py:122
+           Loss: 4.04, Batch FPS: 28.7                                          
+[03:16:03] Epoch: 38, Traj Loss: 8.48, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 27.5                                          
+[03:16:16] Epoch: 38, Traj Loss: 8.41, Score Loss: 1.18, Dyn yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 27.9                                          
+[03:16:28] Epoch: 38, Traj Loss: 8.45, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 28                                            
+[03:16:41] Epoch: 38, Traj Loss: 8.49, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 27.7                                          
+[03:16:53] Epoch: 38, Traj Loss: 8.5, Score Loss: 1.24, Dyn  yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 27.8                                          
+[03:17:06] Epoch: 38, Traj Loss: 8.32, Score Loss: 1.16, Dyn yopo_trainer.py:122
+           Loss: 4.05, Batch FPS: 27.8                                          
+[03:17:19] Epoch: 38, Traj Loss: 8.52, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.11, Batch FPS: 27.7                                          
+[03:17:31] Epoch: 38, Traj Loss: 8.43, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 28.1                                           
+[03:17:44] Epoch: 38, Traj Loss: 8.4, Score Loss: 1.22, Dyn  yopo_trainer.py:122
+           Loss: 4.15, Batch FPS: 27.7                                          
+[03:17:57] Epoch: 38, Traj Loss: 8.33, Score Loss: 1.22, Dyn yopo_trainer.py:122
+           Loss: 4.05, Batch FPS: 27.7                                          
+[03:18:03] Eval: 38, Traj Loss: 6.37, Score Loss: 1.01       yopo_trainer.py:155
+[03:18:16] Epoch: 39, Traj Loss: 8.27, Score Loss: 1.16, Dyn yopo_trainer.py:122
+           Loss: 4.02, Batch FPS: 27.7                                          
+[03:18:28] Epoch: 39, Traj Loss: 8.52, Score Loss: 1.25, Dyn yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 27.9                                          
+[03:18:41] Epoch: 39, Traj Loss: 8.3, Score Loss: 1.16, Dyn  yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 27.8                                          
+[03:18:54] Epoch: 39, Traj Loss: 8.51, Score Loss: 1.27, Dyn yopo_trainer.py:122
+           Loss: 4.2, Batch FPS: 27.9                                           
+[03:19:06] Epoch: 39, Traj Loss: 8.38, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 28.2                                          
+[03:19:18] Epoch: 39, Traj Loss: 8.49, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.15, Batch FPS: 28.2                                          
+[03:19:31] Epoch: 39, Traj Loss: 8.57, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.6                                          
+[03:19:44] Epoch: 39, Traj Loss: 8.32, Score Loss: 1.15, Dyn yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 28.1                                           
+[03:19:56] Epoch: 39, Traj Loss: 8.54, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.2, Batch FPS: 28.1                                           
+[03:20:09] Epoch: 39, Traj Loss: 8.43, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 27.7                                           
+[03:20:21] Epoch: 39, Traj Loss: 8.46, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.9                                          
+[03:20:34] Epoch: 39, Traj Loss: 8.42, Score Loss: 1.19, Dyn yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 27.5                                          
+[03:20:47] Epoch: 39, Traj Loss: 8.31, Score Loss: 1.15, Dyn yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.9                                          
+[03:20:59] Epoch: 39, Traj Loss: 8.48, Score Loss: 1.17, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 27.6                                          
+[03:21:12] Epoch: 39, Traj Loss: 8.35, Score Loss: 1.16, Dyn yopo_trainer.py:122
+           Loss: 4.07, Batch FPS: 27.8                                          
+[03:21:25] Epoch: 39, Traj Loss: 8.38, Score Loss: 1.17, Dyn yopo_trainer.py:122
+           Loss: 4.09, Batch FPS: 27.7                                          
+[03:21:31] Eval: 39, Traj Loss: 6.34, Score Loss: 0.929      yopo_trainer.py:155
+[03:21:44] Epoch: 40, Traj Loss: 8.44, Score Loss: 1.25, Dyn yopo_trainer.py:122
+           Loss: 4.03, Batch FPS: 27.7                                          
+[03:21:56] Epoch: 40, Traj Loss: 8.21, Score Loss: 1.15, Dyn yopo_trainer.py:122
+           Loss: 4.04, Batch FPS: 27.7                                          
+[03:22:09] Epoch: 40, Traj Loss: 8.3, Score Loss: 1.15, Dyn  yopo_trainer.py:122
+           Loss: 4.09, Batch FPS: 27.8                                          
+[03:22:22] Epoch: 40, Traj Loss: 8.34, Score Loss: 1.18, Dyn yopo_trainer.py:122
+           Loss: 4.09, Batch FPS: 27.7                                          
+[03:22:34] Epoch: 40, Traj Loss: 8.5, Score Loss: 1.25, Dyn  yopo_trainer.py:122
+           Loss: 4.09, Batch FPS: 27.6                                          
+[03:22:47] Epoch: 40, Traj Loss: 8.31, Score Loss: 1.16, Dyn yopo_trainer.py:122
+           Loss: 4.08, Batch FPS: 27.5                                          
+[03:23:00] Epoch: 40, Traj Loss: 8.41, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.09, Batch FPS: 27.9                                          
+[03:23:13] Epoch: 40, Traj Loss: 8.42, Score Loss: 1.22, Dyn yopo_trainer.py:122
+           Loss: 4.06, Batch FPS: 27.5                                          
+[03:23:25] Epoch: 40, Traj Loss: 8.51, Score Loss: 1.25, Dyn yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 27.7                                           
+[03:23:38] Epoch: 40, Traj Loss: 8.5, Score Loss: 1.22, Dyn  yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 27.9                                          
+[03:23:51] Epoch: 40, Traj Loss: 8.55, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 27.5                                          
+[03:24:03] Epoch: 40, Traj Loss: 8.45, Score Loss: 1.18, Dyn yopo_trainer.py:122
+           Loss: 4.11, Batch FPS: 27.8                                          
+[03:24:16] Epoch: 40, Traj Loss: 8.49, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.23, Batch FPS: 27.8                                          
+[03:24:28] Epoch: 40, Traj Loss: 8.36, Score Loss: 1.18, Dyn yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.8                                          
+[03:24:41] Epoch: 40, Traj Loss: 8.33, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.08, Batch FPS: 28.1                                          
+[03:24:54] Epoch: 40, Traj Loss: 8.43, Score Loss: 1.19, Dyn yopo_trainer.py:122
+           Loss: 4.09, Batch FPS: 27.8                                          
+[03:25:00] Eval: 40, Traj Loss: 6.29, Score Loss: 0.917      yopo_trainer.py:155
+[03:25:13] Epoch: 41, Traj Loss: 8.28, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.03, Batch FPS: 27.8                                          
+[03:25:25] Epoch: 41, Traj Loss: 8.49, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 28.1                                          
+[03:25:38] Epoch: 41, Traj Loss: 8.36, Score Loss: 1.19, Dyn yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 28.1                                          
+[03:25:50] Epoch: 41, Traj Loss: 8.45, Score Loss: 1.22, Dyn yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 28                                            
+[03:26:03] Epoch: 41, Traj Loss: 8.47, Score Loss: 1.22, Dyn yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 27.6                                          
+[03:26:16] Epoch: 41, Traj Loss: 8.39, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 27.7                                           
+[03:26:28] Epoch: 41, Traj Loss: 8.4, Score Loss: 1.18, Dyn  yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 27.7                                          
+[03:26:41] Epoch: 41, Traj Loss: 8.47, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.7                                          
+[03:26:54] Epoch: 41, Traj Loss: 8.36, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.07, Batch FPS: 27.4                                          
+[03:27:07] Epoch: 41, Traj Loss: 8.34, Score Loss: 1.15, Dyn yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 27.4                                           
+[03:27:19] Epoch: 41, Traj Loss: 8.47, Score Loss: 1.18, Dyn yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 27.7                                          
+[03:27:32] Epoch: 41, Traj Loss: 8.46, Score Loss: 1.18, Dyn yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.8                                          
+[03:27:44] Epoch: 41, Traj Loss: 8.62, Score Loss: 1.25, Dyn yopo_trainer.py:122
+           Loss: 4.24, Batch FPS: 27.9                                          
+[03:27:57] Epoch: 41, Traj Loss: 8.37, Score Loss: 1.18, Dyn yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.8                                          
+[03:28:10] Epoch: 41, Traj Loss: 8.5, Score Loss: 1.21, Dyn  yopo_trainer.py:122
+           Loss: 4.31, Batch FPS: 28                                            
+[03:28:22] Epoch: 41, Traj Loss: 8.45, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.09, Batch FPS: 27.9                                          
+[03:28:29] Eval: 41, Traj Loss: 6.35, Score Loss: 0.926      yopo_trainer.py:155
+[03:28:41] Epoch: 42, Traj Loss: 8.52, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.15, Batch FPS: 27.3                                          
+[03:28:54] Epoch: 42, Traj Loss: 8.39, Score Loss: 1.15, Dyn yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 28.1                                          
+[03:29:07] Epoch: 42, Traj Loss: 8.45, Score Loss: 1.22, Dyn yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 27.6                                          
+[03:29:19] Epoch: 42, Traj Loss: 8.47, Score Loss: 1.18, Dyn yopo_trainer.py:122
+           Loss: 4.15, Batch FPS: 28.1                                          
+[03:29:32] Epoch: 42, Traj Loss: 8.26, Score Loss: 1.17, Dyn yopo_trainer.py:122
+           Loss: 4.07, Batch FPS: 27.8                                          
+[03:29:44] Epoch: 42, Traj Loss: 8.47, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.15, Batch FPS: 27.5                                          
+[03:29:57] Epoch: 42, Traj Loss: 8.47, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.11, Batch FPS: 27.5                                          
+[03:30:10] Epoch: 42, Traj Loss: 8.48, Score Loss: 1.19, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 27.6                                          
+[03:30:23] Epoch: 42, Traj Loss: 8.46, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 27.6                                          
+[03:30:35] Epoch: 42, Traj Loss: 8.49, Score Loss: 1.26, Dyn yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 27.8                                          
+[03:30:48] Epoch: 42, Traj Loss: 8.5, Score Loss: 1.23, Dyn  yopo_trainer.py:122
+           Loss: 4.11, Batch FPS: 27.4                                          
+[03:31:01] Epoch: 42, Traj Loss: 8.51, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.11, Batch FPS: 27.8                                          
+[03:31:13] Epoch: 42, Traj Loss: 8.35, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.09, Batch FPS: 27.6                                          
+[03:31:26] Epoch: 42, Traj Loss: 8.54, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 27.2                                          
+[03:31:39] Epoch: 42, Traj Loss: 8.43, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 27.7                                          
+[03:31:52] Epoch: 42, Traj Loss: 8.38, Score Loss: 1.19, Dyn yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 27.5                                          
+[03:31:58] Eval: 42, Traj Loss: 6.34, Score Loss: 0.93       yopo_trainer.py:155
+[03:32:11] Epoch: 43, Traj Loss: 8.49, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.29, Batch FPS: 27.6                                          
+[03:32:24] Epoch: 43, Traj Loss: 8.36, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.11, Batch FPS: 27.4                                          
+[03:32:36] Epoch: 43, Traj Loss: 8.38, Score Loss: 1.17, Dyn yopo_trainer.py:122
+           Loss: 4.09, Batch FPS: 28.1                                          
+[03:32:49] Epoch: 43, Traj Loss: 8.39, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 27.7                                          
+[03:33:01] Epoch: 43, Traj Loss: 8.35, Score Loss: 1.22, Dyn yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 27.8                                           
+[03:33:14] Epoch: 43, Traj Loss: 8.48, Score Loss: 1.22, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.7                                          
+[03:33:27] Epoch: 43, Traj Loss: 8.48, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 27.7                                          
+[03:33:39] Epoch: 43, Traj Loss: 8.29, Score Loss: 1.18, Dyn yopo_trainer.py:122
+           Loss: 4.07, Batch FPS: 27.7                                          
+[03:33:52] Epoch: 43, Traj Loss: 8.41, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 28.2                                          
+[03:34:04] Epoch: 43, Traj Loss: 8.25, Score Loss: 1.17, Dyn yopo_trainer.py:122
+           Loss: 4.05, Batch FPS: 27.9                                          
+[03:34:17] Epoch: 43, Traj Loss: 8.54, Score Loss: 1.22, Dyn yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 27.9                                          
+[03:34:30] Epoch: 43, Traj Loss: 8.44, Score Loss: 1.19, Dyn yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 27.8                                          
+[03:34:42] Epoch: 43, Traj Loss: 8.45, Score Loss: 1.22, Dyn yopo_trainer.py:122
+           Loss: 4.11, Batch FPS: 27.5                                          
+[03:34:55] Epoch: 43, Traj Loss: 8.32, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.09, Batch FPS: 27.6                                          
+[03:35:08] Epoch: 43, Traj Loss: 8.52, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 27.7                                          
+[03:35:21] Epoch: 43, Traj Loss: 8.36, Score Loss: 1.16, Dyn yopo_trainer.py:122
+           Loss: 4.05, Batch FPS: 27.7                                          
+[03:35:27] Eval: 43, Traj Loss: 6.33, Score Loss: 0.94       yopo_trainer.py:155
+[03:35:39] Epoch: 44, Traj Loss: 8.46, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.24, Batch FPS: 28                                            
+[03:35:52] Epoch: 44, Traj Loss: 8.37, Score Loss: 1.26, Dyn yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 27.5                                          
+[03:36:05] Epoch: 44, Traj Loss: 8.48, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.9                                          
+[03:36:17] Epoch: 44, Traj Loss: 8.4, Score Loss: 1.18, Dyn  yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 27.8                                           
+[03:36:30] Epoch: 44, Traj Loss: 8.37, Score Loss: 1.17, Dyn yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 27.9                                          
+[03:36:42] Epoch: 44, Traj Loss: 8.34, Score Loss: 1.18, Dyn yopo_trainer.py:122
+           Loss: 4.09, Batch FPS: 28                                            
+[03:36:55] Epoch: 44, Traj Loss: 8.52, Score Loss: 1.25, Dyn yopo_trainer.py:122
+           Loss: 4.23, Batch FPS: 28.2                                          
+[03:37:07] Epoch: 44, Traj Loss: 8.46, Score Loss: 1.17, Dyn yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 27.8                                          
+[03:37:20] Epoch: 44, Traj Loss: 8.41, Score Loss: 1.19, Dyn yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 27.6                                          
+[03:37:33] Epoch: 44, Traj Loss: 8.26, Score Loss: 1.15, Dyn yopo_trainer.py:122
+           Loss: 4.07, Batch FPS: 28                                            
+[03:37:45] Epoch: 44, Traj Loss: 8.34, Score Loss: 1.19, Dyn yopo_trainer.py:122
+           Loss: 4.05, Batch FPS: 28.1                                          
+[03:37:58] Epoch: 44, Traj Loss: 8.29, Score Loss: 1.13, Dyn yopo_trainer.py:122
+           Loss: 4.15, Batch FPS: 27.5                                          
+[03:38:11] Epoch: 44, Traj Loss: 8.49, Score Loss: 1.19, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 28                                            
+[03:38:23] Epoch: 44, Traj Loss: 8.4, Score Loss: 1.21, Dyn  yopo_trainer.py:122
+           Loss: 4.08, Batch FPS: 28                                            
+[03:38:36] Epoch: 44, Traj Loss: 8.48, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.15, Batch FPS: 27.6                                          
+[03:38:48] Epoch: 44, Traj Loss: 8.5, Score Loss: 1.21, Dyn  yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 27.6                                          
+[03:38:55] Eval: 44, Traj Loss: 6.34, Score Loss: 0.886      yopo_trainer.py:155
+[03:39:08] Epoch: 45, Traj Loss: 8.29, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.01, Batch FPS: 27.9                                          
+[03:39:20] Epoch: 45, Traj Loss: 8.44, Score Loss: 1.17, Dyn yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 27.9                                          
+[03:39:33] Epoch: 45, Traj Loss: 8.5, Score Loss: 1.24, Dyn  yopo_trainer.py:122
+           Loss: 4.15, Batch FPS: 28                                            
+[03:39:45] Epoch: 45, Traj Loss: 8.39, Score Loss: 1.17, Dyn yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.9                                          
+[03:39:58] Epoch: 45, Traj Loss: 8.44, Score Loss: 1.22, Dyn yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 27.6                                          
+[03:40:11] Epoch: 45, Traj Loss: 8.48, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.17, Batch FPS: 27.9                                          
+[03:40:23] Epoch: 45, Traj Loss: 8.35, Score Loss: 1.17, Dyn yopo_trainer.py:122
+           Loss: 4.05, Batch FPS: 27.7                                          
+[03:40:36] Epoch: 45, Traj Loss: 8.48, Score Loss: 1.18, Dyn yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 27.7                                          
+[03:40:49] Epoch: 45, Traj Loss: 8.38, Score Loss: 1.17, Dyn yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 27.4                                          
+[03:41:01] Epoch: 45, Traj Loss: 8.61, Score Loss: 1.22, Dyn yopo_trainer.py:122
+           Loss: 4.24, Batch FPS: 27.5                                          
+[03:41:14] Epoch: 45, Traj Loss: 8.3, Score Loss: 1.18, Dyn  yopo_trainer.py:122
+           Loss: 4.09, Batch FPS: 27.6                                          
+[03:41:27] Epoch: 45, Traj Loss: 8.46, Score Loss: 1.17, Dyn yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 27.7                                          
+[03:41:39] Epoch: 45, Traj Loss: 8.22, Score Loss: 1.13, Dyn yopo_trainer.py:122
+           Loss: 4.07, Batch FPS: 28.1                                          
+[03:41:52] Epoch: 45, Traj Loss: 8.44, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 28.6                                          
+[03:42:04] Epoch: 45, Traj Loss: 8.37, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 27.7                                          
+[03:42:17] Epoch: 45, Traj Loss: 8.27, Score Loss: 1.16, Dyn yopo_trainer.py:122
+           Loss: 3.95, Batch FPS: 27.9                                          
+[03:42:23] Eval: 45, Traj Loss: 6.33, Score Loss: 0.942      yopo_trainer.py:155
+[03:42:36] Epoch: 46, Traj Loss: 8.34, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 27.4                                          
+[03:42:49] Epoch: 46, Traj Loss: 8.63, Score Loss: 1.26, Dyn yopo_trainer.py:122
+           Loss: 4.25, Batch FPS: 27.5                                          
+[03:43:01] Epoch: 46, Traj Loss: 8.38, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 28.2                                          
+[03:43:14] Epoch: 46, Traj Loss: 8.33, Score Loss: 1.15, Dyn yopo_trainer.py:122
+           Loss: 4.08, Batch FPS: 28                                            
+[03:43:27] Epoch: 46, Traj Loss: 8.3, Score Loss: 1.2, Dyn   yopo_trainer.py:122
+           Loss: 4.06, Batch FPS: 27.6                                          
+[03:43:39] Epoch: 46, Traj Loss: 8.51, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.19, Batch FPS: 27.7                                          
+[03:43:52] Epoch: 46, Traj Loss: 8.29, Score Loss: 1.18, Dyn yopo_trainer.py:122
+           Loss: 4.07, Batch FPS: 27.6                                          
+[03:44:05] Epoch: 46, Traj Loss: 8.28, Score Loss: 1.14, Dyn yopo_trainer.py:122
+           Loss: 4.09, Batch FPS: 27.7                                          
+[03:44:17] Epoch: 46, Traj Loss: 8.34, Score Loss: 1.17, Dyn yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 28                                             
+[03:44:30] Epoch: 46, Traj Loss: 8.5, Score Loss: 1.22, Dyn  yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 28                                            
+[03:44:42] Epoch: 46, Traj Loss: 8.35, Score Loss: 1.18, Dyn yopo_trainer.py:122
+           Loss: 4.09, Batch FPS: 28                                            
+[03:44:55] Epoch: 46, Traj Loss: 8.36, Score Loss: 1.15, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 28.1                                          
+[03:45:08] Epoch: 46, Traj Loss: 8.49, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.15, Batch FPS: 27.4                                          
+[03:45:20] Epoch: 46, Traj Loss: 8.41, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 27.8                                          
+[03:45:33] Epoch: 46, Traj Loss: 8.22, Score Loss: 1.12, Dyn yopo_trainer.py:122
+           Loss: 4.05, Batch FPS: 28                                            
+[03:45:45] Epoch: 46, Traj Loss: 8.36, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.9                                          
+[03:45:52] Eval: 46, Traj Loss: 6.37, Score Loss: 0.955      yopo_trainer.py:155
+[03:46:04] Epoch: 47, Traj Loss: 8.4, Score Loss: 1.21, Dyn  yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 28.2                                          
+[03:46:17] Epoch: 47, Traj Loss: 8.33, Score Loss: 1.17, Dyn yopo_trainer.py:122
+           Loss: 4.11, Batch FPS: 27.4                                          
+[03:46:30] Epoch: 47, Traj Loss: 8.35, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.11, Batch FPS: 27.6                                          
+[03:46:42] Epoch: 47, Traj Loss: 8.29, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.06, Batch FPS: 27.7                                          
+[03:46:55] Epoch: 47, Traj Loss: 8.48, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 27.6                                          
+[03:47:08] Epoch: 47, Traj Loss: 8.37, Score Loss: 1.17, Dyn yopo_trainer.py:122
+           Loss: 4.07, Batch FPS: 28.2                                          
+[03:47:20] Epoch: 47, Traj Loss: 8.38, Score Loss: 1.19, Dyn yopo_trainer.py:122
+           Loss: 4.06, Batch FPS: 27.7                                          
+[03:47:33] Epoch: 47, Traj Loss: 8.43, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.6                                          
+[03:47:46] Epoch: 47, Traj Loss: 8.37, Score Loss: 1.19, Dyn yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 27.8                                          
+[03:47:58] Epoch: 47, Traj Loss: 8.55, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.23, Batch FPS: 28                                            
+[03:48:11] Epoch: 47, Traj Loss: 8.44, Score Loss: 1.19, Dyn yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 27.8                                          
+[03:48:23] Epoch: 47, Traj Loss: 8.4, Score Loss: 1.18, Dyn  yopo_trainer.py:122
+           Loss: 4.13, Batch FPS: 27.9                                          
+[03:48:36] Epoch: 47, Traj Loss: 8.49, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 28                                            
+[03:48:49] Epoch: 47, Traj Loss: 8.34, Score Loss: 1.19, Dyn yopo_trainer.py:122
+           Loss: 4.15, Batch FPS: 27.7                                          
+[03:49:01] Epoch: 47, Traj Loss: 8.5, Score Loss: 1.21, Dyn  yopo_trainer.py:122
+           Loss: 4.11, Batch FPS: 27.7                                          
+[03:49:14] Epoch: 47, Traj Loss: 8.36, Score Loss: 1.18, Dyn yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 27.9                                           
+[03:49:20] Eval: 47, Traj Loss: 6.34, Score Loss: 0.92       yopo_trainer.py:155
+[03:49:33] Epoch: 48, Traj Loss: 8.31, Score Loss: 1.15, Dyn yopo_trainer.py:122
+           Loss: 4.11, Batch FPS: 27.4                                          
+[03:49:46] Epoch: 48, Traj Loss: 8.46, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 27.5                                           
+[03:49:59] Epoch: 48, Traj Loss: 8.29, Score Loss: 1.14, Dyn yopo_trainer.py:122
+           Loss: 4.05, Batch FPS: 27.8                                          
+[03:50:11] Epoch: 48, Traj Loss: 8.43, Score Loss: 1.17, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.4                                          
+[03:50:24] Epoch: 48, Traj Loss: 8.46, Score Loss: 1.19, Dyn yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 28                                            
+[03:50:37] Epoch: 48, Traj Loss: 8.36, Score Loss: 1.15, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 28                                            
+[03:50:49] Epoch: 48, Traj Loss: 8.41, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.08, Batch FPS: 27.7                                          
+[03:51:02] Epoch: 48, Traj Loss: 8.42, Score Loss: 1.19, Dyn yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 27.9                                          
+[03:51:15] Epoch: 48, Traj Loss: 8.52, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.5                                          
+[03:51:27] Epoch: 48, Traj Loss: 8.41, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.07, Batch FPS: 27.7                                          
+[03:51:40] Epoch: 48, Traj Loss: 8.33, Score Loss: 1.18, Dyn yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 27.6                                           
+[03:51:52] Epoch: 48, Traj Loss: 8.46, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.14, Batch FPS: 28.2                                          
+[03:52:05] Epoch: 48, Traj Loss: 8.48, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 28                                            
+[03:52:18] Epoch: 48, Traj Loss: 8.47, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.18, Batch FPS: 27.9                                          
+[03:52:30] Epoch: 48, Traj Loss: 8.33, Score Loss: 1.16, Dyn yopo_trainer.py:122
+           Loss: 4.08, Batch FPS: 27.6                                          
+[03:52:43] Epoch: 48, Traj Loss: 8.54, Score Loss: 1.23, Dyn yopo_trainer.py:122
+           Loss: 4.16, Batch FPS: 27.8                                          
+[03:52:49] Eval: 48, Traj Loss: 6.28, Score Loss: 0.91       yopo_trainer.py:155
+[03:53:02] Epoch: 49, Traj Loss: 8.37, Score Loss: 1.18, Dyn yopo_trainer.py:122
+           Loss: 4.15, Batch FPS: 27.8                                          
+[03:53:15] Epoch: 49, Traj Loss: 8.27, Score Loss: 1.18, Dyn yopo_trainer.py:122
+           Loss: 4.07, Batch FPS: 27.9                                          
+[03:53:27] Epoch: 49, Traj Loss: 8.43, Score Loss: 1.19, Dyn yopo_trainer.py:122
+           Loss: 4.06, Batch FPS: 27.6                                          
+[03:53:40] Epoch: 49, Traj Loss: 8.39, Score Loss: 1.18, Dyn yopo_trainer.py:122
+           Loss: 4.12, Batch FPS: 27.6                                          
+[03:53:53] Epoch: 49, Traj Loss: 8.49, Score Loss: 1.24, Dyn yopo_trainer.py:122
+           Loss: 4.22, Batch FPS: 27.7                                          
+[03:54:05] Epoch: 49, Traj Loss: 8.29, Score Loss: 1.16, Dyn yopo_trainer.py:122
+           Loss: 4.11, Batch FPS: 28.1                                          
+[03:54:18] Epoch: 49, Traj Loss: 8.37, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.08, Batch FPS: 27.9                                          
+[03:54:30] Epoch: 49, Traj Loss: 8.41, Score Loss: 1.2, Dyn  yopo_trainer.py:122
+           Loss: 4.11, Batch FPS: 27.8                                          
+[03:54:43] Epoch: 49, Traj Loss: 8.43, Score Loss: 1.19, Dyn yopo_trainer.py:122
+           Loss: 4.05, Batch FPS: 27.6                                          
+[03:54:56] Epoch: 49, Traj Loss: 8.24, Score Loss: 1.15, Dyn yopo_trainer.py:122
+           Loss: 4.1, Batch FPS: 27.7                                           
+[03:55:08] Epoch: 49, Traj Loss: 8.45, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.15, Batch FPS: 27.9                                          
+[03:55:21] Epoch: 49, Traj Loss: 8.39, Score Loss: 1.17, Dyn yopo_trainer.py:122
+           Loss: 4.15, Batch FPS: 27.8                                          
+[03:55:34] Epoch: 49, Traj Loss: 8.32, Score Loss: 1.18, Dyn yopo_trainer.py:122
+           Loss: 4.05, Batch FPS: 27.6                                          
+[03:55:46] Epoch: 49, Traj Loss: 8.51, Score Loss: 1.21, Dyn yopo_trainer.py:122
+           Loss: 4.21, Batch FPS: 27.9                                          
+[03:55:59] Epoch: 49, Traj Loss: 8.36, Score Loss: 1.17, Dyn yopo_trainer.py:122
+           Loss: 4.09, Batch FPS: 27.6                                          
+[03:56:11] Epoch: 49, Traj Loss: 8.26, Score Loss: 1.17, Dyn yopo_trainer.py:122
+           Loss: 4.07, Batch FPS: 28.5                                          
+[03:56:18] Eval: 49, Traj Loss: 6.27, Score Loss: 0.869      yopo_trainer.py:155
+           Saving model...                                    yopo_trainer.py:85
+           Train YOPO Finish!                                 yopo_trainer.py:88
+
+  Final val loss (A4_full_model): 6.9532
+  Saved checkpoint: saved/ablation_A4_full_model/epoch50.pth
+
+============================================================
+Ablation Results Summary
+============================================================
+Ablation               | Obs |   Dyn | Detach |  Val Loss
+-----------------------------------------------------------------
+A4_full_model          |  15 |  True |   True |    6.9532
+
+Full results saved to: saved/ablation_results.csv

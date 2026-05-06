@@ -5,6 +5,7 @@ Goals are published via /move_base_simple/goal after planner starts.
 Records: goal reached, flight time, peak swing, final distance.
 """
 
+import argparse
 import subprocess
 import signal
 import time
@@ -24,13 +25,20 @@ N_EPISODES = 10
 TIMEOUT_SEC = 80          # max flight time per episode
 ARRIVE_DIST = 3.0         # meters
 SETTLE_SEC = 5            # wait after arrival for swing to settle
-STARTUP_WAIT = 8          # seconds to wait for simulator + sensor to init
-PLANNER_WAIT = 12         # seconds to wait for planner to start (model load + warmup)
+STARTUP_WAIT = 15         # seconds for sensor_simulator init (was 8 — too short, drone fell from init_z=2 to 1.5 before controller could hold)
+PLANNER_WAIT = 20         # seconds for planner to load model + warm up + initial flight from spawn (was 12)
 
-WS = "/home/jamine/yopo_ws"
-YOPO_DIR = f"{WS}/src/YOPO/YOPO"
+# Planner-checkpoint selection — overridden by argparse in main().
+# Defaults match the canonical 13-D Cartesian-surrogate model (YOPO_3).
+TRIAL = 3
+EPOCH = 50
+OBS_DIM = 13
+
+WS_SIM = "/home/jamine/research/diff-slung/code/Simulator"
+WS_CTRL = "/home/jamine/research/diff-slung/code/Controller"
+YOPO_DIR = "/home/jamine/research/diff-slung/code/YOPO"
 PYTHON = "/home/jamine/miniconda3/envs/yopo/bin/python"
-SETUP = f"source {WS}/devel/setup.bash"
+SETUP = f"source {WS_SIM}/devel/setup.bash && source {WS_CTRL}/devel/setup.bash --extend"
 
 # ─── Goal generation ───
 # Start is always (0, 0, 2). Goals vary in distance and direction.
@@ -71,21 +79,24 @@ def start_ros_stack():
     """Start roscore, simulator, and sensor simulator."""
     # roscore
     subprocess.Popen(
-        f"bash -c '{SETUP} && roscore'",
+        f"bash -ic '{SETUP} && roscore'",
         shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
         preexec_fn=os.setsid)
-    time.sleep(3)
+    time.sleep(5)  # was 3 — give roscore time to fully bind on slow systems.
 
-    # simulator
+    # simulator + controller. Use simulator_attitude_control.launch
+    # (network_control_node) — this is the controller stack the planner's
+    # pos_cmd actually drives. simulator.launch (SO3ControlNodelet) accepts
+    # pos_cmd but does not actuate the drone in our setup.
     subprocess.Popen(
-        f"bash -c '{SETUP} && roslaunch so3_quadrotor_simulator simulator.launch'",
+        f"bash -ic '{SETUP} && roslaunch so3_quadrotor_simulator simulator_attitude_control.launch'",
         shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
         preexec_fn=os.setsid)
-    time.sleep(3)
+    time.sleep(8)  # was 3 — controller must converge to hold drone at init_z=2 before commands flow.
 
     # sensor simulator (generates a new random map each time)
     subprocess.Popen(
-        f"bash -c '{SETUP} && rosrun sensor_simulator sensor_simulator_cuda'",
+        f"bash -ic '{SETUP} && rosrun sensor_simulator sensor_simulator_cuda'",
         shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
         preexec_fn=os.setsid)
     time.sleep(STARTUP_WAIT)
@@ -115,8 +126,8 @@ def run_episode(episode_id, goal):
     env = os.environ.copy()
     env["PYTHONUNBUFFERED"] = "1"
     planner_proc = subprocess.Popen(
-        f"bash -c '{SETUP} && cd {YOPO_DIR} && {PYTHON} -u test_yopo_ros.py "
-        f"--trial 43 --epoch 50 --obs_dim 13'",
+        f"bash -ic '{SETUP} && cd {YOPO_DIR} && {PYTHON} -u test_yopo_ros.py "
+        f"--trial {TRIAL} --epoch {EPOCH} --obs_dim {OBS_DIM}'",
         shell=True, stdout=open(log_file, 'w'), stderr=subprocess.STDOUT,
         preexec_fn=os.setsid, env=env)
 
@@ -260,13 +271,30 @@ def parse_nav_lines(nav_lines):
 
 
 def main():
-    n_episodes = int(sys.argv[1]) if len(sys.argv) > 1 else N_EPISODES
+    global TRIAL, EPOCH, OBS_DIM
 
-    goals = generate_goals(n_episodes)
+    ap = argparse.ArgumentParser(description="YOPO-Payload ROS closed-loop eval")
+    ap.add_argument("--trial",    type=int, default=TRIAL,    help="model: saved/YOPO_<trial>/")
+    ap.add_argument("--epoch",    type=int, default=EPOCH,    help="checkpoint epoch number")
+    ap.add_argument("--obs_dim",  type=int, default=OBS_DIM,  help="observation dimension (9/13/15)")
+    ap.add_argument("--episodes", type=int, default=N_EPISODES, help="number of Monte-Carlo episodes")
+    ap.add_argument("--seed",     type=int, default=42,        help="goal-generation seed")
+    ap.add_argument("--output",   type=str, required=True,     help="output JSON path")
+    ap.add_argument("--label",    type=str, default="",        help="optional cell label string")
+    args = ap.parse_args()
+
+    TRIAL   = args.trial
+    EPOCH   = args.epoch
+    OBS_DIM = args.obs_dim
+    n_episodes = args.episodes
+
+    goals = generate_goals(n_episodes, seed=args.seed)
 
     print(f"{'='*70}")
-    print(f"YOPO-Payload ROS Closed-Loop Success Rate Evaluation")
-    print(f"Episodes: {n_episodes} | Timeout: {TIMEOUT_SEC}s | Arrive: {ARRIVE_DIST}m")
+    print(f"YOPO-Payload ROS Closed-Loop Eval — YOPO_{TRIAL}/epoch{EPOCH} (obs_dim={OBS_DIM})")
+    print(f"Episodes: {n_episodes} | Timeout: {TIMEOUT_SEC}s | Arrive: {ARRIVE_DIST}m | Seed: {args.seed}")
+    if args.label:
+        print(f"Label: {args.label}")
     print(f"Start: (0, 0, 2) | Goals: varied distances & directions")
     print(f"{'='*70}")
     for i, g in enumerate(goals):
@@ -319,7 +347,7 @@ def main():
     goal_dists = [r["goal_dist_m"] for r in results]
 
     print(f"\n{'='*70}")
-    print(f"RESULTS SUMMARY — YOPO_43 (13D, payload-aware)")
+    print(f"RESULTS SUMMARY — YOPO_{TRIAL} ({OBS_DIM}D, payload-aware)")
     print(f"{'='*70}")
     print(f"Episodes:           {n_episodes}")
     print(f"Goal distances:     {min(goal_dists):.0f}m – {max(goal_dists):.0f}m")
@@ -351,6 +379,11 @@ def main():
 
     # Save
     summary = {
+        "label": args.label,
+        "trial": TRIAL,
+        "epoch": EPOCH,
+        "obs_dim": OBS_DIM,
+        "seed": args.seed,
         "n_episodes": n_episodes,
         "arrive_threshold_m": ARRIVE_DIST,
         "timeout_s": TIMEOUT_SEC,
@@ -363,8 +396,8 @@ def main():
         "episodes": results,
     }
 
-    out_path = f"{YOPO_DIR}/saved/YOPO_43/ros_success_rate_varied.json"
-    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    out_path = args.output
+    os.makedirs(os.path.dirname(out_path) or ".", exist_ok=True)
     with open(out_path, 'w') as f:
         json.dump(summary, f, indent=2)
     print(f"\nSaved to {out_path}")

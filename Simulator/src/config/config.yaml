@@ -39,7 +39,7 @@ road_width: 3
 add_wall_x: 1
 add_wall_y: 1
 # 森林
-tree_file: "/home/jamine/yopo_ws/src/YOPO/Simulator/src/pointcloud/tree.ply"
+tree_file: "/home/jamine/research/diff-slung/code/Simulator/src/pointcloud/tree.ply"
 tree_dist: 4
 # 房间
 room_number: 4         # 每个方向上的房间数 (房间大小 = x_length / room_number)
@@ -59,9 +59,9 @@ camera:
   fx: 80.0             # focal length x
   fy: 80.0             # focal length y
   cx: 80.0             # principal point x (image center)
-  cy: 45.0              # principal point y (image center)
+  cy: 48.0              # principal point y (image center)
   image_width: 160
-  image_height: 90
+  image_height: 96
   max_depth_dist: 20.0
   normalize_depth: false
   pitch: -0.0           # 相机相对机体的俯仰角 (仰为负, cpu版尚未添加)

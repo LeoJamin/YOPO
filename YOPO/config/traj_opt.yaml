@@ -44,8 +44,26 @@ map_expand_max:
 - 6.0
 pendulum_encoder:
   latent_dim: 8
+  # Angular feature encoding for the encoder input.
+  #   raw     — pass [theta, phi, dtheta, dphi] (4D) directly. Default.
+  #   sin_cos — pass [sin theta, cos theta, sin phi, cos phi, dtheta, dphi]
+  #             (6D). Removes the phi=±pi discontinuity.
+  encoding: raw
+# Dynamics-loss curriculum: linearly ramp wd from 0 to its full value over
+# [ramp_start_epoch, ramp_end_epoch]. Lets the easier objectives (safety,
+# goal, smoothness) converge before the dynamics gradient kicks in.
+dynamics_curriculum:
+  enabled: false
+  ramp_start_epoch: 0
+  ramp_end_epoch: 15
 gradient_decay: true
 score_dyn_boost: 5.0
+# Differentiable pendulum surrogate used for the dynamics loss during training.
+# "spherical" — original [theta, phi, dtheta, dphi] integrator with theta.clamp.
+#               Has a known under-prediction bias when theta crosses zero.
+# "cartesian" — unit-direction q integrator with explicit normalization.
+#               Drop-in replacement; matches the run-time ROS sim's representation.
+pendulum_surrogate: cartesian
 payload:
   cable_length: 0.8
   mass: 0.3

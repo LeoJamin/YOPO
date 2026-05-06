@@ -172,7 +172,10 @@ def milestone_4_eval(args):
         "B3_YOPO_Payload",
         "A1_cable_L", "A2_swing_ang", "A3_swing_full",
         "A4_no_mass", "D1_no_detach",
-        "B_MPC",
+        # B_MPC is the legacy 7x7 grid search; B_MPC_RH is the
+        # receding-horizon swing-aware MPC that should be the principal
+        # MPC baseline in the paper.
+        "B_MPC", "B_MPC_RH",
     ]
 
     methods_str = " ".join(methods)

@@ -25,6 +25,11 @@ import numpy as np
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
+# Per-segment swing safety cap. A segment exceeding this is considered
+# unsafe for a deployed system (cable tension spikes, payload tip-over risk).
+# Episode-level "success" requires both no-collision and no-segment-failure.
+SEG_SWING_SAFETY_CAP_DEG = 60.0
+
 from config.config import cfg
 from policy.yopo_network import YopoNetwork
 from policy.yopo_dataset import YOPODataset
@@ -311,8 +316,22 @@ def evaluate_yopo_model(
                 swing = evaluate_trajectory_with_pendulum(
                     acc_profile, L, p_st, t_traj=t_arr)
 
+                # Per-segment safety success: peak swing must stay below the
+                # cap that a deployed system would tolerate (60 deg). This is
+                # a SEGMENT proxy. Per-episode (collision-free goal reach) is
+                # computed in eval_ros_*.py.
+                #
+                # NOTE: This is NOT comparable to B_MPC_RH's "success" field,
+                # which is goal-reach + segment-safety jointly. To keep the
+                # comparison table apples-to-apples, ALL methods report the
+                # same `seg_safe` field; per-method full-episode metrics live
+                # under the method's own keys (see SUCCESS_DEF_PER_METHOD).
+                seg_safe = bool(swing["peak_swing_deg"] < SEG_SWING_SAFETY_CAP_DEG)
+
                 results.append({
-                    "success": True,  # Per-segment eval: always True (trajectory was generated)
+                    "success": seg_safe,             # = seg_safe for YOPO segments
+                    "seg_safe": seg_safe,
+                    "_success_definition": "seg_safe (per-segment YOPO eval)",
                     "time_to_goal": float(sgm_time),  # Segment duration (not episode time)
                     **swing,
                 })
@@ -347,6 +366,8 @@ def generate_benchmark_episodes(n_episodes: int = 200, seed: int = 42) -> list:
 
 
 def run_mpc_baseline(episodes: list, n_steps: int = 80, dt: float = 0.1) -> list:
+    """Legacy 7×7 grid-search MPC. Kept for reference; the real
+    receding-horizon swing-aware MPC is `run_swing_aware_mpc` below."""
     results = []
     for ep in episodes:
         mpc = SlungLoadMPC(L=ep["L"], m=ep["m"], dt=dt)
@@ -373,11 +394,104 @@ def run_mpc_baseline(episodes: list, n_steps: int = 80, dt: float = 0.1) -> list
 
         swing = evaluate_trajectory_with_pendulum(
             traj_acc, ep["L"], ep["init_pendulum"], dt=dt)
+        seg_safe = bool(swing["peak_swing_deg"] < SEG_SWING_SAFETY_CAP_DEG)
         results.append({
-            "success": success,
+            "success": seg_safe,
+            "seg_safe": seg_safe,
+            "goal_reached": bool(success),
+            "_success_definition": "seg_safe (per-segment); goal_reached separate",
             "time_to_goal": (len(traj_acc) * dt) if success else float('nan'),
             **swing,
         })
+    return results
+
+
+def run_swing_aware_mpc(episodes: list, sgm_time: float = 2.5, n_segments: int = 8,
+                        n_steps_per_segment: int = 20) -> list:
+    """Receding-horizon swing-aware MPC over the SAME 5th-order polynomial
+    action space the YOPO head produces. This is the principal MPC baseline
+    referenced in the paper (replaces the constant-acceleration grid search).
+
+    Each episode = up to n_segments planning iterations, where each iteration
+    plans a 2.5 s polynomial trajectory and we step the simulated UAV/pendulum
+    forward by one full segment.
+    """
+    from baselines.swing_aware_mpc import SwingAwareMPC
+
+    seg_dt = sgm_time / n_steps_per_segment
+    results = []
+
+    for ep in episodes:
+        L_cab = float(ep["L"])
+        m_pl  = float(ep["m"])
+        mpc = SwingAwareMPC(L=L_cab, m=m_pl, sgm_time=sgm_time,
+                            n_steps=n_steps_per_segment)
+
+        pos = ep["start_pos"].astype(float).copy()
+        vel = ep["start_vel"].astype(float).copy()
+        acc = np.zeros(3)
+        p_state = ep["init_pendulum"].astype(float).copy()
+        goal = ep["goal_pos"].astype(float)
+
+        all_acc = []
+        success = False
+        elapsed = 0.0
+
+        for _ in range(n_segments):
+            start_pva = np.stack([pos, vel, acc])
+            try:
+                end_pva, acc_traj = mpc.plan(start_pva, goal, p_state)
+            except Exception as exc:
+                print(f"  [warn] MPC failed: {exc}")
+                break
+
+            # Roll the UAV forward along this segment (kinematic propagation
+            # via the polynomial; this matches what the SO3 controller does
+            # closely enough for the planning-level comparison).
+            for k in range(n_steps_per_segment):
+                ax, ay, az = acc_traj[k]
+                pos = pos + vel * seg_dt + 0.5 * np.array([ax, ay, az]) * seg_dt**2
+                vel = vel + np.array([ax, ay, az]) * seg_dt
+                acc = np.array([ax, ay, az])
+                all_acc.append(acc.copy())
+
+            # Roll the pendulum forward by integrating its dynamics under
+            # the segment's UAV acc — full reference RK45 over the segment.
+            from policy.pendulum_simulator import simulate_pendulum
+            from scipy.interpolate import interp1d
+            t_seg = np.linspace(seg_dt, sgm_time, n_steps_per_segment)
+            acc_callable = interp1d(t_seg, acc_traj, axis=0,
+                                     bounds_error=False,
+                                     fill_value=(acc_traj[0], acc_traj[-1]))
+            _, y_seg = simulate_pendulum(
+                y0=p_state.tolist(), L=L_cab, T=sgm_time,
+                acc_func=lambda t: acc_callable(t),
+                dt=seg_dt,
+            )
+            p_state = y_seg[-1].copy()
+
+            elapsed += sgm_time
+            if np.linalg.norm(pos - goal) < 1.0:
+                success = True
+                break
+
+        all_acc = np.array(all_acc) if all_acc else np.zeros((1, 3))
+        swing = evaluate_trajectory_with_pendulum(
+            all_acc, L_cab, ep["init_pendulum"], dt=seg_dt)
+
+        seg_safe = bool(swing["peak_swing_deg"] < SEG_SWING_SAFETY_CAP_DEG)
+        # Apples-to-apples with per-segment YOPO eval: report seg_safe as
+        # `success`; the goal-reach event is separately exposed as
+        # `goal_reached` for episode-level reporting.
+        results.append({
+            "success": seg_safe,
+            "seg_safe": seg_safe,
+            "goal_reached": bool(success),
+            "_success_definition": "seg_safe (per-segment); goal_reached separate",
+            "time_to_goal": elapsed if success else float("nan"),
+            **swing,
+        })
+
     return results
 
 
@@ -386,20 +500,33 @@ def run_mpc_baseline(episodes: list, n_steps: int = 80, dt: float = 0.1) -> list
 # ---------------------------------------------------------------------------
 
 def compute_metrics_summary(results: list) -> dict:
-    successes = [r["success"] for r in results]
+    """Aggregate metrics. `success_rate` is now the unified per-segment
+    safety rate (seg_safe); `goal_reach_rate` is reported separately when
+    the per-result dict carries `goal_reached` (episode-level methods only).
+    """
+    seg_safes = [r["seg_safe"] for r in results if "seg_safe" in r]
+    if not seg_safes:
+        seg_safes = [r["success"] for r in results]
+
+    goal_reaches = [r["goal_reached"] for r in results if "goal_reached" in r]
+
     peaks = [r["peak_swing_deg"] for r in results if not np.isnan(r["peak_swing_deg"])]
     rms   = [r["rms_swing_deg"] for r in results if not np.isnan(r["rms_swing_deg"])]
-    ttgs  = [r["time_to_goal"] for r in results if r["success"] and not np.isnan(r.get("time_to_goal", float('nan')))]
+    ttgs  = [r["time_to_goal"] for r in results
+             if r.get("seg_safe", r["success"]) and not np.isnan(r.get("time_to_goal", float('nan')))]
 
-    return {
+    summary = {
         "n_samples": len(results),
-        "success_rate": float(np.mean(successes)),
+        "success_rate": float(np.mean(seg_safes)),  # = segment-safety rate
         "mean_peak_swing_deg": float(np.mean(peaks)) if peaks else float('nan'),
         "std_peak_swing_deg":  float(np.std(peaks)) if peaks else float('nan'),
         "mean_rms_swing_deg":  float(np.mean(rms)) if rms else float('nan'),
         "std_rms_swing_deg":   float(np.std(rms)) if rms else float('nan'),
         "mean_time_to_goal_s": float(np.mean(ttgs)) if ttgs else float('nan'),
     }
+    if goal_reaches:
+        summary["goal_reach_rate"] = float(np.mean(goal_reaches))
+    return summary
 
 
 # ---------------------------------------------------------------------------
@@ -433,13 +560,13 @@ def main():
     parser.add_argument("--batch_size", type=int, default=16)
     args = parser.parse_args()
 
-    methods_to_run = args.methods or (list(METHODS.keys()) + ["B_MPC"])
+    methods_to_run = args.methods or (list(METHODS.keys()) + ["B_MPC", "B_MPC_RH"])
 
     all_results = {}
 
     # Evaluate YOPO methods
     for name in methods_to_run:
-        if name == "B_MPC":
+        if name in ("B_MPC", "B_MPC_RH"):
             continue  # handled separately
 
         if name not in METHODS:
@@ -460,39 +587,61 @@ def main():
         print(f"  {name}: peak={all_results[name]['mean_peak_swing_deg']:.2f}° "
               f"rms={all_results[name]['mean_rms_swing_deg']:.2f}°")
 
-    # Evaluate MPC baseline
+    # Evaluate MPC baselines
+    episodes_cache = None
     if "B_MPC" in methods_to_run:
-        print(f"\nEvaluating B_MPC baseline ({args.n_samples} episodes)...")
-        episodes = generate_benchmark_episodes(args.n_samples, seed=args.seed)
-        mpc_per_sample = run_mpc_baseline(episodes)
+        print(f"\nEvaluating B_MPC (legacy grid-search) ({args.n_samples} episodes)...")
+        episodes_cache = generate_benchmark_episodes(args.n_samples, seed=args.seed)
+        mpc_per_sample = run_mpc_baseline(episodes_cache)
         all_results["B_MPC"] = compute_metrics_summary(mpc_per_sample)
         print(f"  B_MPC: success={all_results['B_MPC']['success_rate']:.1%} "
               f"peak={all_results['B_MPC']['mean_peak_swing_deg']:.2f}°")
 
-    # Print comparison table
+    if "B_MPC_RH" in methods_to_run:
+        print(f"\nEvaluating B_MPC_RH (receding-horizon swing-aware MPC, "
+              f"{args.n_samples} episodes)...")
+        if episodes_cache is None:
+            episodes_cache = generate_benchmark_episodes(args.n_samples, seed=args.seed)
+        rh_per_sample = run_swing_aware_mpc(episodes_cache)
+        all_results["B_MPC_RH"] = compute_metrics_summary(rh_per_sample)
+        print(f"  B_MPC_RH: success={all_results['B_MPC_RH']['success_rate']:.1%} "
+              f"peak={all_results['B_MPC_RH']['mean_peak_swing_deg']:.2f}°")
+
+    # Print comparison table.
+    # NOTE: 'Seg-safe' = per-segment swing < SEG_SWING_SAFETY_CAP_DEG, uniform
+    # across YOPO and MPC entries. 'Goal' = goal-reach rate, only meaningful
+    # for episode-level methods (MPC); displayed as "—" for per-segment YOPO
+    # entries. The legacy 'Time(s)' column was apples-to-oranges (segment
+    # duration vs episode time) and has been removed from the mixed table —
+    # per-method timing now lives in the JSON artifact only.
     print(f"\n{'='*100}")
     print("Closed-Loop Evaluation Summary")
     print(f"{'='*100}")
-    header = (f"{'Method':<25} | {'N':>5} | {'Success':>7} | "
-              f"{'Peak Swing':>14} | {'RMS Swing':>14} | {'Time(s)':>8}")
+    header = (f"{'Method':<25} | {'N':>5} | {'Seg-safe':>9} | {'Goal':>6} | "
+              f"{'Peak Swing':>14} | {'RMS Swing':>14}")
     print(header)
     print("-" * 100)
     for name, m in all_results.items():
         peak_str = f"{m['mean_peak_swing_deg']:>6.2f}±{m['std_peak_swing_deg']:.2f}°"
         rms_str  = f"{m['mean_rms_swing_deg']:>6.2f}±{m['std_rms_swing_deg']:.2f}°"
-        print(f"{name:<25} | {m['n_samples']:>5} | {m['success_rate']:>7.1%} | "
-              f"{peak_str:>14} | {rms_str:>14} | {m['mean_time_to_goal_s']:>8.2f}s")
+        goal = m.get("goal_reach_rate")
+        goal_str = f"{goal:.1%}" if goal is not None else "—"
+        print(f"{name:<25} | {m['n_samples']:>5} | {m['success_rate']:>8.1%} | "
+              f"{goal_str:>6} | {peak_str:>14} | {rms_str:>14}")
 
     # Save CSV
     os.makedirs(os.path.dirname(args.output) or ".", exist_ok=True)
     with open(args.output, "w", newline="") as f:
-        fieldnames = ["method", "n_samples", "success_rate", "mean_peak_swing_deg",
-                      "std_peak_swing_deg", "mean_rms_swing_deg", "std_rms_swing_deg",
+        fieldnames = ["method", "n_samples", "success_rate", "goal_reach_rate",
+                      "mean_peak_swing_deg", "std_peak_swing_deg",
+                      "mean_rms_swing_deg", "std_rms_swing_deg",
                       "mean_time_to_goal_s"]
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
         writer.writeheader()
         for name, m in all_results.items():
-            writer.writerow({"method": name, **m})
+            row = {"method": name, **m}
+            row.setdefault("goal_reach_rate", "")
+            writer.writerow(row)
     print(f"\nSaved to {args.output}")
 
     # Save JSON for programmatic access

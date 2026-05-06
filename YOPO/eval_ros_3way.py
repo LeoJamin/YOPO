@@ -15,10 +15,11 @@ SETTLE_SEC = 5
 STARTUP_WAIT = 8
 PLANNER_WAIT = 12
 
-WS = "/home/jamine/yopo_ws"
-YOPO_DIR = f"{WS}/src/YOPO/YOPO"
+WS_SIM = "/home/jamine/research/diff-slung/code/Simulator"
+WS_CTRL = "/home/jamine/research/diff-slung/code/Controller"
+YOPO_DIR = "/home/jamine/research/diff-slung/code/YOPO"
 PYTHON = "/home/jamine/miniconda3/envs/yopo/bin/python"
-SETUP = f"source {WS}/devel/setup.bash"
+SETUP = f"source {WS_SIM}/devel/setup.bash && source {WS_CTRL}/devel/setup.bash"
 
 METHODS = [
     {"name": "YOPO-Original(9D)",   "trial": 1,  "obs_dim": 9,  "epoch": 50},

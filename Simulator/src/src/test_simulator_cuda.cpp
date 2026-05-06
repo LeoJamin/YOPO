@@ -199,7 +199,9 @@ void SensorSimulator::renderLidarCallback(const ros::Time stamp) {
     sensor_msgs::PointCloud2 output;
     pcl::toROSMsg(lidar_points, output);
     output.header.stamp = stamp;
-    output.header.frame_id = "odom";
+    // Lidar kernel now returns WORLD-frame points (post bug fix in
+    // sensor_simulator.cu); use the world frame for the published cloud.
+    output.header.frame_id = "world";
     point_cloud_pub_.publish(output);
 }
 

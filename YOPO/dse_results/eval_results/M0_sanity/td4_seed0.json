@@ -1,0 +1,123 @@
+{
+  "label": "M0 sanity v7 - --extend fix; workspaces now chain correctly, sensor_simulator runs",
+  "trial": 3,
+  "epoch": 50,
+  "obs_dim": 13,
+  "seed": 0,
+  "n_episodes": 5,
+  "arrive_threshold_m": 3.0,
+  "timeout_s": 80,
+  "success_rate": 1.0,
+  "arrived_count": 5,
+  "mean_peak_swing_deg": 23.5,
+  "std_peak_swing_deg": 5.2,
+  "mean_avg_swing_deg": 5.4,
+  "mean_flight_time_s": 13.6,
+  "episodes": [
+    {
+      "episode": 1,
+      "goal": [
+        20.0,
+        0.0,
+        2.0
+      ],
+      "goal_dist_m": 20.0,
+      "arrived": true,
+      "flight_time_s": 5.0,
+      "final_dist_m": 1.3,
+      "min_dist_m": 1.1,
+      "peak_swing_deg": 24.5,
+      "mean_swing_deg": 5.3,
+      "final_swing_deg": 0.4,
+      "mean_speed_ms": 2.75,
+      "peak_speed_ms": 4.05,
+      "min_z": 1.2,
+      "mean_z": 1.46,
+      "n_nav_samples": 67
+    },
+    {
+      "episode": 2,
+      "goal": [
+        17.7,
+        17.7,
+        2.0
+      ],
+      "goal_dist_m": 25.0,
+      "arrived": true,
+      "flight_time_s": 17.0,
+      "final_dist_m": 2.9,
+      "min_dist_m": 2.9,
+      "peak_swing_deg": 17.6,
+      "mean_swing_deg": 5.6,
+      "final_swing_deg": 0.5,
+      "mean_speed_ms": 2.67,
+      "peak_speed_ms": 3.99,
+      "min_z": 0.9,
+      "mean_z": 1.4,
+      "n_nav_samples": 90
+    },
+    {
+      "episode": 3,
+      "goal": [
+        0.0,
+        30.0,
+        2.0
+      ],
+      "goal_dist_m": 30.0,
+      "arrived": true,
+      "flight_time_s": 15.0,
+      "final_dist_m": 2.3,
+      "min_dist_m": 2.3,
+      "peak_swing_deg": 29.8,
+      "mean_swing_deg": 5.5,
+      "final_swing_deg": 0.4,
+      "mean_speed_ms": 2.95,
+      "peak_speed_ms": 3.98,
+      "min_z": 1.2,
+      "mean_z": 1.43,
+      "n_nav_samples": 87
+    },
+    {
+      "episode": 4,
+      "goal": [
+        30.3,
+        -17.5,
+        2.0
+      ],
+      "goal_dist_m": 35.0,
+      "arrived": true,
+      "flight_time_s": 8.0,
+      "final_dist_m": 2.5,
+      "min_dist_m": 2.5,
+      "peak_swing_deg": 17.4,
+      "mean_swing_deg": 5.5,
+      "final_swing_deg": 0.5,
+      "mean_speed_ms": 2.7,
+      "peak_speed_ms": 4.0,
+      "min_z": 1.2,
+      "mean_z": 1.51,
+      "n_nav_samples": 72
+    },
+    {
+      "episode": 5,
+      "goal": [
+        -40.0,
+        0.0,
+        2.0
+      ],
+      "goal_dist_m": 40.0,
+      "arrived": true,
+      "flight_time_s": 23.0,
+      "final_dist_m": 3.0,
+      "min_dist_m": 2.9,
+      "peak_swing_deg": 28.2,
+      "mean_swing_deg": 5.0,
+      "final_swing_deg": 0.2,
+      "mean_speed_ms": 3.04,
+      "peak_speed_ms": 4.03,
+      "min_z": 1.2,
+      "mean_z": 1.52,
+      "n_nav_samples": 103
+    }
+  ]
+}

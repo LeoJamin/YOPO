@@ -1,0 +1,8 @@
+Generating 200000 physically consistent payload states...
+Saved payload state library to ../dataset/payload_state_library.npy
+  theta range:  [0.003, 2.782] rad
+  phi range:    [-3.142, 3.142] rad
+  dtheta range: [-4.998, 5.000] rad/s
+  dphi range:   [-10.000, 10.000] rad/s
+  L range:      [0.800, 0.800] m
+  m range:      [0.300, 0.300] kg

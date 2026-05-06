@@ -54,11 +54,23 @@ public:
         takeoff_land_srv = nh_.advertiseService("takeoff_land", &NetworkControl::takeoff_land_srv_handle, this);
 
         if (is_simulation_) {
-            // Use a one-shot timer instead of detaching a thread in the constructor
-            sim_takeoff_timer_ = nh_.createTimer(ros::Duration(2.0), [this](const ros::TimerEvent&) {
-                this->simulateTakeoff();
-                this->sim_takeoff_timer_.stop();
-            }, true);
+            // Wait for first odom (state_init_) before takeoff. Bypass the
+            // takeoff_land service round-trip and call takeoff_land_thread
+            // directly on a detached thread — avoids self-service-call hangs.
+            sim_takeoff_timer_ = nh_.createTimer(ros::Duration(0.5), [this](const ros::TimerEvent&) {
+                ROS_INFO_ONCE("sim_takeoff_timer fired (state_init=%d)", (int)this->state_init_);
+                if (this->state_init_) {
+                    ROS_INFO("Triggering simulated takeoff (direct thread, bypassing service)");
+                    std::thread t([this]() {
+                        yopo_quadrotor_msgs::SetTakeoffLand::Request req;
+                        req.takeoff = true;
+                        req.takeoff_altitude = 2.0;
+                        this->takeoff_land_thread(req);
+                    });
+                    t.detach();
+                    this->sim_takeoff_timer_.stop();
+                }
+            }, false);
         }
         
     };

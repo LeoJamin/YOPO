@@ -150,7 +150,7 @@ The central innovation. For each candidate trajectory, evaluates UAV acceleratio
 ```
 theta_ddot = dphi^2 * sin(theta) * cos(theta) - (1/L) * a_eff . e_theta
 
-phi_ddot = -2 * dtheta * dphi * (cos(theta) / sin(theta)) - (1 / (L * sin^2(theta))) * a_eff . e_phi
+phi_ddot = -2 * dtheta * dphi * (cos(theta) / sin(theta)) - (1 / (L * sin(theta))) * a_eff . e_phi
 ```
 
 where:

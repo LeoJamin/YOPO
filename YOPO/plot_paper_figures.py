@@ -6,6 +6,7 @@ Font: Times New Roman / serif, min 8pt
 
 import os
 import sys
+import json
 import torch
 import numpy as np
 import matplotlib
@@ -15,6 +16,44 @@ from matplotlib.gridspec import GridSpec
 from matplotlib.patches import FancyArrowPatch
 from mpl_toolkits.mplot3d import proj3d
 import matplotlib.patches as mpatches
+
+
+# ---------------------------------------------------------------------------
+# Baseline data loader.
+#
+# Baseline numbers (YOPO-Original, swing-aware MPC, etc.) MUST come from
+# logged evaluation runs, not literals. Drop a JSON file at
+#   code/YOPO/dse_results/baseline_results.json
+# with the schema:
+#   {
+#     "yopo_original": {"mean_peak_swing_deg": <float>, "n_samples": <int>},
+#     "swing_aware_mpc": {"mean_peak_swing_deg": <float>, "n_samples": <int>}
+#   }
+# If the file is missing or a key is absent, the corresponding plot element
+# is omitted and a warning is printed (instead of plotting fabricated values).
+# ---------------------------------------------------------------------------
+
+_BASELINE_PATH = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    "dse_results", "baseline_results.json",
+)
+
+
+def _load_baseline(name: str):
+    if not os.path.exists(_BASELINE_PATH):
+        print(f"[plot] WARNING: {_BASELINE_PATH} missing — skipping baseline '{name}'")
+        return None
+    try:
+        with open(_BASELINE_PATH, "r") as f:
+            data = json.load(f)
+    except (json.JSONDecodeError, OSError) as exc:
+        print(f"[plot] WARNING: cannot read baseline file ({exc}) — skipping '{name}'")
+        return None
+    entry = data.get(name)
+    if entry is None or "mean_peak_swing_deg" not in entry:
+        print(f"[plot] WARNING: baseline '{name}' not in {_BASELINE_PATH} — skipping")
+        return None
+    return float(entry["mean_peak_swing_deg"])
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -321,9 +360,15 @@ def fig_swing_distribution(results, save_dir):
     sorted_p = np.sort(peaks)
     cdf = np.arange(1, len(sorted_p)+1) / len(sorted_p)
     ax2.plot(sorted_p, cdf * 100, color=C_OURS, linewidth=1.2, label='YOPO-Payload (ours)')
-    # Reference lines for baselines
-    ax2.axvline(55.3, color=C_BASELINE, linewidth=0.8, linestyle='--', label='YOPO-Original (55.3$^\\circ$)')
-    ax2.axvline(19.2, color=C_MPC, linewidth=0.8, linestyle=':', label='Swing-aware MPC (19.2$^\\circ$)')
+    # Reference lines for baselines (loaded from logged eval; skipped if missing)
+    yo_peak = _load_baseline("yopo_original")
+    mpc_peak = _load_baseline("swing_aware_mpc")
+    if yo_peak is not None:
+        ax2.axvline(yo_peak, color=C_BASELINE, linewidth=0.8, linestyle='--',
+                    label=f'YOPO-Original ({yo_peak:.1f}$^\\circ$)')
+    if mpc_peak is not None:
+        ax2.axvline(mpc_peak, color=C_MPC, linewidth=0.8, linestyle=':',
+                    label=f'Swing-aware MPC ({mpc_peak:.1f}$^\\circ$)')
 
     # Percentile annotations
     for pct in [50, 90]:
@@ -519,8 +564,14 @@ def fig_init_vs_peak(results, save_dir):
     # Reference lines
     max_val = max(max(peaks), max(inits)) * 1.05
     ax.plot([0, max_val], [0, max_val], 'k--', linewidth=0.5, alpha=0.4, label='$\\theta_{peak}=\\theta_0$')
-    ax.axhline(19.2, color=C_MPC, linewidth=0.7, linestyle=':', label='MPC (19.2$^\\circ$)')
-    ax.axhline(55.3, color=C_BASELINE, linewidth=0.7, linestyle=':', alpha=0.5, label='YOPO-Orig. (55.3$^\\circ$)')
+    yo_peak = _load_baseline("yopo_original")
+    mpc_peak = _load_baseline("swing_aware_mpc")
+    if mpc_peak is not None:
+        ax.axhline(mpc_peak, color=C_MPC, linewidth=0.7, linestyle=':',
+                   label=f'MPC ({mpc_peak:.1f}$^\\circ$)')
+    if yo_peak is not None:
+        ax.axhline(yo_peak, color=C_BASELINE, linewidth=0.7, linestyle=':', alpha=0.5,
+                   label=f'YOPO-Orig. ({yo_peak:.1f}$^\\circ$)')
 
     cb = plt.colorbar(sc, ax=ax, shrink=0.85)
     cb.set_label('Final swing ($^\\circ$)', fontsize=7)
@@ -545,30 +596,49 @@ def fig_init_vs_peak(results, save_dir):
 def fig_method_comparison(results, save_dir):
     peaks = [r["peak_swing_deg"] for r in results]
 
-    methods = ['YOPO\n(original)', 'Swing-aware\nMPC', 'YOPO-Payload\n(ours)']
-    means = [55.3, 19.2, np.mean(peaks)]
-    stds = [None, None, np.std(peaks)]  # only have std for ours
-    colors = [C_BASELINE, C_MPC, C_OURS]
+    yo_peak = _load_baseline("yopo_original")
+    mpc_peak = _load_baseline("swing_aware_mpc")
+
+    methods, means, stds, colors = [], [], [], []
+    if yo_peak is not None:
+        methods.append('YOPO\n(original)')
+        means.append(yo_peak)
+        stds.append(None)
+        colors.append(C_BASELINE)
+    if mpc_peak is not None:
+        methods.append('Swing-aware\nMPC')
+        means.append(mpc_peak)
+        stds.append(None)
+        colors.append(C_MPC)
+    methods.append('YOPO-Payload\n(ours)')
+    means.append(float(np.mean(peaks)))
+    stds.append(float(np.std(peaks)))
+    colors.append(C_OURS)
+
+    if len(methods) < 2:
+        print("[plot] fig_method_comparison: no baseline data available, skipping")
+        return
 
     fig, ax = plt.subplots(figsize=(3.5, 2.5))
-
     bars = ax.bar(methods, means, color=colors, edgecolor='k', linewidth=0.5, width=0.55)
 
-    # Error bar for ours only
-    ax.errorbar(2, means[2], yerr=stds[2], fmt='none', color='k', capsize=4, linewidth=0.8)
+    ours_idx = methods.index('YOPO-Payload\n(ours)')
+    ax.errorbar(ours_idx, means[ours_idx], yerr=stds[ours_idx],
+                fmt='none', color='k', capsize=4, linewidth=0.8)
 
-    # Value labels
     for i, (bar, val) in enumerate(zip(bars, means)):
         ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 1.5,
                 f'{val:.1f}$^\\circ$', ha='center', fontsize=8, fontweight='bold')
 
-    # Reduction annotation
-    reduction = (55.3 - np.mean(peaks)) / 55.3 * 100
-    ax.annotate('', xy=(2, means[2]+stds[2]+3), xytext=(0, means[0]+3),
-                arrowprops=dict(arrowstyle='<->', color='#333333', lw=0.8))
-    mid_y = (means[0] + means[2]) / 2
-    ax.text(1, mid_y + 3, f'{reduction:.0f}% reduction',
-            ha='center', fontsize=7.5, color='#333333', fontweight='bold')
+    if yo_peak is not None:
+        reduction = (yo_peak - means[ours_idx]) / yo_peak * 100
+        yo_idx = methods.index('YOPO\n(original)')
+        ax.annotate('', xy=(ours_idx, means[ours_idx] + stds[ours_idx] + 3),
+                    xytext=(yo_idx, means[yo_idx] + 3),
+                    arrowprops=dict(arrowstyle='<->', color='#333333', lw=0.8))
+        mid_y = (means[yo_idx] + means[ours_idx]) / 2
+        ax.text((ours_idx + yo_idx) / 2, mid_y + 3, f'{reduction:.0f}% reduction',
+                ha='center', fontsize=7.5, color='#333333', fontweight='bold')
 
     ax.set_ylabel('Mean peak swing ($^\\circ$)')
     ax.set_ylim(0, max(means) * 1.25)

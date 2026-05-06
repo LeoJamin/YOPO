@@ -236,9 +236,13 @@ namespace raycast
 
                 if (occupied == 1)
                 {
-                    point_value = Vector3f(point_x, point_y, point_z);
-                    Vector3i vox_body = grid_map.Pos2Vox(point_value);  // 栅格化避免平面变曲面
-                    point_value = grid_map.Vox2Pos(vox_body);
+                    // 'point' is the WORLD-frame ray position at the hit step.
+                    // Voxelize in world frame and return the cell center.
+                    // (Old code stored body-frame coords but voxelised through
+                    //  Pos2Vox using the world origin offset, conflating frames
+                    //  and producing degenerate clustered points.)
+                    Vector3i vox_w = grid_map.Pos2Vox(point);
+                    point_value = grid_map.Vox2Pos(vox_w);
                     break;
                 }
 

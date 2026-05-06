@@ -1,0 +1,184 @@
+[21:12:15] === Diagnostic: eval subprocess stack ===
+[21:12:15] Output: /home/jamine/research/diff-slung/code/YOPO/dse_results/eval_results/debug_subprocess.log
+[21:12:15] 
+[21:12:15] [0] kill_all
+[21:12:17] [1] Parent env (this Python process)
+[21:12:17]    PATH=/home/jamine/miniconda3/bin:/home/jamine/miniconda3/condabin:/opt/ros/noetic/bin:/home/jamine/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/
+[21:12:17]    ROS_PACKAGE_PATH=/opt/ros/noetic/share
+[21:12:17]    ROS_MASTER_URI=http://localhost:11311
+[21:12:17]    LD_LIBRARY_PATH=/opt/ros/noetic/lib
+[21:12:17]    PYTHONPATH=/opt/ros/noetic/lib/python3/dist-packages
+[21:12:17]    CONDA_DEFAULT_ENV=base
+[21:12:17]    CONDA_PREFIX=/home/jamine/miniconda3
+[21:12:17]    CUDA_TOOLKIT_ROOT_DIR=/home/jamine/miniconda3/envs/yopo
+[21:12:17] 
+[21:12:17] [2] Subprocess env via 'bash -c' (non-interactive)
+[21:12:17]    PATH=/home/jamine/miniconda3/bin:/home/jamine/miniconda3/condabin:/opt/ros/noetic/bin:/home/jamine/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/
+[21:12:17]    ROS_PACKAGE_PATH=/opt/ros/noetic/share
+[21:12:17]    LD_LIBRARY_PATH=/opt/ros/noetic/lib
+[21:12:17]    PYTHONPATH=/opt/ros/noetic/lib/python3/dist-packages
+[21:12:17] 
+[21:12:17] [3] Subprocess env via 'bash -ic' (interactive)
+[21:12:18]    PATH=/opt/ros/noetic/bin:/home/jamine/miniconda3/bin:/home/jamine/miniconda3/condabin:/home/jamine/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/
+[21:12:18]    ROS_PACKAGE_PATH=/opt/ros/noetic/share
+[21:12:18]    LD_LIBRARY_PATH=/opt/ros/noetic/lib
+[21:12:18]    PYTHONPATH=/opt/ros/noetic/lib/python3/dist-packages
+[21:12:18] 
+[21:12:18] [4] After 'bash -ic && source ws_setups'
+[21:12:19]    PATH=/opt/ros/noetic/bin:/home/jamine/miniconda3/bin:/home/jamine/miniconda3/condabin:/home/jamine/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/jamine/.claude/plugins/cache/everything-claude-code/everything-claude-code/1.10.0/bin
+[21:12:19]    ROS_PACKAGE_PATH=/home/jamine/research/diff-slung/code/Controller/src:/home/jamine/research/diff-slung/code/Simulator/src:/opt/ros/noetic/share
+[21:12:19]    LD_LIBRARY_PATH=/home/jamine/research/diff-slung/code/Controller/devel/lib:/home/jamine/research/diff-slung/code/Simulator/devel/lib:/opt/ros/noetic/lib
+[21:12:19]    PYTHONPATH=/home/jamine/research/diff-slung/code/Controller/devel/lib/python3/dist-packages:/opt/ros/noetic/lib/python3/dist-packages
+[21:12:19] 
+[21:12:19] [5] Starting ROS stack
+[21:12:47]     Stack should be up
+[21:12:47] 
+[21:12:47] [6] Topics live (without planner)
+[21:12:47] --- rostopic list ---
+[21:12:48] /depth_image
+/force_disturbance
+/lidar_points
+/mavros/setpoint_raw/attitude
+/mavros/state
+/mock_map
+/moment_disturbance
+/quadrotor_simulator_so3/payload
+/quadrotor_simulator_so3/uav
+/rosout
+/rosout_agg
+/sim/imu
+/sim/odom
+/sim/payload_odom
+/so3_cmd
+/so3_control/pos_cmd
+/tf
+bash: 无法设定终端进程组(902457): 对设备不适当的 ioctl 操作
+bash: 此 shell 中无任务控制
+
+[21:12:48] --- rostopic hz /sim/odom (3s) ---
+[21:12:52] subscribed to [/sim/odom]
+average rate: 100.002
+	min: 0.010s max: 0.010s std dev: 0.00002s window: 100
+average rate: 100.000
+	min: 0.010s max: 0.010s std dev: 0.00002s window: 200
+average rate: 99.998
+	min: 0.010s max: 0.010s std dev: 0.00002s window: 271
+bash: 无法设定终端进程组(902457): 对设备不适当的 ioctl 操作
+bash: 此 shell 中无任务控制
+
+[21:12:52] --- rostopic hz /depth_image (3s) ---
+[21:12:57] subscribed to [/depth_image]
+average rate: 32.986
+	min: 0.029s max: 0.040s std dev: 0.00175s window: 33
+average rate: 32.996
+	min: 0.029s max: 0.040s std dev: 0.00174s window: 66
+average rate: 32.961
+	min: 0.029s max: 0.040s std dev: 0.00184s window: 89
+bash: 无法设定终端进程组(902457): 对设备不适当的 ioctl 操作
+bash: 此 shell 中无任务控制
+
+[21:12:57] --- /sim/odom position right now ---
+[21:12:58]     position: 
+      x: 0.0
+      y: 0.0
+      z: 1.534270692599091
+    orientation: 
+bash: 无法设定终端进程组(902457): 对设备不适当的 ioctl 操作
+bash: 此 shell 中无任务控制
+
+[21:12:58] 
+[21:12:58] [7] Launching planner — default goal=(50,0,2)
+[21:13:18]     Planner should be up
+[21:13:18] 
+[21:13:18] [8] Topics live (with planner)
+[21:13:18] --- rosnode list ---
+[21:13:19] /network_controller_node
+/quadrotor_simulator_so3
+/rosout
+/sensor_simulator_node
+/yopo_net
+bash: 无法设定终端进程组(902457): 对设备不适当的 ioctl 操作
+bash: 此 shell 中无任务控制
+
+[21:13:19] --- rostopic hz /so3_control/pos_cmd (3s) ---
+[21:13:21] bash: 无法设定终端进程组(902457): 对设备不适当的 ioctl 操作
+bash: 此 shell 中无任务控制
+ERROR: Cannot load message class for [quadrotor_msgs/PositionCommand]. Are your messages built?
+
+[21:13:21] --- rostopic hz /so3_cmd (3s) ---
+[21:13:26] subscribed to [/so3_cmd]
+average rate: 49.997
+	min: 0.020s max: 0.020s std dev: 0.00006s window: 50
+average rate: 49.999
+	min: 0.020s max: 0.020s std dev: 0.00007s window: 100
+average rate: 50.000
+	min: 0.020s max: 0.020s std dev: 0.00007s window: 135
+bash: 无法设定终端进程组(902457): 对设备不适当的 ioctl 操作
+bash: 此 shell 中无任务控制
+
+[21:13:26] --- /sim/odom position over 10 s (5 samples) ---
+[21:13:30]   t+0s: bash: 无法设定终端进程组(902457): 对设备不适当的 ioctl 操作
+bash: 此 shell 中无任务控制
+tr: “n” 后缺少操作数
+当进行替换操作时必须给定两组字符串。
+请尝试执行 "tr --help" 来获取更多信息。
+bash: [903808: 2 (255)] tcsetattr: 对设备不适当的 ioctl 操作
+[21:13:33]   t+2s: bash: 无法设定终端进程组(902457): 对设备不适当的 ioctl 操作
+bash: 此 shell 中无任务控制
+tr: “n” 后缺少操作数
+当进行替换操作时必须给定两组字符串。
+请尝试执行 "tr --help" 来获取更多信息。
+bash: [903915: 2 (255)] tcsetattr: 对设备不适当的 ioctl 操作
+[21:13:37]   t+4s: bash: 无法设定终端进程组(902457): 对设备不适当的 ioctl 操作
+bash: 此 shell 中无任务控制
+tr: “n” 后缺少操作数
+当进行替换操作时必须给定两组字符串。
+请尝试执行 "tr --help" 来获取更多信息。
+bash: [904027: 2 (255)] tcsetattr: 对设备不适当的 ioctl 操作
+[21:13:41]   t+6s: bash: 无法设定终端进程组(902457): 对设备不适当的 ioctl 操作
+bash: 此 shell 中无任务控制
+tr: “n” 后缺少操作数
+当进行替换操作时必须给定两组字符串。
+请尝试执行 "tr --help" 来获取更多信息。
+bash: [904134: 2 (255)] tcsetattr: 对设备不适当的 ioctl 操作
+[21:13:45]   t+8s: bash: 无法设定终端进程组(902457): 对设备不适当的 ioctl 操作
+bash: 此 shell 中无任务控制
+tr: “n” 后缺少操作数
+当进行替换操作时必须给定两组字符串。
+请尝试执行 "tr --help" 来获取更多信息。
+bash: [904241: 2 (255)] tcsetattr: 对设备不适当的 ioctl 操作
+[21:13:45] 
+[21:13:45] [9] Planner stdout (last 30 lines)
+[21:13:45]    [NAV] dist=1.9m speed=0.00m/s pos=(51.5,-0.3,0.9) | swing=0.0° L=0.800m
+[21:13:45]    [NAV] dist=1.9m speed=0.00m/s pos=(51.5,-0.3,0.9) | swing=0.0° L=0.800m
+[21:13:45]    [NAV] dist=1.9m speed=0.00m/s pos=(51.5,-0.3,0.9) | swing=0.0° L=0.800m
+[21:13:45]    [NAV] dist=1.9m speed=0.00m/s pos=(51.5,-0.3,0.9) | swing=0.0° L=0.800m
+[21:13:45]    [NAV] dist=1.9m speed=0.00m/s pos=(51.5,-0.3,0.9) | swing=0.0° L=0.800m
+[21:13:45]    [NAV] dist=1.9m speed=0.00m/s pos=(51.5,-0.3,0.9) | swing=0.0° L=0.800m
+[21:13:45]    [NAV] dist=1.9m speed=0.00m/s pos=(51.5,-0.3,0.9) | swing=0.0° L=0.800m
+[21:13:45]    [NAV] dist=1.9m speed=0.00m/s pos=(51.5,-0.3,0.9) | swing=0.0° L=0.800m
+[21:13:45]    [NAV] dist=1.9m speed=0.00m/s pos=(51.5,-0.3,0.9) | swing=0.0° L=0.800m
+[21:13:45]    [NAV] dist=1.9m speed=0.00m/s pos=(51.5,-0.3,0.9) | swing=0.0° L=0.800m
+[21:13:45]    [NAV] dist=1.9m speed=0.00m/s pos=(51.5,-0.3,0.9) | swing=0.0° L=0.800m
+[21:13:45]    [NAV] dist=1.9m speed=0.00m/s pos=(51.5,-0.3,0.9) | swing=0.0° L=0.800m
+[21:13:45]    [NAV] dist=1.9m speed=0.00m/s pos=(51.5,-0.3,0.9) | swing=0.0° L=0.800m
+[21:13:45]    [NAV] dist=1.9m speed=0.00m/s pos=(51.5,-0.3,0.9) | swing=0.0° L=0.800m
+[21:13:45]    [NAV] dist=1.9m speed=0.00m/s pos=(51.5,-0.3,0.9) | swing=0.0° L=0.800m
+[21:13:45]    [NAV] dist=1.9m speed=0.00m/s pos=(51.5,-0.3,0.9) | swing=0.0° L=0.800m
+[21:13:45]    [NAV] dist=1.9m speed=0.00m/s pos=(51.5,-0.3,0.9) | swing=0.0° L=0.800m
+[21:13:45]    [NAV] dist=1.9m speed=0.00m/s pos=(51.5,-0.3,0.9) | swing=0.0° L=0.800m
+[21:13:45]    [NAV] dist=1.9m speed=0.00m/s pos=(51.5,-0.3,0.9) | swing=0.0° L=0.800m
+[21:13:45]    [NAV] dist=1.9m speed=0.00m/s pos=(51.5,-0.3,0.9) | swing=0.0° L=0.800m
+[21:13:45]    [NAV] dist=1.9m speed=0.00m/s pos=(51.5,-0.3,0.9) | swing=0.0° L=0.800m
+[21:13:45]    [NAV] dist=1.9m speed=0.00m/s pos=(51.5,-0.3,0.9) | swing=0.0° L=0.800m
+[21:13:45]    [NAV] dist=1.9m speed=0.00m/s pos=(51.5,-0.3,0.9) | swing=0.0° L=0.800m
+[21:13:45]    [NAV] dist=1.9m speed=0.00m/s pos=(51.5,-0.3,0.9) | swing=0.0° L=0.800m
+[21:13:45]    [NAV] dist=1.9m speed=0.00m/s pos=(51.5,-0.3,0.9) | swing=0.0° L=0.800m
+[21:13:45]    [NAV] dist=1.9m speed=0.00m/s pos=(51.5,-0.3,0.9) | swing=0.0° L=0.800m
+[21:13:45]    [NAV] dist=1.9m speed=0.00m/s pos=(51.5,-0.3,0.9) | swing=0.0° L=0.800m
+[21:13:45]    [NAV] dist=1.9m speed=0.00m/s pos=(51.5,-0.3,0.9) | swing=0.0° L=0.800m
+[21:13:45]    [NAV] dist=1.9m speed=0.00m/s pos=(51.5,-0.3,0.9) | swing=0.0° L=0.800m
+[21:13:45]    [NAV] dist=1.9m speed=0.00m/s pos=(51.5,-0.3,0.9) | swing=0.0° L=0.800m
+[21:13:45] 
+[21:13:45] [10] cleanup
+[21:13:47] done.

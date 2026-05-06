@@ -1,0 +1,75 @@
+======================================================================
+YOPO-Payload ROS Closed-Loop Eval — YOPO_3/epoch50 (obs_dim=13)
+Episodes: 5 | Timeout: 80s | Arrive: 3.0m | Seed: 0
+Label: M0 sanity v7 - --extend fix; workspaces now chain correctly, sensor_simulator runs
+Start: (0, 0, 2) | Goals: varied distances & directions
+======================================================================
+  Ep 1: goal=(  20.0,    0.0, 2)  dist=20m  angle=0°
+  Ep 2: goal=(  17.7,   17.7, 2)  dist=25m  angle=45°
+  Ep 3: goal=(   0.0,   30.0, 2)  dist=30m  angle=90°
+  Ep 4: goal=(  30.3,  -17.5, 2)  dist=35m  angle=-30°
+  Ep 5: goal=( -40.0,    0.0, 2)  dist=40m  angle=180°
+======================================================================
+
+--- Episode 1/5 ---
+  Goal: (20.0, 0.0)  dist=20m  angle=0°
+  Killing old processes...
+  Starting ROS stack (new random map)...
+  Running episode...
+  Result: ARRIVED | final_dist=1.3m | min_dist=1.1m | peak_swing=24.5° | mean_swing=5.3° | time=5.0s | min_z=1.2m
+
+--- Episode 2/5 ---
+  Goal: (17.7, 17.7)  dist=25m  angle=45°
+  Killing old processes...
+  Starting ROS stack (new random map)...
+  Running episode...
+  Result: ARRIVED | final_dist=2.9m | min_dist=2.9m | peak_swing=17.6° | mean_swing=5.6° | time=17.0s | min_z=0.9m
+
+--- Episode 3/5 ---
+  Goal: (0.0, 30.0)  dist=30m  angle=90°
+  Killing old processes...
+  Starting ROS stack (new random map)...
+  Running episode...
+  Result: ARRIVED | final_dist=2.3m | min_dist=2.3m | peak_swing=29.8° | mean_swing=5.5° | time=15.0s | min_z=1.2m
+
+--- Episode 4/5 ---
+  Goal: (30.3, -17.5)  dist=35m  angle=-30°
+  Killing old processes...
+  Starting ROS stack (new random map)...
+  Running episode...
+  Result: ARRIVED | final_dist=2.5m | min_dist=2.5m | peak_swing=17.4° | mean_swing=5.5° | time=8.0s | min_z=1.2m
+
+--- Episode 5/5 ---
+  Goal: (-40.0, 0.0)  dist=40m  angle=180°
+  Killing old processes...
+  Starting ROS stack (new random map)...
+  Running episode...
+  Result: ARRIVED | final_dist=3.0m | min_dist=2.9m | peak_swing=28.2° | mean_swing=5.0° | time=23.0s | min_z=1.2m
+
+======================================================================
+RESULTS SUMMARY — YOPO_3 (13D, payload-aware)
+======================================================================
+Episodes:           5
+Goal distances:     20m – 40m
+Arrive threshold:   3.0m
+──────────────────────────────────────────────────────────────────────
+SUCCESS RATE:       100%  (5/5)
+──────────────────────────────────────────────────────────────────────
+Avg flight time:    13.6s ± 6.4s
+Mean peak swing:    23.5° ± 5.2°
+Mean avg swing:     5.4° ± 0.2°
+Mean min dist:      2.3m ± 0.7m
+Mean min altitude:  1.14m ± 0.12m
+======================================================================
+
+──────────────────────────────────────────────────────────────────────────────
+ Ep  GoalD  Angle  Status  FDist  MinD   PkSw   AvSw   Time  MinZ
+──────────────────────────────────────────────────────────────────────────────
+  1    20m     0°      OK   1.3m  1.1m  24.5°   5.3°   5.0s  1.2m
+  2    25m    45°      OK   2.9m  2.9m  17.6°   5.6°  17.0s  0.9m
+  3    30m    90°      OK   2.3m  2.3m  29.8°   5.5°  15.0s  1.2m
+  4    35m   -30°      OK   2.5m  2.5m  17.4°   5.5°   8.0s  1.2m
+  5    40m   180°      OK   3.0m  2.9m  28.2°   5.0°  23.0s  1.2m
+──────────────────────────────────────────────────────────────────────────────
+
+Saved to dse_results/eval_results/M0_sanity/td4_seed0.json

@@ -19,3 +19,8 @@ dataset/
 yopo_sim/
 
 !YOPO/saved/YOPO_1/
+
+# transient runtime artifacts
+*.pid
+Simulator/build_log.txt
+YOPO/dataset_gen_run2.log
